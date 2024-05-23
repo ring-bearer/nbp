@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../app/database/db.class.php';
 require_once __DIR__ . '/pacijent.class.php';
+require_once __DIR__ . '/lijecnikservice.class.php';
 
 class PacijentService{
 
@@ -9,7 +10,8 @@ class PacijentService{
 		try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('SELECT oib,mbo,ime,prezime FROM nbp_pacijent order by prezime,ime');
+			$st = $db->prepare('SELECT oib, mbo, ime, prezime, datum_rodjenja, adresa, mjesto, oib_lijecnika
+				FROM nbp_pacijent order by prezime');
       $st->execute();
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -21,7 +23,8 @@ class PacijentService{
   			return $arr;
   		else{
         $i=new Pacijent($row['oib'],$row['mbo'],
-  					$row['ime'],$row['prezime']);
+  					$row['ime'],$row['prezime'],$row['datum_rodjenja'],
+						$row['adresa'],$row['mjesto'],$row['oib_lijecnika']);
         $arr[]=$i;
       }
     }
@@ -29,16 +32,24 @@ class PacijentService{
 	}
 
 	function newpacijent($novi){
-		try
+	try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('INSERT INTO nbp_pacijent values (:a,:b,:c,:d)');
+
+			$poruka="";
+			$ls=new LijecnikService();
+			$lijecnik=$ls->getlijecnik($novi->__get('oib_lijecnika'));
+			if($lijecnik===NULL) $poruka="Ne postoji lijecnik s tim OIB-om!";
+
+			$st = $db->prepare('INSERT INTO nbp_pacijent values (:a,:b,:c,:d,:e,:f,:g,:h)');
       $st->execute(array( 'a' => $novi->__get('oib'), 'b' => $novi->__get('mbo'),
-				'c' => $novi->__get('ime'), 'd' => $novi->__get('prezime')));
+				'c' => $novi->__get('ime'), 'd' => $novi->__get('prezime'),
+				'e' => $novi->__get('datum_rodjenja'), 'f' => $novi->__get('adresa'),
+				'g' => $novi->__get('mjesto'), 'h' => $novi->__get('oib_lijecnika'),));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 
-    return;
+    return $poruka;
 	}
 };
 

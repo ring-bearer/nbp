@@ -11,8 +11,8 @@
 		<ul>
 			<li><a href="index.php?rt=pacijent/index">Pacijenti</a></li>
 			<li><a href="index.php?rt=pacijent/unos">Unos novog pacijenta</a></li>
-			<li><a href="index.php?rt=doktor/index">Doktori</a></li>
-			<li><a href="index.php?rt=doktor/unos">Unos novog doktora</a></li>
-			<li><a href="index.php?rt=bolnica/index">Bolnice</a></li>
+			<li><a href="index.php?rt=lijecnik/index">Liječnici</a></li>
+			<li><a href="index.php?rt=lijecnik/unos">Unos novog liječnika</a></li>
+			<li><a href="index.php?rt=pretraga/index">Pretrage</a></li>
 		</ul>
 	</nav>

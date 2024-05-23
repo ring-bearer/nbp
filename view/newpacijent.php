@@ -11,6 +11,14 @@ Unos novog pacijenta<br>
       <br>
 			Prezime: <input type="text" name="prezime" />
       <br>
+			Datum rođenja: <input type="date" name="datum_rodjenja" />
+      <br>
+			Adresa: <input type="text" name="adresa" />
+      <br>
+			Mjesto: <input type="text" name="mjesto" />
+      <br>
+			OIB liječnika: <input type="text" name="oib_lijecnika" />
+      <br>
 	    <button type="submit" name="gumb" value="pacijent">Dodaj!</button>
 		</form>
 
