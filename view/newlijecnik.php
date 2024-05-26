@@ -1,7 +1,8 @@
 <?php require_once __DIR__ . '/_header.php';
-
+if(isset($poruka)) echo $poruka;
+else echo "Unos novog liječnika:";
 ?>
-Unos novog liječnika<br>
+		<br>
 		<form method="post" action="index.php?rt=lijecnik/new">
 			OIB: <input type="text" name="oib" />
       <br>

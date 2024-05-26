@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../controller/lijecnikController.class.php';
 
 ?>
+<h1> Liječnici </h1>
 <table>
 	<tr>
 		<th>OIB</th><th>Ime</th>

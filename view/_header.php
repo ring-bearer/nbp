@@ -8,11 +8,26 @@
 </head>
 <body>
 	<nav>
-		<ul>
-			<li><a href="index.php?rt=pacijent/index">Pacijenti</a></li>
-			<li><a href="index.php?rt=pacijent/unos">Unos novog pacijenta</a></li>
-			<li><a href="index.php?rt=lijecnik/index">Liječnici</a></li>
-			<li><a href="index.php?rt=lijecnik/unos">Unos novog liječnika</a></li>
-			<li><a href="index.php?rt=pretraga/index">Pretrage</a></li>
-		</ul>
+		<div class="dropdown">
+  		<button class="dropbtn" onclick="window.location.href='index.php?rt=pacijent/index'">Pacijenti</button>
+  		<div class="dropdown-content">
+				<a href="index.php?rt=pacijent/index">Popis pacijenata</a>
+  			<a href="index.php?rt=pacijent/unos">Unos novog pacijenta</a>
+				<a href="index.php?rt=pacijent/brisanje">Brisanje pacijenata</a>
+			</div>
+		</div>
+		<div class="dropdown">
+  		<button class="dropbtn" onclick="window.location.href='index.php?rt=lijecnik/index'">Liječnici</button>
+  		<div class="dropdown-content">
+				<a href="index.php?rt=lijecnik/index">Popis liječnika</a>
+  			<a href="index.php?rt=lijecnik/unos">Unos novog liječnika</a>
+				<a href="index.php?rt=lijecnik/brisanje">Brisanje liječnika</a>
+			</div>
+		</div>
+		<div class="dropdown">
+  		<button class="dropbtn" onclick="window.location.href='index.php?rt=pretraga/index'"">Pretrage</button>
+  		<div class="dropdown-content">
+				<a href="index.php?rt=pretraga/index">Popis pretraga</a>
+			</div>
+		</div>
 	</nav>

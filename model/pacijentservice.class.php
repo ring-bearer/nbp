@@ -39,7 +39,10 @@ class PacijentService{
 			$poruka="";
 			$ls=new LijecnikService();
 			$lijecnik=$ls->getlijecnik($novi->__get('oib_lijecnika'));
-			if($lijecnik===NULL) $poruka="Ne postoji lijecnik s tim OIB-om!";
+			if($lijecnik===NULL){
+				$poruka="Ne postoji lijecnik s tim OIB-om!";
+				return $poruka;
+			}
 
 			$st = $db->prepare('INSERT INTO nbp_pacijent values (:a,:b,:c,:d,:e,:f,:g,:h)');
       $st->execute(array( 'a' => $novi->__get('oib'), 'b' => $novi->__get('mbo'),
@@ -49,7 +52,18 @@ class PacijentService{
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 
+		$poruka="Pacijent uspjesno dodan!";
     return $poruka;
+	}
+
+	function deletepacijent($oib){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('DELETE FROM nbp_pacijent where oib=:oib');
+			$st->execute(array('oib'=>$oib));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 	}
 };
 
