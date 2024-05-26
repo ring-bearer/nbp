@@ -149,8 +149,8 @@ try
             RETURN QUERY
                 SELECT datum, vrijeme, oib_pacijenta
                     FROM nbp_pretraga
-                WHERE datum >= date(now())
-                  AND vrijeme > time(now())
+                WHERE datum >= curdate()
+                  AND vrijeme > curtime()
                   AND id_bolnice = bolnica
                   AND vrsta = vrsta_P
             ORDER BY datum, vrijeme;
@@ -206,11 +206,11 @@ try
 {
     $st = $db->prepare( 'INSERT INTO nbp_pretraga(oib_pacijenta, vrsta, datum, vrijeme, id_bolnice) VALUES (:oib_pacijenta, :vrsta, :datum, :vrijeme, :id_bolnice)' );
 
-    $st->execute( array( 'oib' => '10000338099', 'vrsta' => 'dijabetes', 'datum' => '2024-07-02', 'vrijeme' => '14:00', 'id_bolnice' => '1') );
-    $st->execute( array( 'oib' => '10000917906', 'vrsta' => 'bakteriologija', 'datum' => '2024-02-11', 'vrijeme' => '14:00', 'id_bolnice' => '1') );
-    $st->execute( array( 'oib' => '10000395731', 'vrsta' => 'serologija', 'datum' => '2024-07-24', 'vrijeme' => '14:00', 'id_bolnice' => '2') );
-    $st->execute( array( 'oib' => '10000013006', 'vrsta' => 'genetika', 'datum' => '2024-07-05', 'vrijeme' => '14:00', 'id_bolnice' => '3') );
-    $st->execute( array( 'oib' => '10000402929', 'vrsta' => 'dermatologija', 'datum' => '2024-02-12', 'vrijeme' => '14:00', 'id_bolnice' => '5') );
+    $st->execute( array( 'oib_pacijenta' => '10000338099', 'vrsta' => 'dijabetes', 'datum' => '2024-07-02', 'vrijeme' => '14:00', 'id_bolnice' => '1') );
+    $st->execute( array( 'oib_pacijenta' => '10000917906', 'vrsta' => 'bakteriologija', 'datum' => '2024-02-11', 'vrijeme' => '14:00', 'id_bolnice' => '1') );
+    $st->execute( array( 'oib_pacijenta' => '10000395731', 'vrsta' => 'serologija', 'datum' => '2024-07-24', 'vrijeme' => '14:00', 'id_bolnice' => '2') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'vrsta' => 'genetika', 'datum' => '2024-07-05', 'vrijeme' => '14:00', 'id_bolnice' => '3') );
+    $st->execute( array( 'oib_pacijenta' => '10000402929', 'vrsta' => 'dermatologija', 'datum' => '2024-02-12', 'vrijeme' => '14:00', 'id_bolnice' => '5') );
 
 }
 catch( PDOException $e ) { exit( "PDO error kod pretraga: " . $e->getMessage() ); }

@@ -34,7 +34,7 @@ class LijecnikService{
 		try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('INSERT INTO nbp_lijecnik values (:a,:b,:c,:d,:e,:f,:g)');
+			$st = $db->prepare('INSERT INTO nbp_lijecnik values (:a,:b,:c,:d,:e,:f)');
       $st->execute(array( 'a' => $novi->__get('oib'), 'b' => $novi->__get('ime'),
 				'c' => $novi->__get('prezime'), 'd' => $novi->__get('datum_rodjenja'),
 				'e' => $novi->__get('adresa_ambulante'), 'f' => $novi->__get('mjesto_ambulante')));
@@ -61,5 +61,15 @@ class LijecnikService{
 				$row['datum_rodjenja'],$row['adresa_ambulante'],
 				$row['mjesto_ambulante']);
     return $i;
+	}
+
+	function deletelijecnik($oib){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('DELETE FROM nbp_lijecnik where oib=:oib');
+			$st->execute(array('oib'=>$oib));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 	}
 };
