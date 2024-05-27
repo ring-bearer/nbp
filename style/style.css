@@ -6,7 +6,16 @@ h1{
   color: #9c1414;
 }
 
+#gore{
+  font-size: 18px;
+}
 
+
+input[type="checkbox"]{
+  width: 15px;
+  height: 15px;
+  accent-color: #9c1414;
+}
 
 table,tr,th,td {
   background-color: #ffeded;
@@ -14,13 +23,19 @@ table,tr,th,td {
   border-collapse: collapse;
   border-style: solid;
   border-radius: 2px;
+  font-size: 17px;
+  padding: 7px;
+}
+
+#promjena, #promjena td, #promjena tr{
+  padding: 4px;
   text-align: center;
-  padding: 3px;
 }
 
 th{
   background-color: white;
   padding: 5px;
+  text-align: center;
 }
 
 nav{
@@ -33,15 +48,58 @@ nav{
   border-width: 2px;
 }
 
-.dropbtn {
+input[type=text], input[type=date]{
+  padding: 0;
+  height: 28px;
+  width: 130px;
+  position: relative;
+  left: 0;
+  outline: none;
+  border: 1px solid #a1a1a1;
+  background-color: white;
+  font-size: 16px;
+}
+
+#unos input[type="text"], #unos input[type="date"]{
+  padding: 4px;
+  height: 20px;
+  width: 180px;
+  border-radius: 10px;
+  border-color: #9c1414;
+  border-style: solid;
+  border-width: 2px;
+}
+
+#unos{
+  margin-left: 15px;
+  width:250px;
+  padding: 5px;
+  background-color: white;
+  font-size: 18px;
+  border-style: solid;
+  border-color: #9c1414;
+}
+
+#insideunos{
+  margin: 5px;
+  text-align: center;
+}
+
+button{
   border-radius: 10px;
   background-color: #9c1414;
   color: white;
   padding: 9px;
-  margin: 5px;
+  margin: 6px;
+  margin-left: 0px;
   font-size: 16px;
   border: none;
   cursor: pointer;
+}
+
+.dropdown button {
+  padding: 9px;
+  margin-left: 5px;
 }
 
 .dropdown {
