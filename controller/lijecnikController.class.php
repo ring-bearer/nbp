@@ -38,14 +38,14 @@ class LijecnikController{
 				return;
 			}
 
-      if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ0-9]{0,30}$/', $_POST["adresa"])){
+      if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ0-9]{0,30}$/', $_POST["adresa"])){
 				require_once __DIR__ . '/../view/_header.php';
 				$poruka="Unesite ispravnu adresu (0-30 znakova).\n";
 				require_once __DIR__ . '/../view/newlijecnik.php';
 				return;
 			}
 
-			if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["mjesto"])){
+			if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["mjesto"])){
 				require_once __DIR__ . '/../view/_header.php';
 				$poruka="Unesite ispravno mjesto (0-20 slova).\n";
 				require_once __DIR__ . '/../view/newlijecnik.php';
@@ -63,21 +63,60 @@ class LijecnikController{
       require_once __DIR__ . '/../view/newlijecnik.php';
 	}
 
-  public function brisanje(){
+  public function promjena(){
 			$ls=new LijecnikService();
 			$list = $ls->getlijecnici();
-			require_once __DIR__ . '/../view/deletelijecnik.php';
+			require_once __DIR__ . '/../view/updatelijecnik.php';
 	}
 
-	public function delete(){
+	public function update(){
 			$ls=new LijecnikService();
+
+			$list = $ls->getlijecnici();
+      foreach ($list as $k=>$l) {
+          if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["ime"][$k])){
+    				require_once __DIR__ . '/../view/_header.php';
+    				$poruka="Unesite ispravno ime (0-20 slova).\n";
+    				require_once __DIR__ . '/../view/updatelijecnik.php';
+    				return;
+    			}
+          $l->__set('ime',$_POST["ime"][$k]);
+
+
+  			if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["prezime"][$k])){
+  				require_once __DIR__ . '/../view/_header.php';
+  				$poruka="Unesite ispravno prezime (0-20 slova).\n";
+  				require_once __DIR__ . '/../view/updatelijecnik.php';
+  				return;
+  			}
+        $l->__set('prezime',$_POST["prezime"][$k]);
+
+        $l->__set('datum_rodjenja',$_POST["datum_rodjenja"][$k]);
+
+        if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ0-9]{0,30}$/', $_POST["adresa_ambulante"][$k])){
+  				require_once __DIR__ . '/../view/_header.php';
+  				$poruka="Unesite ispravnu adresu (0-30 znakova).\n";
+  				require_once __DIR__ . '/../view/updatelijecnik.php';
+  				return;
+  			}
+        $l->__set('adresa_ambulante',$_POST["adresa_ambulante"][$k]);
+
+  			if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["mjesto_ambulante"][$k])){
+  				require_once __DIR__ . '/../view/_header.php';
+  				$poruka="Unesite ispravno mjesto (0-20 slova).\n";
+  				require_once __DIR__ . '/../view/updatelijecnik.php';
+  				return;
+  			}
+        $l->__set('mjesto_ambulante',$_POST["mjesto_ambulante"][$k]);
+        $ls->updatelijecnik($l);
+      }
+
 			foreach ($_POST['brisanje'] as $i) {
 				$ls->deletelijecnik($i);
 			}
-			$poruka="Brisanje uspješno!";
 
-			$list = $ls->getlijecnici();
-			require_once __DIR__ . '/../view/deletelijecnik.php';
+			$poruka="Promjene uspješno spremljene!";
+			require_once __DIR__ . '/../view/updatelijecnik.php';
 	}
 };
 

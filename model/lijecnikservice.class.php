@@ -72,4 +72,16 @@ class LijecnikService{
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 	}
+
+	function updatelijecnik($novi){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('UPDATE nbp_lijecnik set ime=:b,prezime=:c,datum_rodjenja=:d,adresa_ambulante=:e,mjesto_ambulante=:f where oib=:oib');
+			$st->execute(array('oib' => $novi->__get('oib'), 'b' => $novi->__get('ime'),
+				'c' => $novi->__get('prezime'), 'd' => $novi->__get('datum_rodjenja'),
+				'e' => $novi->__get('adresa_ambulante'), 'f' => $novi->__get('mjesto_ambulante')));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+	}
 };

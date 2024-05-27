@@ -1,13 +1,17 @@
 # Projekt iz NBP
 
-Web aplikaciji moze se pristupiti sa lokalnog hosta ili prebacivanjem na studenta.
-Korisnik bi uvijek trebao pristupati samo index.php.
-Potrebno je imati PHP i instaliran driver za njegov rad s Postgresom
-(na linuxu preko terminala komanda sudo apt-get install php-pgsql).
+Web aplikaciji moze se pristupiti sa lokalnog hosta.
+Potrebno je imati PHP i instaliran driver za njegov rad s Postgresom.\
+Korisne naredbe (na Linuxu preko terminala):
+- instalacija PHP-a: ```sudo apt-get install php```
+- provjera instalirane verzije PHP-a: ```php --version```
+- instalacija drivera za Postgres: ```sudo apt-get install php-pgsql``` ili ako imate npr. PHP verziju 7.4, ```sudo apt-get install php7.4-pgsql```
+- pronalazak datoteke php.ini: ```sudo find / -name php.ini```
 
-Za relacijsku bazu, povezujemo se s bazom odbojka kao za prvu i drugu zadaću.
-Nakon dobivanja konekcije s virtualkom na VCLu, potrebno je dobiveni IP
-prekopirati u app/database/db.class.php, kod imena host-a.
-Tad se za brzu inicijalizaciju baze moze pristupiti prepareDB.php preko web-a,
-nakon cega bi se trebale izvrsiti naredbe koje su prvo pisane u projekt.sql,
-te prenesene u prepareDB da ga PHP shvati.
+U slučaju da Postgres driver ne radi nakon instalacije, potrebno je u php.ini odkomentirati sljedeće linije:
+ - ```extension=pgsql```
+ - ```extension=pdo_pgsql```
+
+Za relacijsku bazu, povezujemo se s bazom odbojka kao za prvu i drugu zadaću. Nakon dobivanja konekcije s virtualkom na VCLu, potrebno je dobiveni IP prekopirati u app/database/db.class.php, kod imena host-a.
+Tad se za brzu inicijalizaciju baze može pristupiti prepareDB.php preko web-a (adresa oblika http://localhost/~username/nbp/app/database/prepareDB.php).
+Nakon toga, korisnik bi uvijek trebao pristupati samo datoteci index.php, koja će ga preusmjeriti na traženi sadržaj (http://localhost/~username/nbp/index.php).
