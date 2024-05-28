@@ -9,14 +9,40 @@ class LoginService{
   
         $db = DB::getConnection();
   
+        // Ovaj dio se moze optimizirati sa query
         try
         {
-            $st = $db->prepare( 'SELECT password_hash FROM nbp_lijecnici WHERE oib=:oib' );
-            $st->execute( array( 'oib' => $oib ) );
+            $st1 = $db->prepare( 'SELECT password_hash FROM nbp_lijecnici WHERE oib=:oib' );
+            $st1->execute( array( 'oib' => $oib ) );
         }
         catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi.';return; }
     
-        $row = $st->fetch();
+        $row = $st1->fetch();
+
+        // Provjeravamo ostale tablice
+        if( $row === false){
+            try
+            {
+                $st2 = $db->prepare( 'SELECT password_hash FROM nbp_pacijent WHERE oib=:oib' );
+                $st2->execute( array( 'oib' => $oib ) );
+            }
+            catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi.';return; }
+
+            $row = $st2->fetch();
+
+        }
+
+        if( $row === false){
+            try
+            {
+                $st3 = $db->prepare( 'SELECT password_hash FROM nbp_admini WHERE oib=:oib' );
+                $st3->execute( array( 'oib' => $oib ) );
+            }
+            catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi.';return; }
+
+            $row = $st3->fetch();
+        
+        }
 
         if( $row === false ){
             // Taj user ne postoji, upit u bazu nije vratio ništa.
@@ -38,14 +64,40 @@ class LoginService{
 
         $db = DB::getConnection();
 
+        // Ovaj dio se moze optimizirati sa query
         try
         {
             $st = $db->prepare( 'SELECT password_hash FROM nbp_lijecnik WHERE oib=:oib' );
             $st->execute( array( 'oib' => $oib ) );
         }
-        catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi.';return; }
+        catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 1.';return; }
 
         $row = $st->fetch();
+
+        // Provjeravamo ostale tablice
+        if( $row === false){
+            try
+            {
+                $st2 = $db->prepare( 'SELECT password_hash FROM nbp_pacijent WHERE oib=:oib' );
+                $st2->execute( array( 'oib' => $oib ) );
+            }
+            catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 2.';return; }
+
+            $row = $st2->fetch();
+
+        }
+
+        if( $row === false){
+            try
+            {
+                $st3 = $db->prepare( 'SELECT password_hash FROM nbp_admini WHERE oib=:oib' );
+                $st3->execute( array( 'oib' => $oib ) );
+            }
+            catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 3.';return; }
+
+            $row = $st3->fetch();
+        
+        }
 
         if( $row === false )
         {
@@ -65,8 +117,8 @@ class LoginService{
             {
                 //ako je korisnik ulogiran od prije
                 //znaci da je ovo provjera pri mijenjanju sifre
-                if(isset($_COOKIE['username'])){
-                return 1;
+                if(isset($_COOKIE['oib'])){
+                    return 1;
                 }
 
                 // Dobar password. Ulogiraj ga i posalji na pocetni ekran.

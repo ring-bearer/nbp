@@ -74,8 +74,9 @@ try
 {
     $st = $db->prepare(
         'CREATE TABLE IF NOT EXISTS nbp_admini(
-          oib_admina char(11) check (not null),
-          password_hash varchar(255) NOT NULL
+          oib char(11) check (not null),
+          password_hash varchar(255) NOT NULL,
+          constraint pkAdmin primary key (oib)
         );'
     );
 
@@ -236,9 +237,9 @@ echo "Ubacio u tablicu nbp_pretraga.<br />";
 
 try
 {
-    $st = $db->prepare( 'INSERT INTO nbp_admini(oib_admina, password_hash) VALUES (:oib_admina, :password)' );
+    $st = $db->prepare( 'INSERT INTO nbp_admini(oib, password_hash) VALUES (:oib, :password)' );
 
-    $st->execute( array( 'oib_admina' => '10000338099', 'password' => password_hash( 'admin123', PASSWORD_DEFAULT )) );
+    $st->execute( array( 'oib' => '10000338023', 'password' => password_hash( 'admin123', PASSWORD_DEFAULT )) );
 
 }
 catch( PDOException $e ) { exit( "PDO error kod admina: " . $e->getMessage() ); }
