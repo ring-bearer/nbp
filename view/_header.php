@@ -25,9 +25,10 @@
 			</div>
 		</div>
 		<div class="dropdown">
-  		<button class="dropbtn" onclick="window.location.href='index.php?rt=pretraga/index'"">Pretrage</button>
+  		<button class="dropbtn" onclick="window.location.href='index.php?rt=pretraga/index'">Pretrage</button>
   		<div class="dropdown-content">
 				<a href="index.php?rt=pretraga/index">Popis pretraga</a>
 			</div>
 		</div>
+		<button class="dropbtn" onclick="window.location.href='index.php?rt=login/logout'">Odjavi se</button>
 	</nav>
