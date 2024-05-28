@@ -2,6 +2,11 @@
 
 require_once __DIR__ . '/../app/database/db.class.php';
 
+// Ovlasti:
+// 0 - lijecnik
+// 1 - pacijent
+// 2 - admin
+
 class LoginService{
 
     public function userprovjera($oib)
@@ -19,6 +24,8 @@ class LoginService{
     
         $row = $st1->fetch();
 
+        $ovlasti = 0;
+
         // Provjeravamo ostale tablice
         if( $row === false){
             try
@@ -29,6 +36,8 @@ class LoginService{
             catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi.';return; }
 
             $row = $st2->fetch();
+
+            $ovlasti = 1;
 
         }
 
@@ -41,6 +50,8 @@ class LoginService{
             catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi.';return; }
 
             $row = $st3->fetch();
+
+            $ovlasti = 2;
         
         }
 
@@ -74,6 +85,8 @@ class LoginService{
 
         $row = $st->fetch();
 
+        $ovlasti = 0;
+
         // Provjeravamo ostale tablice
         if( $row === false){
             try
@@ -84,6 +97,8 @@ class LoginService{
             catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 2.';return; }
 
             $row = $st2->fetch();
+
+            $ovlasti = 1;
 
         }
 
@@ -96,6 +111,8 @@ class LoginService{
             catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 3.';return; }
 
             $row = $st3->fetch();
+
+            $ovlasti = 2;
         
         }
 
@@ -124,6 +141,7 @@ class LoginService{
                 // Dobar password. Ulogiraj ga i posalji na pocetni ekran.
                 // Moramo dohvatiti i njegove ovlasti
                 setcookie('oib',$oib,time()+(10*365*24*60*60));
+                setcookie('ovlasti',$ovlasti,time()+(10*365*24*60*60));
 
                 // Ova linija je potrebna da se cookie zapamti pri prvom ulasku na stranicu
                 //header("Location: index.php");

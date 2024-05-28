@@ -40,6 +40,7 @@ class LoginController{
     public function logout()
     {
         setcookie('oib','',time()-50);
+        setcookie('ovlasti','',time()-50);
         require_once __DIR__ . '/../view/login.php';
     }
 
