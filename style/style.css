@@ -132,3 +132,23 @@ button{
 .dropdown:hover .dropbtn {
   background-color: #630c0c;
 }
+
+.container-login {
+  margin: auto;
+  width: 30%;
+  padding: 10px;
+  text-align: center;
+  border: 3px solid #630c0c;
+}
+
+.logout {
+  border-radius: 10px;
+  background-color: #9c1414;
+  color: white;
+  padding: 9px;
+  margin: 5px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  float: right;
+}

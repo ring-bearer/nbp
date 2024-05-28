@@ -30,4 +30,5 @@
 				<a href="index.php?rt=pretraga/index">Popis pretraga</a>
 			</div>
 		</div>
+		<button class="logout" onclick="window.location.href='index.php?rt=login/logout'">Odjavi se</button>
 	</nav>
