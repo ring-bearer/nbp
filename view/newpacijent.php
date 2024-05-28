@@ -1,28 +1,29 @@
 <?php require_once __DIR__ . '/_header.php';
 
-
-if(isset($poruka)) echo $poruka;
-else echo "Unos novog pacijenta:";
+echo "<h1> Unos novog pacijenta </h1>";
+if(isset($poruka)) echo "<p id=gore>" . $poruka . "</p>";
 ?>
-		<br>
+	<div id="unos">
 		<form method="post" action="index.php?rt=pacijent/new">
-			OIB: <input type="text" name="oib" />
+			<div id="insideunos">
+			OIB:<br> <input type="text" name="oib" />
       <br>
-			MBO: <input type="text" name="mbo" />
+			MBO:<br> <input type="text" name="mbo" />
       <br>
-			Ime: <input type="text" name="ime" />
+			Ime: <br><input type="text" name="ime" />
       <br>
-			Prezime: <input type="text" name="prezime" />
+			Prezime: <br><input type="text" name="prezime" />
       <br>
-			Datum rođenja: <input type="date" name="datum_rodjenja" />
+			Datum rođenja: <br><input type="date" name="datum_rodjenja" />
       <br>
-			Adresa: <input type="text" name="adresa" />
+			Adresa:<br> <input type="text" name="adresa" />
       <br>
-			Mjesto: <input type="text" name="mjesto" />
+			Mjesto: <br><input type="text" name="mjesto" />
       <br>
-			OIB liječnika: <input type="text" name="oib_lijecnika" />
+			OIB liječnika:<br> <input type="text" name="oib_lijecnika" />
       <br>
 	    <button type="submit" name="gumb" value="pacijent">Dodaj!</button>
+		</div>
 		</form>
-
+	</div>
 <?php require_once __DIR__ . '/_footer.php'; ?>

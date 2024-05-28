@@ -13,7 +13,7 @@
   		<div class="dropdown-content">
 				<a href="index.php?rt=pacijent/index">Popis pacijenata</a>
   			<a href="index.php?rt=pacijent/unos">Unos novog pacijenta</a>
-				<a href="index.php?rt=pacijent/brisanje">Brisanje pacijenata</a>
+				<a href="index.php?rt=pacijent/promjena">Promjena podataka</a>
 			</div>
 		</div>
 		<div class="dropdown">
@@ -21,7 +21,7 @@
   		<div class="dropdown-content">
 				<a href="index.php?rt=lijecnik/index">Popis liječnika</a>
   			<a href="index.php?rt=lijecnik/unos">Unos novog liječnika</a>
-				<a href="index.php?rt=lijecnik/brisanje">Brisanje liječnika</a>
+				<a href="index.php?rt=lijecnik/promjena">Promjena podataka</a>
 			</div>
 		</div>
 		<div class="dropdown">
