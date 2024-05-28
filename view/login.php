@@ -8,9 +8,10 @@
 </head>
 <body>
 
-    <form action="index.php?rt=login/provjera" method="post">
+    <div class="container-login">
+        <form action="index.php?rt=login/provjera" method="post">
 
-        <div class="container">
+            <h1>Bolnice.hr</h1>
             <label for="oib"><b>OIB:</b></label><br>
             <input type="text" placeholder="Unesite korisničko ime" name="oib" required>
             <br>
@@ -19,8 +20,8 @@
             <br>
             <button class="submitbtn" type="submit">Login</button>
             <br>
-        </div>
 
-    </form>
+        </form>
+    </div>
 
 <?php require_once __DIR__ . '/_footer.php'; ?>
