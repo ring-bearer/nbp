@@ -13,7 +13,7 @@
 
             <h1>Bolnice.hr</h1>
             <label for="oib"><b>OIB:</b></label><br>
-            <input type="text" placeholder="Unesite korisničko ime" name="oib" required>
+            <input type="text" placeholder="Unesite Vaš oib" name="oib" required>
             <br>
             <label for="psw"><b>Lozinka</b></label><br>
             <input type="password" placeholder="Unesite lozinku" name="psw" required>
