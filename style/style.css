@@ -152,3 +152,8 @@ button{
   cursor: pointer;
   float: right;
 }
+
+.container {
+  padding: 16px;
+  text-align: center;
+}
