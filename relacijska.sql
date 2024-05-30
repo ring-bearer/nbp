@@ -9,6 +9,7 @@ create table nbp_pacijent(
     adresa character varying(30) check (not null), -- trenutna adresa boravista
     mjesto character varying(20) check (not null), -- trenutno mjesto boravista -> na temelju toga racunamo udaljenost od bolnica
     oib_lijecnika char(11) check (not null), -- oib lijecnika opce prakse
+    lozinka char(10) check (not null), -- lozinka za prijavu u sustav
     constraint pkPacijent primary key (oib),
     constraint fkPacijent foreign key (oib_lijecnika) references nbp_lijecnik(oib)
 );
@@ -21,6 +22,7 @@ create table nbp_lijecnik(
     datum_rodjenja date check (not null),
     adresa_ambulante character varying(30) check (not null),
     mjesto_ambulante character varying(20) check (not null),
+    lozinka char(10) check (not null), -- lozinka za prijavu u sustav
     constraint pkLijecnik primary key (oib)
 );
 
@@ -115,30 +117,30 @@ $$ LANGUAGE plpgsql;
 -- ubacivanje testnih podataka
 
 insert into nbp_lijecnik values
-    (10000444444, 'Gandalf', 'Mithrandir', '1940-07-02', 'Glavna 8', 'Bree'),
-    (10000291105, 'Aragorn', 'Elessar', '1980-07-02', 'Glavna 1', 'Minas Tirith'),
-    (10000062905, 'Legolas', 'Thranduilion', '1970-07-02', 'Glavna 7', 'Mirkwood'),
-    (10000999919, 'Theoden', 'Ednew', '1960-07-02', 'Glavna 5', 'Edoras'),
-    (10000857999, 'Arwen', 'Undomiel', '1970-07-02', 'Glavna 4', 'Rivendell'),
-    (10000893743, 'Denethor', 'Ecthelion', '1950-07-02', 'Glavna 9', 'Minas Tirith'),
-    (10000891233, 'Tom', 'Bombadil', '1940-07-02', 'Glavna 2', 'Bree'),
-    (10000213905, 'Elendil', 'Voronda', '1960-07-02', 'Glavna 11', 'Numenor'),
-    (10000294736, 'Feanor', 'Curufinwe', '1960-07-02', 'Glavna 12', 'Tirion'),
-    (10000243905, 'Maedhros', 'Nelyafinwe', '1980-07-02', 'Glavna 6', 'Tirion'),
-    (10000432043, 'Finwe', 'Noldoran', '1940-07-02', 'Glavna 13', 'Tirion'),
-    (10000794735, 'Elrond', 'Peredhel', '1940-07-02', 'Glavna 3', 'Rivendell');
+    (10000444444, 'Gandalf', 'Mithrandir', '1940-07-02', 'Glavna 8', 'Bree', 1234567890),
+    (10000291105, 'Aragorn', 'Elessar', '1980-07-02', 'Glavna 1', 'Minas Tirith', 1234567890),
+    (10000062905, 'Legolas', 'Thranduilion', '1970-07-02', 'Glavna 7', 'Mirkwood', 1234567890),
+    (10000999919, 'Theoden', 'Ednew', '1960-07-02', 'Glavna 5', 'Edoras', 1234567890),
+    (10000857999, 'Arwen', 'Undomiel', '1970-07-02', 'Glavna 4', 'Rivendell', 1234567890),
+    (10000893743, 'Denethor', 'Ecthelion', '1950-07-02', 'Glavna 9', 'Minas Tirith', 1234567890),
+    (10000891233, 'Tom', 'Bombadil', '1940-07-02', 'Glavna 2', 'Bree', 1234567890),
+    (10000213905, 'Elendil', 'Voronda', '1960-07-02', 'Glavna 11', 'Numenor', 1234567890),
+    (10000294736, 'Feanor', 'Curufinwe', '1960-07-02', 'Glavna 12', 'Tirion', 1234567890),
+    (10000243905, 'Maedhros', 'Nelyafinwe', '1980-07-02', 'Glavna 6', 'Tirion', 1234567890),
+    (10000432043, 'Finwe', 'Noldoran', '1940-07-02', 'Glavna 13', 'Tirion', 1234567890),
+    (10000794735, 'Elrond', 'Peredhel', '1940-07-02', 'Glavna 3', 'Rivendell', 1234567890);
 
 select * from nbp_lijecnik;
 
 insert into nbp_pacijent values
-    (10000338099, 100338099, 'Frodo', 'Baggins', '2000-07-02', 'Glavna 1', 'Hobbiton', 10000444444),
-    (10000917906, 100917906, 'Samwise', 'Gamgee', '1999-07-02', 'Glavna 3', 'Hobbiton', 10000891233),
-    (10000998713, 100998713, 'Meriadoc', 'Brandybuck', '1998-07-02', 'Glavna 2', 'Buckland', 10000891233),
-    (10000395731, 100395731, 'Peregrin', 'Took', '2002-07-02', 'Glavna 4', 'Buckland', 10000444444),
-    (10000520909, 100520909, 'Boromir', 'Echtelion', '1980-07-02', 'Glavna 5', 'Minas Tirith', 10000291105),
-    (10000013006, 100013006, 'Faramir', 'Echtelion', '1990-07-02', 'Glavna 5', 'Minas Tirith', 10000893743),
-    (10000878383, 100878383, 'Eowyn', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919),
-    (10000402929, 100402929, 'Eomer', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919);
+    (10000338099, 100338099, 'Frodo', 'Baggins', '2000-07-02', 'Glavna 1', 'Hobbiton', 10000444444, 0123456789),
+    (10000917906, 100917906, 'Samwise', 'Gamgee', '1999-07-02', 'Glavna 3', 'Hobbiton', 10000891233, 0123456789),
+    (10000998713, 100998713, 'Meriadoc', 'Brandybuck', '1998-07-02', 'Glavna 2', 'Buckland', 10000891233, 0123456789),
+    (10000395731, 100395731, 'Peregrin', 'Took', '2002-07-02', 'Glavna 4', 'Buckland', 10000444444, 0123456789),
+    (10000520909, 100520909, 'Boromir', 'Echtelion', '1980-07-02', 'Glavna 5', 'Minas Tirith', 10000291105, 0123456789),
+    (10000013006, 100013006, 'Faramir', 'Echtelion', '1990-07-02', 'Glavna 5', 'Minas Tirith', 10000893743, 0123456789),
+    (10000878383, 100878383, 'Eowyn', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919, 0123456789),
+    (10000402929, 100402929, 'Eomer', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919, 0123456789);
 
 select * from nbp_pacijent;
 
