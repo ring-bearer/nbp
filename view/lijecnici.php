@@ -1,7 +1,7 @@
 <?php require_once __DIR__ . '/_header.php';
 require_once __DIR__ . '/../controller/lijecnikController.class.php';
-
 ?>
+
 <h1> Liječnici opće prakse</h1>
 <table>
 	<tr>

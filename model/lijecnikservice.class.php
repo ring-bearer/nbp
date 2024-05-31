@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../app/database/db.class.php';
 require_once __DIR__ . '/lijecnik.class.php';
+require_once __DIR__ . '/zahtjev.class.php';
 
 class LijecnikService{
 	function getlijecnici(){
@@ -23,6 +24,30 @@ class LijecnikService{
   					$row['ime'],$row['prezime'],
 						$row['datum_rodjenja'],$row['adresa_ambulante'],
 						$row['mjesto_ambulante']);
+        $arr[]=$i;
+
+		  }
+    }
+    return $arr;
+	}
+
+	function getzahtjevi($oib){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib_pacijenta,oib_stari FROM nbp_zahtjev where oib_novi=:oib');
+      $st->execute(array('oib'=>$oib));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr=array();
+    while(1){
+      $row = $st->fetch();
+  		if( $row === false )
+  			return $arr;
+  		else{
+        $i=new Zahtjev($row['oib_pacijenta'],
+  					$row['oib_stari'],$oib);
         $arr[]=$i;
 
 		  }

@@ -1,4 +1,5 @@
 <?php require_once __DIR__ . '/_header.php';
+
 echo "<h1> Unos novog liječnika </h1>";
 if(isset($poruka)) echo "<p id=gore>" . $poruka . "</p>";
 ?>

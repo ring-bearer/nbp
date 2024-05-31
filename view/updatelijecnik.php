@@ -1,7 +1,6 @@
 <?php require_once __DIR__ . '/_header.php';
 require_once __DIR__ . '/../controller/lijecnikController.class.php';
 
-
 echo "<h1> Promjena podataka </h1>";
 if(isset($poruka)) echo "<p id=gore>" . $poruka . "</p>";
 else{

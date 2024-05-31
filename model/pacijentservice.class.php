@@ -31,7 +31,52 @@ class PacijentService{
     return $arr;
 	}
 
-	function newpacijent($novi){
+	function getpacijent($oib){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib, mbo, ime, prezime, datum_rodjenja, adresa, mjesto, oib_lijecnika
+				FROM nbp_pacijent where oib=:oib');
+      $st->execute(array('oib'=>$oib));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$row = $st->fetch();
+		if( $row === false ) return NULL;
+
+		$i=new Pacijent($row['oib'], $row['mbo'],
+				$row['ime'],$row['prezime'],
+				$row['datum_rodjenja'],$row['adresa'],
+				$row['mjesto'], $row['oib_lijecnika']);
+    return $i;
+	}
+
+	function getmojipacijenti($oib_lijecnika){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib, mbo, ime, prezime, datum_rodjenja, adresa, mjesto, oib_lijecnika
+				FROM nbp_pacijent where oib_lijecnika=:oib_lijecnika order by prezime');
+      $st->execute(array('oib_lijecnika'=>$oib_lijecnika));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr=array();
+    while(1){
+      $row = $st->fetch();
+  		if( $row === false )
+  			return $arr;
+  		else{
+        $i=new Pacijent($row['oib'],$row['mbo'],
+  					$row['ime'],$row['prezime'],$row['datum_rodjenja'],
+						$row['adresa'],$row['mjesto'],$row['oib_lijecnika']);
+        $arr[]=$i;
+      }
+    }
+    return $arr;
+	}
+
+	function newpacijent($novi, $pass){
 	try
 		{
 			$db = DB::getConnection();
@@ -44,8 +89,8 @@ class PacijentService{
 				return $poruka;
 			}
 
-			$st = $db->prepare('INSERT INTO nbp_pacijent values (:a,:b,:c,:d,:e,:f,:g,:h)');
-      $st->execute(array( 'a' => $novi->__get('oib'), 'b' => $novi->__get('mbo'),
+			$st = $db->prepare('INSERT INTO nbp_pacijent values (:a,:pass,:b,:c,:d,:e,:f,:g,:h)');
+      $st->execute(array( 'a' => $novi->__get('oib'), 'pass'=> $pass, 'b' => $novi->__get('mbo'),
 				'c' => $novi->__get('ime'), 'd' => $novi->__get('prezime'),
 				'e' => $novi->__get('datum_rodjenja'), 'f' => $novi->__get('adresa'),
 				'g' => $novi->__get('mjesto'), 'h' => $novi->__get('oib_lijecnika'),));

@@ -2,11 +2,11 @@
 require_once __DIR__ . '/../controller/pacijentController.class.php';
 ?>
 
-<h1>Pacijenti</h1>
+<h1>Moji pacijenti</h1>
 <table>
 	<tr>
     <th>OIB</th><th>MBO</th><th>Ime</th><th>Prezime</th>
-		<th>Datum rođenja</th><th>Adresa</th><th>Mjesto</th><th>OIB liječnika</th>
+		<th>Datum rođenja</th><th>Adresa</th><th>Mjesto</th>
   </tr>
 	<?php
     foreach ($list as $a){
@@ -18,7 +18,6 @@ require_once __DIR__ . '/../controller/pacijentController.class.php';
 				echo '<td>' . $a->__get('datum_rodjenja') . '</td>';
 				echo '<td>' . $a->__get('adresa') . '</td>';
 				echo '<td>' . $a->__get('mjesto') . '</td>';
-        echo '<td>' . $a->__get('oib_lijecnika') . '</td>';
         echo '</tr>';
     }
 	?>

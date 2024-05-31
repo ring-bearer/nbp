@@ -1,23 +1,27 @@
 <?php
 
-if (!isset($_GET['rt'])){
-    $con = 'pacijent';
+if (!isset($_GET['rt'])) {
+    $controllerName = 'loginController';
     $action = 'index';
 } else {
     $rt = $_GET['rt'];
-    $x = explode('/', $rt);
-    if (count($x) == 1){
-        $con = $x[0];
-        $action = 'index';
-    } else {
-        $con = $x[0];
-        $action = $x[1];
-    }
+    $parts = explode('/', $rt);
+    $controllerName = $parts[0] . 'Controller';
+    $action = isset($parts[1]) ? $parts[1] : 'index';
 }
 
-  $controllerName = $con . 'Controller';
-  require_once __DIR__ . '/controller/' . $controllerName . '.class.php';
-  $c = new $controllerName;
-  $c->$action();
+if($controllerName==='loginController' && $action==='index' && isset($_COOKIE['oib'])){
+  $action='provjera';
+}
+
+if(!isset($_COOKIE['oib']) && !isset($_POST['oib'])){
+  $controllerName = 'loginController';
+}
+
+require_once __DIR__ . '/controller/' . $controllerName . '.class.php';
+
+$c = new $controllerName;
+
+$c->$action();
 
 ?>
