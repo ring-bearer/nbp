@@ -1,14 +1,14 @@
 <?php require_once __DIR__ . '/_header.php';
 require_once __DIR__ . '/../controller/pretragaController.class.php';
 
-echo '<h1> Zahtjevi za prebacivanje pacijenata </h1>';
+echo '<h1> Zahtjevi za prebacivanje pacijenta </h1>';
 if(isset($poruka)) echo "<p id=gore>" . $poruka . "</p>";
 if(!isset($prazno)){
 ?>
 <form action="index.php?rt=pacijent/transfer" method="post">
 <table>
 	<tr>
-		<th>Zahtjev postavlja:</th><th>Zatjev zaprima:</th><th>OIB pacijenta</th>
+		<th>Zahtjev postavlja:</th><th>OIB pacijenta</th>
     <th>MBO</th><th>Ime</th><th>Prezime</th>
 		<th>Datum rođenja</th><th>Adresa</th><th>Mjesto</th>
     <th></th>
@@ -17,9 +17,8 @@ if(!isset($prazno)){
     $i=0;
     foreach($listapac as $a){
 			echo '<tr>';
-			echo '<td>' . $listastarih[$i]->__get('prezime') . ', ' . $listastarih[$i]->__get('ime') . '</td>';
-      echo '<td>' . $listanovih[$i]->__get('prezime') . ', ' . $listanovih[$i]->__get('ime') . '</td>';
-      echo '<td>' . $a->__get('oib') . '</td>';
+			echo '<td>' . $listalijec[$i]->__get('prezime') . ', ' . $listalijec[$i]->__get('ime') . '</td>';
+			echo '<td>' . $a->__get('oib') . '</td>';
       echo '<td>' . $a->__get('mbo') . '</td>';
       echo '<td>' . $a->__get('ime') . '</td>';
       echo '<td>' . $a->__get('prezime') . '</td>';

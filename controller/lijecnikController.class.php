@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../model/lijecnikservice.class.php';
 require_once __DIR__ . '/../model/pacijentservice.class.php';
+require_once __DIR__ . '/../model/zahtjevservice.class.php';
 require_once __DIR__ . '/../model/lijecnik.class.php';
 require_once __DIR__ . '/../model/pacijent.class.php';
 require_once __DIR__ . '/../model/zahtjev.class.php';
@@ -22,23 +23,6 @@ class LijecnikController{
   public function unos(){
 		  require_once __DIR__ . '/../view/newlijecnik.php';
 	}
-
-  public function zahtjevi(){
-    $ls=new LijecnikService();
-    $list = $ls->getzahtjevi($_COOKIE['oib']);
-    $ps=new PacijentService();
-    $listapac=array();
-    foreach($list as $a){
-      $pac=array();
-      $oib_pacijenta=$a->__get('oib_pacijenta');
-      $pac=$ps->getpacijent($oib_pacijenta);
-      $listapac[]=$pac;
-      $oib_stari=$a->__get('oib_stari');
-      $lijec=$ls->getlijecnik($oib_stari);
-      $listalijec[]=$lijec;
-    }
-    require_once __DIR__ . '/../view/zahtjevi.php';
-  }
 
 	public function new(){
 			$us=new LijecnikService();

@@ -1,7 +1,9 @@
 <?php
 
 require_once __DIR__ . '/../model/pacijentservice.class.php';
+require_once __DIR__ . '/../model/zahtjevservice.class.php';
 require_once __DIR__ . '/../model/pacijent.class.php';
+require_once __DIR__ . '/../model/zahtjev.class.php';
 
 class PacijentController{
 	public function index(){
@@ -12,6 +14,19 @@ class PacijentController{
 
 	public function unos(){
 		  require_once __DIR__ . '/../view/newpacijent.php';
+	}
+
+	public function transfer(){
+		$ls=new PacijentService();
+		$zs=new ZahtjevService();
+		$pac = $ls->getpacijent($_POST['transfer']);
+		$z=new Zahtjev($pac->__get('oib'),$pac->__get('oib_lijecnika'),$_COOKIE['oib']);
+		$pac->__set('oib_lijecnika', $_COOKIE['oib']);
+		$ls->updatepacijent($pac);
+
+		$zs->deletezahtjev($z);
+		$poruka="Zahtjev uspješno prihvaćen!<br>";
+		require_once __DIR__ . '/../view/mojizahtjevi.php';
 	}
 
 	public function new(){

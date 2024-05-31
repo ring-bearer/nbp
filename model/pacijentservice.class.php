@@ -101,6 +101,7 @@ class PacijentService{
     return $poruka;
 	}
 
+
 	function deletepacijent($oib){
 		try
 		{
@@ -118,7 +119,7 @@ class PacijentService{
 			$st = $db->prepare('UPDATE nbp_pacijent set mbo=:a,ime=:b,prezime=:c,datum_rodjenja=:d,adresa=:e,mjesto=:f,oib_lijecnika=:g where oib=:oib');
 			$st->execute(array('oib' => $novi->__get('oib'), 'a' => $novi->__get('mbo'), 'b' => $novi->__get('ime'),
 				'c' => $novi->__get('prezime'), 'd' => $novi->__get('datum_rodjenja'),
-				'e' => $novi->__get('adresa'), 'f' => $novi->__get('oib_lijecnika'), 'g' => $novi->__get('oib_lijecnika')));
+				'e' => $novi->__get('adresa'), 'f' => $novi->__get('mjesto'), 'g' => $novi->__get('oib_lijecnika')));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 	}
