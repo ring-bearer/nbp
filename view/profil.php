@@ -1,5 +1,4 @@
 <?php require_once __DIR__ . '/_header.php';
-?>
 
 <h1> Moj profil </h1>
 

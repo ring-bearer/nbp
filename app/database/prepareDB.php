@@ -104,6 +104,7 @@ catch( PDOException $e ) { exit( "PDO error za nbp_zahtjev: " . $e->getMessage()
 
 echo "Napravio tablicu zahtjev.<br>";
 
+
 try
 {
     $st = $db->prepare('CREATE INDEX IF NOT EXISTS pacijent_ime_idx ON nbp_pacijent(prezime, ime);');
@@ -262,6 +263,7 @@ try
 catch( PDOException $e ) { exit( "PDO error kod admina: " . $e->getMessage() ); }
 
 echo "Ubacio u tablicu nbp_admini.<br />";
+
 
 try
 {

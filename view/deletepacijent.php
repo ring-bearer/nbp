@@ -1,6 +1,16 @@
 <?php require_once __DIR__ . '/_header.php';
 require_once __DIR__ . '/../controller/pacijentController.class.php';
 
+if(isset($_COOKIE['ovlasti']) && $_COOKIE['ovlasti'] === '0'){
+	require_once __DIR__ . '/navigacija-lijecnik.php';
+}
+else if(isset($_COOKIE['ovlasti']) && $_COOKIE['ovlasti'] === '1'){
+	require_once __DIR__ . '/navigacija-pacijent.php';
+}
+else{
+	require_once __DIR__ . '/navigacija-admin.php';
+}
+
 if(isset($poruka)) echo $poruka;
 else echo "Odaberite pacijente koje želite ukloniti iz baze.";
 ?>

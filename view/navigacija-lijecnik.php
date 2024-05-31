@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -25,5 +26,4 @@
 		<button class="logout" onclick="window.location.href='index.php?rt=profil/index'">Moj profil</button>
 	</nav>
 </body>
-
 </html>
