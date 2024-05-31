@@ -62,8 +62,8 @@ class LoginService{
             return;
         }
         else{
-            require_once __DIR__ . '../../controller/pretragaController.class.php';
-            $od=new PretragaController();
+            require_once __DIR__ . '../../controller/profilController.class.php';
+            $od=new ProfilController();
             $od->index();
             return 1;
         }
@@ -146,8 +146,8 @@ class LoginService{
                 // Ova linija je potrebna da se cookie zapamti pri prvom ulasku na stranicu
                 header("Location: index.php");
 
-                require_once __DIR__ . '../../controller/pretragaController.class.php';
-                $od=new PretragaController();
+                require_once __DIR__ . '../../controller/profilController.class.php';
+                $od=new ProfilController();
                 $od->index();
                 return 1;
             }

@@ -24,6 +24,7 @@
 			</div>
 		</div>
 		<button class="logout" onclick="window.location.href='index.php?rt=login/logout'">Odjavi se</button>
+		<button class="logout" onclick="window.location.href='index.php?rt=profil/index'">Moj profil</button>
 	</nav>
 </body>
 
