@@ -87,6 +87,23 @@ catch( PDOException $e ) { exit( "PDO error za nbp_admini: " . $e->getMessage() 
 
 echo "Napravio tablicu admini.<br>";
 
+try
+{
+    $st = $db->prepare(
+        'CREATE TABLE IF NOT EXISTS nbp_zahtjev(
+          oib_pacijenta char(11) check (not null),
+          oib_stari char(11) check (not null),
+          oib_novi char(11) check (not null),
+          constraint pkZahtjevi primary key (oib_pacijenta,oib_stari,oib_novi)
+        );'
+    );
+
+    $st->execute();
+}
+catch( PDOException $e ) { exit( "PDO error za nbp_zahtjev: " . $e->getMessage() ); }
+
+echo "Napravio tablicu zahtjev.<br>";
+
 
 try
 {
@@ -246,5 +263,17 @@ try
 catch( PDOException $e ) { exit( "PDO error kod admina: " . $e->getMessage() ); }
 
 echo "Ubacio u tablicu nbp_admini.<br />";
+
+
+try
+{
+    $st = $db->prepare( 'INSERT INTO nbp_zahtjev(oib_pacijenta, oib_stari, oib_novi) VALUES (:oib, :stari, :novi)' );
+
+    $st->execute( array( 'oib' => '10000395731', 'stari' => '10000444444', 'novi' => '10000891233') );
+
+}
+catch( PDOException $e ) { exit( "PDO error kod zahtjeva: " . $e->getMessage() ); }
+
+echo "Ubacio u tablicu nbp_zahtjev.<br />";
 
 ?>

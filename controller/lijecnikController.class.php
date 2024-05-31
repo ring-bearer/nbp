@@ -1,7 +1,11 @@
 <?php
 
 require_once __DIR__ . '/../model/lijecnikservice.class.php';
+require_once __DIR__ . '/../model/pacijentservice.class.php';
+require_once __DIR__ . '/../model/zahtjevservice.class.php';
 require_once __DIR__ . '/../model/lijecnik.class.php';
+require_once __DIR__ . '/../model/pacijent.class.php';
+require_once __DIR__ . '/../model/zahtjev.class.php';
 
 class LijecnikController{
   public function index(){
@@ -9,6 +13,12 @@ class LijecnikController{
       $list = $ls->getlijecnici();
 			require_once __DIR__ . '/../view/lijecnici.php';
 	}
+
+  public function mojipacijenti(){
+    $ls=new PacijentService();
+    $list = $ls->getmojipacijenti($_COOKIE['oib']);
+    require_once __DIR__ . '/../view/mojipacijenti.php';
+  }
 
   public function unos(){
 		  require_once __DIR__ . '/../view/newlijecnik.php';

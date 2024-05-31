@@ -25,6 +25,7 @@ table,tr,th,td {
   border-radius: 2px;
   font-size: 17px;
   padding: 7px;
+  text-align: center;
 }
 
 #promjena, #promjena td, #promjena tr{
@@ -48,7 +49,8 @@ nav{
   border-width: 2px;
 }
 
-input[type=text], input[type=date]{
+input[type=text], input[type=date],
+input[type=password]{
   padding: 0;
   height: 28px;
   width: 130px;
@@ -60,7 +62,10 @@ input[type=text], input[type=date]{
   font-size: 16px;
 }
 
-#unos input[type="text"], #unos input[type="date"]{
+#unos input,
+#login input
+{
+  margin: 5px;
   padding: 4px;
   height: 20px;
   width: 180px;
@@ -70,15 +75,20 @@ input[type=text], input[type=date]{
   border-width: 2px;
 }
 
-#unos{
-  margin-left: 15px;
+#unos,#login{
   width:250px;
   padding: 5px;
   background-color: white;
   font-size: 18px;
   border-style: solid;
   border-color: #9c1414;
+  margin: auto;
 }
+
+#unos{
+  margin-left: 15px;
+}
+
 
 #insideunos{
   margin: 5px;
@@ -133,23 +143,8 @@ button{
   background-color: #630c0c;
 }
 
-.container-login {
-  margin: auto;
-  width: 30%;
-  padding: 10px;
-  text-align: center;
-  border: 3px solid #630c0c;
-}
-
 .logout {
-  border-radius: 10px;
-  background-color: #9c1414;
-  color: white;
-  padding: 9px;
-  margin: 5px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
+  margin-left: 6px;
   float: right;
 }
 

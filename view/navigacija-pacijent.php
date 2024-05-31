@@ -1,5 +1,11 @@
-<?php require_once __DIR__ . '/_header.php'; ?>
 
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
     <nav>
 		<div class="dropdown">
   		<button class="dropbtn" onclick="window.location.href='index.php?rt=pacijent/index'">Pacijenti</button>
@@ -19,5 +25,4 @@
 		<button class="logout" onclick="window.location.href='index.php?rt=profil/index'">Moj profil</button>
 	</nav>
 </body>
-
 </html>

@@ -1,5 +1,10 @@
-<?php require_once __DIR__ . '/_header.php'; ?>
-
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
     <nav>
 		<div class="dropdown">
   		<button class="dropbtn" onclick="window.location.href='index.php?rt=pacijent/index'">Pacijenti</button>
@@ -23,6 +28,13 @@
 				<a href="index.php?rt=pretraga/index">Popis pretraga</a>
 			</div>
 		</div>
+    <div class="dropdown">
+  		<button class="dropbtn" onclick="window.location.href='index.php?rt=zahtjev/index'">Zahtjevi</button>
+  		<div class="dropdown-content">
+				<a href="index.php?rt=zahtjev/index">Popis zahtjeva</a>
+			</div>
+		</div>
+
 		<button class="logout" onclick="window.location.href='index.php?rt=login/logout'">Odjavi se</button>
 		<button class="logout" onclick="window.location.href='index.php?rt=profil/index'">Moj profil</button>
 	</nav>

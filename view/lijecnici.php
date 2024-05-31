@@ -1,17 +1,7 @@
 <?php require_once __DIR__ . '/_header.php';
 require_once __DIR__ . '/../controller/lijecnikController.class.php';
-
-if(isset($_COOKIE['ovlasti']) && $_COOKIE['ovlasti'] === '0'){
-	require_once __DIR__ . '/navigacija-lijecnik.php';
-}
-else if(isset($_COOKIE['ovlasti']) && $_COOKIE['ovlasti'] === '1'){
-	require_once __DIR__ . '/navigacija-pacijent.php';
-}
-else{
-	require_once __DIR__ . '/navigacija-admin.php';
-}
-
 ?>
+
 <h1> Liječnici opće prakse</h1>
 <table>
 	<tr>

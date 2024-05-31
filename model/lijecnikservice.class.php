@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../app/database/db.class.php';
 require_once __DIR__ . '/lijecnik.class.php';
+require_once __DIR__ . '/zahtjev.class.php';
 
 class LijecnikService{
 	function getlijecnici(){
@@ -30,6 +31,7 @@ class LijecnikService{
     return $arr;
 	}
 
+
 	function newlijecnik($novi){
 		try
 		{
@@ -48,7 +50,7 @@ class LijecnikService{
 		try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('SELECT oib,ime,prezime from nbp_lijecnik where oib=:oib');
+			$st = $db->prepare('SELECT oib,ime,prezime,datum_rodjenja,adresa_ambulante,mjesto_ambulante from nbp_lijecnik where oib=:oib');
 			$st->execute(array( 'oib' => $oib ));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -61,6 +63,32 @@ class LijecnikService{
 				$row['datum_rodjenja'],$row['adresa_ambulante'],
 				$row['mjesto_ambulante']);
     return $i;
+	}
+
+	function getizbolnice($mjesto_ambulante){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib,ime,prezime,datum_rodjenja,adresa_ambulante,mjesto_ambulante from nbp_lijecnik where mjesto_ambulante=:mjesto_ambulante');
+			$st->execute(array( 'mjesto_ambulante' => $mjesto_ambulante ));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr=array();
+    while(1){
+      $row = $st->fetch();
+  		if( $row === false )
+  			return $arr;
+  		else{
+        $i=new Lijecnik($row['oib'],
+  					$row['ime'],$row['prezime'],
+						$row['datum_rodjenja'],$row['adresa_ambulante'],
+						$row['mjesto_ambulante']);
+        $arr[]=$i;
+
+		  }
+    }
+    return $arr;
 	}
 
 	function deletelijecnik($oib){

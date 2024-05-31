@@ -24,14 +24,28 @@ if(isset($poruka)) echo "<p id=gore>" . $poruka . "</p>";
       <br>
 			Prezime: <br><input type="text" name="prezime" />
       <br>
+			<?php
+			if(isset($_COOKIE['ovlasti']) && $_COOKIE['ovlasti'] === '0'){?>
+				Lozinka:<br><input type="password" name="pass1"/>
+				<br>
+				Potvrdite lozinku:<br><input type="password" name="pass2"/>
+				<br>
+				<?php
+			}
+			?>
 			Datum rođenja: <br><input type="date" name="datum_rodjenja" />
       <br>
 			Adresa:<br> <input type="text" name="adresa" />
       <br>
 			Mjesto: <br><input type="text" name="mjesto" />
       <br>
-			OIB liječnika:<br> <input type="text" name="oib_lijecnika" />
-      <br>
+			<?php
+			if(isset($_COOKIE['ovlasti']) && $_COOKIE['ovlasti'] !== '0'){?>
+				OIB liječnika:<br><input type="text" name="oib_lijecnika"/>
+				<br><?php
+			}
+			?>
+
 	    <button type="submit" name="gumb" value="pacijent">Dodaj!</button>
 		</div>
 		</form>
