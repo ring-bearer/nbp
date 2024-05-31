@@ -10,7 +10,7 @@ if (!isset($_GET['rt'])) {
     $action = isset($parts[1]) ? $parts[1] : 'index';
 }
 
-if($controllerName==='loginController' && $action==='index' && isset($_COOKIE['username'])){
+if($controllerName==='loginController' && $action==='index' && isset($_COOKIE['oib'])){
   $action='provjera';
 }
 

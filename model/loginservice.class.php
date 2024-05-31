@@ -62,8 +62,8 @@ class LoginService{
             return;
         }
         else{
-            require_once __DIR__ . '../../controller/pacijentController.class.php';
-            $od=new PacijentController();
+            require_once __DIR__ . '../../controller/pretragaController.class.php';
+            $od=new PretragaController();
             $od->index();
             return 1;
         }
@@ -144,10 +144,10 @@ class LoginService{
                 setcookie('ovlasti',$ovlasti,time()+(10*365*24*60*60));
 
                 // Ova linija je potrebna da se cookie zapamti pri prvom ulasku na stranicu
-                //header("Location: index.php");
+                header("Location: index.php");
 
-                require_once __DIR__ . '../../controller/pacijentController.class.php';
-                $od=new PacijentController();
+                require_once __DIR__ . '../../controller/pretragaController.class.php';
+                $od=new PretragaController();
                 $od->index();
                 return 1;
             }
