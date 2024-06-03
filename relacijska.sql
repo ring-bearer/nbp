@@ -1,43 +1,83 @@
 -- tablice
 
+
+create table nbp_bolnica(
+    id int check (not null),
+    ime character varying(30) check (not null),
+    adresa character varying(30) check (not null),
+    mjesto character varying(20) check (not null),
+    constraint pkBolnica primary key (id)
+);
+
+create table nbp_pretraga(
+    id int check (not null),
+    vrsta character varying(30) check (not null),
+    trajanje_min int check (not null),
+    constraint pkPretraga primary key (id)
+);
+
+create table nbp_bolnica_pretraga(
+    bolnica int check (not null),
+    pretraga int check (not null),
+    constraint pkBP primary key (bolnica, pretraga),
+    constraint fkBolnica foreign key (bolnica) references nbp_bolnica(id),
+    constraint fkPretraga foreign key (pretraga) references nbp_pretraga(id)
+);
+
+create table nbp_susjedi( -- bolnice unutar 100 km jedna od druge
+    bolnica1 int check (not null),
+    bolnica2 int check (not null),
+    constraint pkSusjedi primary key (bolnica1, bolnica2),
+    constraint fkBolnica1 foreign key (bolnica1) references nbp_bolnica(id),
+    constraint fkBolnica2 foreign key (bolnica2) references nbp_bolnica(id)
+);
+
+create table nbp_admin(
+    oib char(11) not null check (oib ~ '^[0-9]{11}$'),
+    ime character varying(20) check (not null),
+    prezime character varying(20) check (not null),
+    lozinka char(10) check (not null), -- lozinka za prijavu u sustav
+    constraint pk_Admin primary key (oib)
+);
+
+-- lijecnik opce prakse, ne specijalist
+create table nbp_lijecnik(
+    oib char(11) not null check (oib ~ '^[0-9]{11}$'),
+    ime character varying(20) check (not null),
+    prezime character varying(20) check (not null),
+    datum_rodjenja date check (not null),
+    adresa_ambulante character varying(30) check (not null),
+    mjesto_ambulante character varying(20) check (not null),
+    lozinka character varying(10) check (not null), -- lozinka za prijavu u sustav
+    constraint pkLijecnik primary key (oib)
+);
+
 create table nbp_pacijent(
-    oib char(11) check (not null),
+    oib char(11) not null check (oib ~ '^[0-9]{11}$'),
     mbo char(9), --maticni broj osiguranika, ako pacijent ima zdravstveno
     ime character varying(20) check (not null),
     prezime character varying(20) check (not null),
     datum_rodjenja date check (not null),
     adresa character varying(30) check (not null), -- trenutna adresa boravista
     mjesto character varying(20) check (not null), -- trenutno mjesto boravista -> na temelju toga racunamo udaljenost od bolnica
-    oib_lijecnika char(11) check (not null), -- oib lijecnika opce prakse
-    lozinka char(10) check (not null), -- lozinka za prijavu u sustav
+    oib_lijecnika char(11) not null check (oib_lijecnika ~ '^[0-9]{11}$'), -- oib lijecnika opce prakse
+    lozinka character varying(10) check (not null), -- lozinka za prijavu u sustav
     constraint pkPacijent primary key (oib),
     constraint fkPacijent foreign key (oib_lijecnika) references nbp_lijecnik(oib)
-);
-
--- lijecnik opce prakse, ne specijalist
-create table nbp_lijecnik(
-    oib char(11) check (not null),
-    ime character varying(20) check (not null),
-    prezime character varying(20) check (not null),
-    datum_rodjenja date check (not null),
-    adresa_ambulante character varying(30) check (not null),
-    mjesto_ambulante character varying(20) check (not null),
-    lozinka char(10) check (not null), -- lozinka za prijavu u sustav
-    constraint pkLijecnik primary key (oib)
 );
 
 -- cini mi se nerealno i nepotrebno imati poseban PK ID_pretrage jer bi to u stvarnosti bilo jako puno pretraga i puno prostora treba rezervirati za to
 -- npr. vjerojatno int ne bi bilo dosta u nekom trenutku
 -- a svakak ne budemo trazili po ID_pretrage vjerojatno
 -- mozemo dodati ako skuzimo da je potrebno u nekom trenutku
-create table nbp_pretraga(
-    oib_pacijenta char(11) check (not null),
+create table nbp_termin(
+    oib_pacijenta char(11) not null,
     vrsta char varying (20) check (not null),
     datum date check (not null),
     vrijeme time check (not null),
     id_bolnice int check (not null), -- ovo je referenca na PK iz grafovske baze. to ne treba nikak referencirati valjda onda
-    constraint pkPretraga primary key (oib_pacijenta, datum, vrijeme),
-    constraint fkPretraga foreign key (oib_pacijenta) references nbp_pacijent(oib)
+    constraint pkTermin primary key (oib_pacijenta, datum, vrijeme),
+    constraint fkTermin foreign key (oib_pacijenta) references nbp_pacijent(oib)
 );
 
 
@@ -46,8 +86,8 @@ create table nbp_pretraga(
 -- indeksi za ubrzavanje upita
 
 CREATE INDEX pacijent_ime_idx ON nbp_pacijent(prezime, ime);
-CREATE INDEX pretraga_pacijent_idx ON nbp_pretraga(oib_pacijenta);
-CREATE INDEX pretraga_lista_cekanja_idx ON nbp_pretraga(id_bolnice, vrsta);
+CREATE INDEX termin_pacijent_idx ON nbp_termin(oib_pacijenta);
+CREATE INDEX termin_lista_cekanja_idx ON nbp_termin(id_bolnice, vrsta);
 
 ---------------------------------------------------------------------
 --funkcije
@@ -64,7 +104,7 @@ AS $$
 BEGIN
     RETURN QUERY
         SELECT datum, vrsta, id_bolnice
-            FROM nbp_pretraga
+            FROM nbp_termin
         WHERE oib_pacijenta = oib
         ORDER BY datum;
 END;
@@ -101,7 +141,7 @@ AS $$
 BEGIN
     RETURN QUERY
         SELECT datum, vrijeme, oib_pacijenta
-            FROM nbp_pretraga
+            FROM nbp_termin
         WHERE datum >= date(now())
           AND vrijeme > time(now())
           AND id_bolnice = bolnica
@@ -145,11 +185,11 @@ insert into nbp_pacijent values
 select * from nbp_pacijent;
 
 
-insert into nbp_pretraga values
+insert into nbp_termin values
     (10000338099, 'dijabetes', '2024-07-02', '14:00', 1),
     (10000917906, 'bakteriologija', '2024-02-11', '14:00', 1),
     (10000395731, 'serologija', '2024-07-24', '14:00', 2),
     (10000013006, 'genetika', '2024-07-05', '14:00', 3),
     (10000402929, 'dermatologija', '2024-02-12', '14:00', 5);
 
-select * from nbp_pretraga;
+select * from nbp_termin;
