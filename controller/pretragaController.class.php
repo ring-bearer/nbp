@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../model/pretragaservice.class.php';
+require_once __DIR__ . '/../model/pacijentservice.class.php';
 
 class PretragaController{
   public function index(){
@@ -19,6 +20,18 @@ class PretragaController{
   public function unos(){
 		  require_once __DIR__ . '/../view/newpretraga.php';
 	}
+
+  public function new(){
+    $ls=new PacijentService();
+    $pac = $ls->getpacijent($_COOKIE['oib']);
+    $oib_lijecnika=$pac->__get('oib_lijecnika');
+    $ps=new PretragaService();
+    $ps->newzahtjev($_COOKIE['oib'],$oib_lijecnika,$_POST['zahtjev']);
+    $poruka="Zahtjev uspješno poslan!";
+		require_once __DIR__ . '/../view/newpretraga.php';
+	}
+
+
 };
 
 ?>

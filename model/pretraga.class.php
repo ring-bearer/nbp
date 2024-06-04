@@ -2,15 +2,13 @@
 
 class Pretraga
 {
-	protected $oib_pacijenta, $vrsta, $datum, $vrijeme, $id_bolnice;
+	protected $id, $vrsta, $trajanje_min;
 
-	function __construct($oib_pacijenta, $vrsta, $datum, $vrijeme, $id_bolnice)
+	function __construct($id, $vrsta, $trajanje_min)
 	{
-		$this->oib_pacijenta=$oib_pacijenta;
+		$this->id=$id;
 		$this->vrsta = $vrsta;
-    $this->datum= $datum;
-    $this->vrijeme= $vrijeme;
-		$this->id_bolnice= $id_bolnice;
+    $this->trajanje_min= $trajanje_min;
 	}
 
 	function __get( $prop ) { return $this->$prop; }
