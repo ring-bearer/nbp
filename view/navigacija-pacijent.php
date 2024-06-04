@@ -16,10 +16,10 @@
 			</div>
 		</div>
 		<div class="dropdown">
-  		<button class="dropbtn" onclick="window.location.href='index.php?rt=pretraga/index'">Pretrage</button>
+  		<button class="dropbtn" onclick="window.location.href='index.php?rt=pretraga/povijest'">Pretrage</button>
   		<div class="dropdown-content">
         <a href="index.php?rt=pretraga/povijest">Povijest pretraga</a>
-				<a href="index.php?rt=pretraga/unos>">Nova pretraga</a>
+				<a href="index.php?rt=pretraga/unos">Nova pretraga</a>
 
 			</div>
 		</div>

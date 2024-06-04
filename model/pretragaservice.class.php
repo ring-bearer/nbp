@@ -4,11 +4,11 @@ require_once __DIR__ . '/../app/database/db.class.php';
 require_once __DIR__ . '/pretraga.class.php';
 
 class PretragaService{
-	/*function getpretrage(){
+	function getpretrage(){
 		try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('SELECT oib_pacijenta, vrsta, datum, vrijeme, id_bolnice FROM nbp_pretraga order by datum,vrijeme');
+			$st = $db->prepare('SELECT id, vrsta, trajanje_min');
       $st->execute();
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -19,15 +19,28 @@ class PretragaService{
   		if( $row === false )
   			return $arr;
   		else{
-        $i=new Pretraga($row['oib_pacijenta'],
-  					$row['vrsta'],$row['datum'],
-						$row['vrijeme'], $row['id_bolnice'],);
+        $i=new Pretraga($row['id'],
+  					$row['vrsta'],$row['trajanje_min']);
         $arr[]=$i;
 
 		  }
     }
     return $arr;
-	}*/
+	}
+
+	function newzahtjev($oib,$oib_lijecnika,$vrsta){
+	try
+		{
+			$db = DB::getConnection();
+
+			$st = $db->prepare('INSERT INTO nbp_zahtjev_pretraga values (:a,:b,:c)');
+      $st->execute(array( 'a' => $oib, 'b' => $oib_lijecnika,
+				'c' => $vrsta));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		return;
+	}
 
 	function povijestpretraga($oib){
 
