@@ -41,22 +41,6 @@ echo "Napravio tablicu nbp_pretraga.<br>";
 
 try
 {
-    $st = $db->prepare( 'INSERT INTO nbp_pretraga(id, vrsta, trajanje_min) VALUES (default, :vrsta, :trajanje_min)' );
-
-    $st->execute( array( 'ime' => 'Citadel', 'adresa' => 'Glavna 1', 'mjesto' => 'Minas Tirith') );
-    $st->execute( array( 'ime' => 'Imladris', 'adresa' => 'Glavna 1', 'mjesto' => 'Rivendell' ));
-    $st->execute( array( 'ime' => 'Meduseld', 'adresa' => 'Glavna 1', 'mjesto' => 'Edoras' ));
-    $st->execute( array( 'ime' => 'Rhovanion', 'adresa' => 'Glavna 1', 'mjesto' => 'Mirkwood') );
-    $st->execute( array( 'ime' => 'Prancing Pony', 'adresa' => 'Glavna 1', 'mjesto' => 'Bree' ));
-    $st->execute( array( 'ime' => 'Armenelos', 'adresa' => 'Glavna 1', 'mjesto' => 'Numenor' ));
-    $st->execute( array( 'ime' => 'Valinor', 'adresa' => 'Glavna 1', 'mjesto' => 'Tirion' ));
-}
-catch( PDOException $e ) { exit( "PDO error kod bolnica: " . $e->getMessage() ); }
-
-echo "Ubacio u tablicu nbp_bolnica.<br />";
-
-try
-{
     $st = $db->prepare(
         'CREATE TABLE IF NOT EXISTS nbp_bolnica_pretraga(
             id_bolnice int check (not null),
@@ -227,7 +211,7 @@ try
 catch( PDOException $e ) { exit( "PDO error za povijest_pretraga: " . $e->getMessage() ); }
 
 echo "Napravio funkciju povijest_pretraga.<br>";
-/*
+
 
 // zahtjevi za prebacivanjem pacijenta kod drugog liječnika
 try
@@ -246,6 +230,7 @@ try
 catch( PDOException $e ) { exit( "PDO error za nbp_zahtjev: " . $e->getMessage() ); }
 
 echo "Napravio tablicu zahtjev.<br>";
+
 
 
 //-- popis pacijenata
@@ -313,50 +298,52 @@ catch( PDOException $e ) { exit( "PDO error za lista_cekanja: " . $e->getMessage
 
 echo "Napravio funkciju lista_cekanja.<br>";
 
-try
+/*try
 {
-    $st = $db->prepare('CREATE FUNCTION blaermin(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
-          RETURNS table (
-              datum DATE,
-              vrijeme TIME
-              )
-      AS $$
-      DECLARE
-        v_id_bolnice    INT;
-        v_id_pretrage   INT;
-        v_trajanje      INT;
-        v_datum         DATE;
-        v_vrijeme       TIME;
-        v_kon_vrijeme   TIME;
-      BEGIN
-      SELECT id INTO v_id_bolnice
-          FROM nbp_bolnica
-          WHERE ime = ime_bolnice;
+    $st = $db->prepare(
+      'CREATE FUNCTION prvi_termin(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
+            RETURNS table (
+                datum DATE,
+                vrijeme TIME,
+                )
+        AS $$
+        DECLARE
+            v_id_bolnice    INT;
+            v_id_pretrage   INT;
+            v_trajanje      INT;
+            v_datum         DATE;
+            v_vrijeme       TIME;
+        BEGIN
+            SELECT id INTO v_id_bolnice
+                FROM nbp_bolnica
+                WHERE ime = ime_bolnice;
 
-      SELECT id,trajanje_min INTO v_id_pretrage,v_trajanje
-          FROM nbp_pretraga
-          WHERE vrsta = vrsta_P;
+            SELECT id, trajanje_min INTO v_id_pretrage, v_trajanje
+                FROM nbp_pretraga
+                WHERE vrsta = vrsta_P;
 
-          SELECT datum, vrijeme INTO v_datum,v_vrijeme
-              FROM nbp_termin
-              WHERE id_pretrage = v_id_pretrage
-              AND id_bolnice = v_id_bolnice
-              ORDER BY datum, vrijeme DESC
-              LIMIT 1;
+            SELECT datum, vrijeme INTO v_datum, v_vrijeme
+                FROM nbp_termin
+                WHERE id_pretrage = v_id_pretrage
+                AND id_bolnice = v_id_bolnice
+                ORDER BY datum, vrijeme DESC
+                LIMIT 1;
 
-      SELECT v_datum AS datum, v_kon_vrijeme AS vrijeme;
-      v_kon_vrijeme=v_vrijeme+(v_trajanje);
-
-          RETURN QUERY
-            SELECT v_datum AS datum, v_kon_vrijeme AS vrijeme;
-      END;
-      $$ LANGUAGE plpgsql;'
-      );
+            IF v_vrijeme + v_trajanje * INTERVAL '1 minute' <= '18:00'::TIME
+                THEN
+                    RETURN QUERY
+                        SELECT v_datum AS datum, v_vrijeme + v_trajanje * INTERVAL '1 minute' AS vrijeme;
+            ELSE
+                RETURN QUERY
+                    SELECT v_datum + INTERVAL '1 day' AS datum, '7:00'::TIME AS vrijeme;
+            END IF;
+        END;
+        $$ LANGUAGE plpgsql;');
     $st->execute();
 }
 catch( PDOException $e ) { exit( "PDO error za prvi_termin: " . $e->getMessage() ); }
 
-echo "Napravio funkciju prvi_termin.<br>";
+echo "Napravio funkciju prvi_termin.<br>";*/
 
 try
 {
@@ -412,7 +399,7 @@ echo "Ubacio u tablicu nbp_pacijent.<br />";
 }
 catch( PDOException $e ) { exit( "PDO error kod pretraga: " . $e->getMessage() ); }
 
-echo "Ubacio u tablicu nbp_pretraga.<br />";
+echo "Ubacio u tablicu nbp_pretraga.<br />";*/
 
 try
 {
@@ -455,5 +442,4 @@ try
 catch( PDOException $e ) { exit( "PDO error kod bolnica: " . $e->getMessage() ); }
 
 echo "Ubacio u tablicu nbp_bolnica.<br />";
-*/
 ?>
