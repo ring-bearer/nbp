@@ -126,7 +126,7 @@ class LoginService{
         {
             // Taj user ne postoji, upit u bazu nije vratio ništa.
             require_once __DIR__ . '/../view/loginpacijent.php';
-            echo 'Ne postoji korisnik s tim imenom1.';
+            echo 'Ne postoji korisnik s tim imenom.';
             return 0;
         }
         else
