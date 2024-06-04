@@ -1,7 +1,12 @@
 <?php
 
 require_once __DIR__ . '/../model/profilservice.class.php';
+require_once __DIR__ . '/../model/lijecnikservice.class.php';
+require_once __DIR__ . '/../model/pacijentservice.class.php';
+require_once __DIR__ . '/../model/adminservice.class.php';
 require_once __DIR__ . '/../model/lijecnik.class.php';
+require_once __DIR__ . '/../model/pacijent.class.php';
+require_once __DIR__ . '/../model/admin.class.php';
 
 class ProfilController{
   public function index(){
@@ -39,73 +44,112 @@ class ProfilController{
     }
 }
 
-  public function update(){
-    $ls=new PacijentService();
+  public function updateLijecnik(){
 
-    $list = $ls->getpacijenti();
-    foreach ($list as $k=>$l) {
+    $oib = $_COOKIE['oib'];
 
-      if(!preg_match('/^[0-9]{9}$/', $_POST["mbo"][$k])){
-        $poruka="Unesite ispravan MBO (9 znamenki).\n";
-        require_once __DIR__ . '/../view/updatepacijent.php';
-        return;
-      }
-      $l->__set('mbo',$_POST["mbo"][$k]);
+    $ls=new ProfilService();
 
-        if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["ime"][$k])){
-          $poruka="Unesite ispravno ime (0-20 slova).\n";
-          require_once __DIR__ . '/../view/updatepacijent.php';
-          return;
-        }
-        $l->__set('ime',$_POST["ime"][$k]);
+    $user = $ls->getProfilLijecnik($oib);
 
-
-      if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["prezime"][$k])){
-        $poruka="Unesite ispravno prezime (0-20 slova).\n";
-        require_once __DIR__ . '/../view/updatepacijent.php';
-        return;
-      }
-      $l->__set('prezime',$_POST["prezime"][$k]);
-
-      $l->__set('datum_rodjenja',$_POST["datum_rodjenja"][$k]);
-
-      if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ0-9]{0,30}$/', $_POST["adresa"][$k])){
-        $poruka="Unesite ispravnu adresu (0-30 znakova).\n";
-        require_once __DIR__ . '/../view/updatepacijent.php';
-        return;
-      }
-      $l->__set('adresa',$_POST["adresa"][$k]);
-
-      if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["mjesto"][$k])){
-        $poruka="Unesite ispravno mjesto (0-20 slova).\n";
-        require_once __DIR__ . '/../view/updatepacijent.php';
-        return;
-      }
-      $l->__set('mjesto',$_POST["mjesto"][$k]);
-
-      if(!preg_match('/^[0-9]{11}$/', $_POST["oib_lijecnika"][$k])){
-        $poruka="Unesite ispravan OIB (11 znamenki).\n";
-        require_once __DIR__ . '/../view/updatepacijent.php';
-        return;
-      }
-
-      $d=new LijecnikService();
-      if($d->getlijecnik($_POST["oib_lijecnika"][$k]))
-        $l->__set('oib_lijecnika',$_POST["oib_lijecnika"][$k]);
-      else{
-        $poruka="Ne postoji liječnik s tim OIB-om!\n";
-        require_once __DIR__ . '/../view/updatepacijent.php';
-      }
-
-      $ls->updatepacijent($l);
+    if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["ime"])){
+      require_once __DIR__ . '/../view/_header.php';
+      $poruka="Unesite ispravno ime (0-20 slova).\n";
+      require_once __DIR__ . '/../view/profillijecnik.php';
+      return;
     }
+    $user->__set('ime',$_POST["ime"]);
 
-    foreach ($_POST['brisanje'] as $i) {
-      $ls->deletepacijent($i);
+
+    if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["prezime"])){
+      require_once __DIR__ . '/../view/_header.php';
+      $poruka="Unesite ispravno prezime (0-20 slova).\n";
+      require_once __DIR__ . '/../view/profillijecnik.php';
+      return;
     }
+    $user->__set('prezime',$_POST["prezime"]);
 
-    $poruka="Promjene uspješno spremljene!";
-    require_once __DIR__ . '/../view/updatepacijent.php';
+    $user->__set('datum_rodjenja',$_POST["datum_rodjenja"]);
+
+    $ls2 = new LijecnikService;
+    $ls2->updatelijecnik($user);
+
+  $poruka="Promjene uspješno spremljene!";
+  require_once __DIR__ . '/../view/profillijecnik.php';
+}
+
+public function updatePacijent(){
+
+  $oib = $_COOKIE['oib'];
+
+  $ls=new ProfilService();
+
+  $user = $ls->getProfilPacijent($oib);
+
+  if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["ime"])){
+    $poruka="Unesite ispravno ime (0-20 slova).\n";
+    require_once __DIR__ . '/../view/profilpacijent.php';
+    return;
+  }
+  $user->__set('ime',$_POST["ime"]);
+
+  if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["prezime"])){
+    $poruka="Unesite ispravno prezime (0-20 slova).\n";
+    require_once __DIR__ . '/../view/profilpacijent.php';
+    return;
+  }
+  $user->__set('prezime',$_POST["prezime"]);
+
+  $user->__set('datum_rodjenja',$_POST["datum_rodjenja"]);
+
+  if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ0-9]{0,30}$/', $_POST["adresa"])){
+    $poruka="Unesite ispravnu adresu (0-30 znakova).\n";
+    require_once __DIR__ . '/../view/profilpacijent.php';
+    return;
+  }
+  $user->__set('adresa',$_POST["adresa"]);
+
+  if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["mjesto"])){
+    $poruka="Unesite ispravno mjesto (0-20 slova).\n";
+    require_once __DIR__ . '/../view/profilpacijent.php';
+    return;
+  }
+  $user->__set('mjesto',$_POST["mjesto"]);
+
+  $ls2 = new PacijentService;
+  $ls2->updatepacijent($user);
+
+  $poruka="Promjene uspješno spremljene!";
+  require_once __DIR__ . '/../view/profilpacijent.php';
+}
+
+public function updateAdmin(){
+
+  $oib = $_COOKIE['oib'];
+
+  $ls=new ProfilService();
+
+  $user = $ls->getProfilAdmin($oib);
+
+  if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["ime"])){
+    $poruka="Unesite ispravno ime (0-20 slova).\n";
+    require_once __DIR__ . '/../view/profiladmin.php';
+    return;
+  }
+  $user->__set('ime',$_POST["ime"]);
+
+  if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,20}$/', $_POST["prezime"])){
+    $poruka="Unesite ispravno prezime (0-20 slova).\n";
+    require_once __DIR__ . '/../view/profiladmin.php';
+    return;
+  }
+  $user->__set('prezime',$_POST["prezime"]);
+
+  $ls2 = new AdminService;
+  $ls2->updateadmin($user);
+
+  $poruka="Promjene uspješno spremljene!";
+  require_once __DIR__ . '/../view/profiladmin.php';
 }
 
 };
