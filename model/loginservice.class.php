@@ -44,10 +44,10 @@ class LoginService{
         if( $row === false){
             try
             {
-                $st3 = $db->prepare( 'SELECT password_hash FROM nbp_admini WHERE oib=:oib' );
+                $st3 = $db->prepare( 'SELECT password_hash FROM nbp_admin WHERE oib=:oib' );
                 $st3->execute( array( 'oib' => $oib ) );
             }
-            catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 3.';return; }
+            catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 31.';return; }
 
             $row = $st3->fetch();
 
@@ -105,10 +105,10 @@ class LoginService{
         if( $row === false){
             try
             {
-                $st3 = $db->prepare( 'SELECT password_hash FROM nbp_admini WHERE oib=:oib' );
+                $st3 = $db->prepare( 'SELECT password_hash FROM nbp_admin WHERE oib=:oib' );
                 $st3->execute( array( 'oib' => $oib ) );
             }
-            catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 3.';return; }
+            catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 32.';return; }
 
             $row = $st3->fetch();
 
