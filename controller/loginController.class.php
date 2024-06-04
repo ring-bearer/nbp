@@ -7,10 +7,20 @@ require_once __DIR__ . '/../model/pacijent.class.php';
 class LoginController{
     public function index()
     {
-        require_once __DIR__ . '/../view/login.php';
+        require_once __DIR__ . '/../view/loginpacijent.php';
 	}
 
-    public function provjera()
+    public function indexLijecnik()
+    {
+        require_once __DIR__ . '/../view/loginlijecnik.php';
+	}
+
+    public function indexAdmin()
+    {
+        require_once __DIR__ . '/../view/loginadmin.php';
+	}
+
+    public function provjeraPacijent()
     {
 
     //ako je korisnik vec zapamcen od prije
@@ -41,7 +51,7 @@ class LoginController{
     {
         setcookie('oib','',time()-50);
         setcookie('ovlasti','',time()-50);
-        require_once __DIR__ . '/../view/login.php';
+        require_once __DIR__ . '/../view/loginpacijent.php';
     }
 
 };
