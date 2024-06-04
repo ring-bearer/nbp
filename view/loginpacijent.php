@@ -9,7 +9,7 @@
 <body>
 
     <div class="container-login" id="login">
-        <form action="index.php?rt=login/provjera" method="post">
+        <form action="index.php?rt=login/provjeraPacijent" method="post">
 					<div id="insideunos">
             <h1>Bolnice.hr</h1>
             <nav>	

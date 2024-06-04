@@ -10,8 +10,17 @@ if (!isset($_GET['rt'])) {
     $action = isset($parts[1]) ? $parts[1] : 'index';
 }
 
-if($controllerName==='loginController' && $action==='index' && isset($_COOKIE['oib'])){
-  $action='provjera';
+if($controllerName==='loginController' && $action==='index' && isset($_COOKIE['oib']) && isset($_COOKIE['ovlasti'])){
+    $keksic = $_COOKIE['ovlasti'];
+    if($keksic === 0){
+      $action = 'provjeraLijecnik';
+    }
+    else if($keksic === 1){
+      $action = 'provjeraPacijent';
+    }
+    else {
+      $action = 'provjeraAdmin';
+    }
 }
 
 if(!isset($_COOKIE['oib']) && !isset($_POST['oib'])){
