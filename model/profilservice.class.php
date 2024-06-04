@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../app/database/db.class.php';
 require_once __DIR__ . '/lijecnik.class.php';
+require_once __DIR__ . '/pacijent.class.php';
+require_once __DIR__ . '/admin.class.php';
 
 class ProfilService{
 
@@ -42,6 +44,67 @@ class ProfilService{
             exit('Error: ' . $e->getMessage());
         }
             
+    }
+
+    function getProfilLijecnik($oib)
+    {
+        try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib,ime,prezime,datum_rodjenja,adresa_ambulante,mjesto_ambulante FROM nbp_lijecnik where oib=:oib');
+            $st->execute(array('oib' => $oib));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+        $row = $st->fetch();
+    
+        $new=new Lijecnik($row['oib'],
+                    $row['ime'],$row['prezime'],
+                        $row['datum_rodjenja'],$row['adresa_ambulante'],
+                        $row['mjesto_ambulante']);
+
+        return $new;
+                
+    }
+
+    function getProfilPacijent($oib)
+    {
+        try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib, mbo, ime, prezime, datum_rodjenja, adresa, mjesto, oib_lijecnika FROM nbp_pacijent where oib=:oib');
+            $st->execute(array('oib'=>$oib));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+        $row = $st->fetch();
+    
+        $new=new Pacijent($row['oib'], $row['mbo'],
+                $row['ime'],$row['prezime'],
+                $row['datum_rodjenja'],$row['adresa'],
+                $row['mjesto'], $row['oib_lijecnika']);
+
+        return $new;
+                
+    }
+
+    function getProfilAdmin($oib)
+    {
+        try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib,ime,prezime FROM nbp_admin where oib=:oib');
+            $st->execute(array('oib' => $oib));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+        $row = $st->fetch();
+    
+        $new=new Admin($row['oib'],
+                    $row['ime'],$row['prezime']);
+
+        return $new;
+                
     }
 	
 };
