@@ -19,7 +19,7 @@ class ProfilService{
                     $st->execute(array('oib' => $oib));
                     break;
                 case '2':
-                    $st = $db->prepare('SELECT ime FROM nbp_admini WHERE oib=:oib');
+                    $st = $db->prepare('SELECT ime FROM nbp_admin WHERE oib=:oib');
                     $st->execute(array('oib' => $oib));
                     break;
                 default:
