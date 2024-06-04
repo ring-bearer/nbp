@@ -35,7 +35,7 @@ create table nbp_admin(
     oib char(11) not null check (oib ~ '^[0-9]{11}$'),
     ime character varying(20) check (not null),
     prezime character varying(20) check (not null),
-    lozinka char(10) check (not null), -- lozinka za prijavu u sustav
+    password_hash char(20) check (not null), -- lozinka za prijavu u sustav
     constraint pk_Admin primary key (oib)
 );
 
@@ -47,7 +47,7 @@ create table nbp_lijecnik(
     datum_rodjenja date check (not null),
     adresa_ambulante character varying(30) check (not null),
     mjesto_ambulante character varying(20) check (not null),
-    lozinka character varying(10) check (not null), -- lozinka za prijavu u sustav
+    password_hash character varying(20) check (not null), -- lozinka za prijavu u sustav
     constraint pkLijecnik primary key (oib)
 );
 
@@ -60,7 +60,7 @@ create table nbp_pacijent(
     adresa character varying(30) check (not null), -- trenutna adresa boravista
     mjesto character varying(20) check (not null), -- trenutno mjesto boravista -> na temelju toga racunamo udaljenost od bolnica
     oib_lijecnika char(11) not null check (oib_lijecnika ~ '^[0-9]{11}$'), -- oib lijecnika opce prakse
-    lozinka character varying(10) check (not null), -- lozinka za prijavu u sustav
+    password_hash character varying(20) check (not null), -- lozinka za prijavu u sustav
     constraint pkPacijent primary key (oib),
     constraint fkPacijent foreign key (oib_lijecnika) references nbp_lijecnik(oib)
 );
