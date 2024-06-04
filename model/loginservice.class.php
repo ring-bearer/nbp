@@ -19,7 +19,7 @@ class LoginService{
             $st2 = $db->prepare( 'SELECT password_hash FROM nbp_pacijent WHERE oib=:oib' );
             $st2->execute( array( 'oib' => $oib ) );
         }
-        catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 2.';return; }
+        catch( PDOException $e ) { require_once __DIR__ . '/../view/loginpacijent.php'; echo 'Greska u bazi 2.';return; }
 
         $row = $st2->fetch();
 
@@ -51,7 +51,7 @@ class LoginService{
             $st1 = $db->prepare( 'SELECT password_hash FROM nbp_lijecnik WHERE oib=:oib' );
             $st1->execute( array( 'oib' => $oib ) );
         }
-        catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 1.';return; }
+        catch( PDOException $e ) { require_once __DIR__ . '/../view/loginlijecnik.php'; echo 'Greska u bazi 1.';return; }
     
         $row = $st1->fetch();
 
@@ -83,7 +83,7 @@ class LoginService{
             $st3 = $db->prepare( 'SELECT password_hash FROM nbp_admin WHERE oib=:oib' );
             $st3->execute( array( 'oib' => $oib ) );
         }
-        catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 31.';return; }
+        catch( PDOException $e ) { require_once __DIR__ . '/../view/loginadmin.php'; echo 'Greska u bazi 31.';return; }
 
 
         $row = $st3->fetch();
