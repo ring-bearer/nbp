@@ -11,7 +11,8 @@ require_once __DIR__ . '/../controller/pretragaController.class.php';
 	<?php
     foreach($list as $a){
 			echo '<tr>';
-			echo '<td>' . $a->__get('oib_pacijenta') . '</td>';
+			if($_COOKIE['ovlasti']!==1)
+				echo '<td>' . $a->__get('oib_pacijenta') . '</td>';
 			echo '<td>' . $a->__get('vrsta') . '</td>';
 			echo '<td>' . $a->__get('datum') . '</td>';
 			echo '<td>' . $a->__get('vrijeme') . '</td>';

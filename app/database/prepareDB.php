@@ -8,7 +8,7 @@ try
 {
     $st = $db->prepare(
         'CREATE TABLE IF NOT EXISTS nbp_bolnica(
-            id int check (not null),
+            id serial check (not null),
             ime character varying(30) check (not null),
             adresa character varying(30) check (not null),
             mjesto character varying(20) check (not null),
@@ -26,7 +26,7 @@ try
 {
     $st = $db->prepare(
         'CREATE TABLE IF NOT EXISTS nbp_pretraga(
-            id int check (not null),
+            id serial check (not null),
             vrsta character varying(30) check (not null),
             trajanje_min int check (not null), -- ukljucuje ciscenje nakon pretrage i kratku pauzu ako je potrebno
             constraint pkPretraga primary key (id)
@@ -186,7 +186,7 @@ echo "Napravio indexe.<br>";
 try
 {
     $st = $db->prepare(
-      'CREATE FUNCTION povijest_pretraga(oib CHAR(11))
+      'CREATE FUNCTION povijestt(oib CHAR(11))
             RETURNS table (
                 datum DATE,
                 -- vrijeme vjerojatno nebitno, al ako zatreba, mozemo staviti
@@ -196,7 +196,7 @@ try
         AS $$
         BEGIN
             RETURN QUERY
-                SELECT datum, vrsta, ime
+                SELECT nbp_termin.datum, nbp_pretraga.vrsta, nbp_bolnica.ime
                     FROM nbp_termin
                         LEFT JOIN nbp_bolnica
                             ON id = id_bolnice
@@ -211,6 +211,26 @@ try
 catch( PDOException $e ) { exit( "PDO error za povijest_pretraga: " . $e->getMessage() ); }
 
 echo "Napravio funkciju povijest_pretraga.<br>";
+
+
+// zahtjevi za prebacivanjem pacijenta kod drugog liječnika
+try
+{
+    $st = $db->prepare(
+        'CREATE TABLE IF NOT EXISTS nbp_zahtjev(
+          oib_pacijenta char(11) check (not null),
+          oib_stari char(11) check (not null), --trenutni liječnik
+          oib_novi char(11) check (not null), --željeni novi liječnik
+          constraint pkZahtjevi primary key (oib_pacijenta,oib_stari,oib_novi)
+        );'
+    );
+
+    $st->execute();
+}
+catch( PDOException $e ) { exit( "PDO error za nbp_zahtjev: " . $e->getMessage() ); }
+
+echo "Napravio tablicu zahtjev.<br>";
+
 
 
 //-- popis pacijenata
@@ -240,7 +260,7 @@ catch( PDOException $e ) { exit( "PDO error za popis_pacijenata: " . $e->getMess
 
 echo "Napravio funkciju popis_pacijenata.<br>";
 
-/*try
+try
 {
     $st = $db->prepare(
       'CREATE FUNCTION lista_cekanja(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
@@ -265,8 +285,8 @@ echo "Napravio funkciju popis_pacijenata.<br>";
         RETURN QUERY
             SELECT datum, vrijeme, oib_pacijenta
                 FROM nbp_termin
-            WHERE datum >= date(now())
-            AND vrijeme > time(now())
+            WHERE datum >= curdate()
+            AND vrijeme > curtime()
             AND id_bolnice = v_id_bolnice
             AND id_pretrage = v_id_pretrage
         ORDER BY datum, vrijeme;
@@ -276,7 +296,7 @@ echo "Napravio funkciju popis_pacijenata.<br>";
 }
 catch( PDOException $e ) { exit( "PDO error za lista_cekanja: " . $e->getMessage() ); }
 
-echo "Napravio funkciju lista_cekanja.<br>";*/
+echo "Napravio funkciju lista_cekanja.<br>";
 
 /*try
 {
@@ -393,7 +413,7 @@ catch( PDOException $e ) { exit( "PDO error kod admina: " . $e->getMessage() ); 
 echo "Ubacio u tablicu nbp_admin.<br />";
 
 
-/*try
+try
 {
     $st = $db->prepare( 'INSERT INTO nbp_zahtjev(oib_pacijenta, oib_stari, oib_novi) VALUES (:oib, :stari, :novi)' );
 
@@ -402,6 +422,24 @@ echo "Ubacio u tablicu nbp_admin.<br />";
 }
 catch( PDOException $e ) { exit( "PDO error kod zahtjeva: " . $e->getMessage() ); }
 
-echo "Ubacio u tablicu nbp_zahtjev.<br />";*/
+echo "Ubacio u tablicu nbp_zahtjev.<br />";
 
+
+
+
+try
+{
+    $st = $db->prepare( 'INSERT INTO nbp_bolnica(id, ime, adresa, mjesto) VALUES (default, :ime, :adresa, :mjesto)' );
+
+    $st->execute( array( 'ime' => 'Citadel', 'adresa' => 'Glavna 1', 'mjesto' => 'Minas Tirith') );
+    $st->execute( array( 'ime' => 'Imladris', 'adresa' => 'Glavna 1', 'mjesto' => 'Rivendell' ));
+    $st->execute( array( 'ime' => 'Meduseld', 'adresa' => 'Glavna 1', 'mjesto' => 'Edoras' ));
+    $st->execute( array( 'ime' => 'Rhovanion', 'adresa' => 'Glavna 1', 'mjesto' => 'Mirkwood') );
+    $st->execute( array( 'ime' => 'Prancing Pony', 'adresa' => 'Glavna 1', 'mjesto' => 'Bree' ));
+    $st->execute( array( 'ime' => 'Armenelos', 'adresa' => 'Glavna 1', 'mjesto' => 'Numenor' ));
+    $st->execute( array( 'ime' => 'Valinor', 'adresa' => 'Glavna 1', 'mjesto' => 'Tirion' ));
+}
+catch( PDOException $e ) { exit( "PDO error kod bolnica: " . $e->getMessage() ); }
+
+echo "Ubacio u tablicu nbp_bolnica.<br />";
 ?>

@@ -5,15 +5,16 @@
 -- tablice
 
 create table nbp_bolnica(
-    id int check (not null),
+    id serial check (not null),
     ime character varying(100) check (not null),
     adresa character varying(50) check (not null),
+
     mjesto character varying(20) check (not null),
     constraint pkBolnica primary key (id)
 );
 
 create table nbp_pretraga(
-    id int check (not null),
+    id serial check (not null),
     vrsta character varying(30) check (not null),
     trajanje_min int check (not null), -- ukljucuje ciscenje nakon pretrage i kratku pauzu ako je potrebno
     constraint pkPretraga primary key (id)
@@ -62,6 +63,7 @@ create table nbp_pacijent(
     prezime character varying(20) check (not null),
     datum_rodjenja date check (not null),
     adresa character varying(50) check (not null), -- trenutna adresa boravista
+
     mjesto character varying(20) check (not null), -- trenutno mjesto boravista -> na temelju toga racunamo udaljenost od bolnica
     oib_lijecnika char(11) not null check (oib_lijecnika ~ '^[0-9]{11}$'), -- oib lijecnika opce prakse
     password_hash character varying(20) check (not null), -- lozinka za prijavu u sustav
@@ -82,7 +84,12 @@ create table nbp_termin(
     constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id)
 );
 
-
+create table nbp_zahtjev(
+    oib_pacijenta char(11) check (not null),
+    oib_stari char(11) check (not null), --trenutni liječnik
+    oib_novi char(11) check (not null), --željeni novi liječnik
+    constraint pkZahtjevi primary key (oib_pacijenta,oib_stari,oib_novi)
+);
 ---------------------------------------------------------------------
 
 -- indeksi za ubrzavanje upita

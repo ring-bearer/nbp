@@ -72,6 +72,7 @@ class LoginService{
   
     }
 
+
     public function userprovjeraAdmin($oib)
     {
   
@@ -83,6 +84,7 @@ class LoginService{
             $st3->execute( array( 'oib' => $oib ) );
         }
         catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 31.';return; }
+
 
         $row = $st3->fetch();
 

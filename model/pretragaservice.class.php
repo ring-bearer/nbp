@@ -4,7 +4,7 @@ require_once __DIR__ . '/../app/database/db.class.php';
 require_once __DIR__ . '/pretraga.class.php';
 
 class PretragaService{
-	function getpretrage(){
+	/*function getpretrage(){
 		try
 		{
 			$db = DB::getConnection();
@@ -27,5 +27,32 @@ class PretragaService{
 		  }
     }
     return $arr;
+	}*/
+
+	function povijestpretraga($oib){
+
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare("select * from povijestt(CAST ($oib AS text) )");
+			$st->execute();
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr=array();
+    while(1){
+      $row = $st->fetch();
+  		if( $row === false )
+  			return $arr;
+  		else{
+        $i=array();
+				$i[]=$row['datum'];
+				$i[]=$row['vrsta'];
+				$i[]=$row['ime_bolnice'];
+        $arr[]=$i;
+
+		  }
+    }
+		return $arr;
+
 	}
 };
