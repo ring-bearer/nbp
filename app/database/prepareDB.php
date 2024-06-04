@@ -26,7 +26,7 @@ try
 {
     $st = $db->prepare(
         'CREATE TABLE IF NOT EXISTS nbp_pretraga(
-            id int check (not null),
+            id serial check (not null),
             vrsta character varying(30) check (not null),
             trajanje_min int check (not null), -- ukljucuje ciscenje nakon pretrage i kratku pauzu ako je potrebno
             constraint pkPretraga primary key (id)
@@ -38,6 +38,22 @@ try
 catch( PDOException $e ) { exit( "PDO error za nbp_pretraga: " . $e->getMessage() ); }
 
 echo "Napravio tablicu nbp_pretraga.<br>";
+
+try
+{
+    $st = $db->prepare( 'INSERT INTO nbp_pretraga(id, vrsta, trajanje_min) VALUES (default, :vrsta, :trajanje_min)' );
+
+    $st->execute( array( 'ime' => 'Citadel', 'adresa' => 'Glavna 1', 'mjesto' => 'Minas Tirith') );
+    $st->execute( array( 'ime' => 'Imladris', 'adresa' => 'Glavna 1', 'mjesto' => 'Rivendell' ));
+    $st->execute( array( 'ime' => 'Meduseld', 'adresa' => 'Glavna 1', 'mjesto' => 'Edoras' ));
+    $st->execute( array( 'ime' => 'Rhovanion', 'adresa' => 'Glavna 1', 'mjesto' => 'Mirkwood') );
+    $st->execute( array( 'ime' => 'Prancing Pony', 'adresa' => 'Glavna 1', 'mjesto' => 'Bree' ));
+    $st->execute( array( 'ime' => 'Armenelos', 'adresa' => 'Glavna 1', 'mjesto' => 'Numenor' ));
+    $st->execute( array( 'ime' => 'Valinor', 'adresa' => 'Glavna 1', 'mjesto' => 'Tirion' ));
+}
+catch( PDOException $e ) { exit( "PDO error kod bolnica: " . $e->getMessage() ); }
+
+echo "Ubacio u tablicu nbp_bolnica.<br />";
 
 try
 {
@@ -186,7 +202,7 @@ echo "Napravio indexe.<br>";
 try
 {
     $st = $db->prepare(
-      'CREATE FUNCTION povijest_pretraga(oib CHAR(11))
+      'CREATE FUNCTION povijestt(oib CHAR(11))
             RETURNS table (
                 datum DATE,
                 -- vrijeme vjerojatno nebitno, al ako zatreba, mozemo staviti
@@ -196,7 +212,7 @@ try
         AS $$
         BEGIN
             RETURN QUERY
-                SELECT datum, vrsta, ime
+                SELECT nbp_termin.datum, nbp_pretraga.vrsta, nbp_bolnica.ime
                     FROM nbp_termin
                         LEFT JOIN nbp_bolnica
                             ON id = id_bolnice
@@ -211,7 +227,7 @@ try
 catch( PDOException $e ) { exit( "PDO error za povijest_pretraga: " . $e->getMessage() ); }
 
 echo "Napravio funkciju povijest_pretraga.<br>";
-
+/*
 
 // zahtjevi za prebacivanjem pacijenta kod drugog liječnika
 try
@@ -396,7 +412,7 @@ echo "Ubacio u tablicu nbp_pacijent.<br />";
 }
 catch( PDOException $e ) { exit( "PDO error kod pretraga: " . $e->getMessage() ); }
 
-echo "Ubacio u tablicu nbp_pretraga.<br />";*/
+echo "Ubacio u tablicu nbp_pretraga.<br />";
 
 try
 {
@@ -439,5 +455,5 @@ try
 catch( PDOException $e ) { exit( "PDO error kod bolnica: " . $e->getMessage() ); }
 
 echo "Ubacio u tablicu nbp_bolnica.<br />";
-
+*/
 ?>
