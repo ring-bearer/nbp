@@ -12,10 +12,10 @@ if (!isset($_GET['rt'])) {
 
 if($controllerName==='loginController' && $action==='index' && isset($_COOKIE['oib']) && isset($_COOKIE['ovlasti'])){
     $keksic = $_COOKIE['ovlasti'];
-    if($keksic === 0){
+    if($keksic === '0'){
       $action = 'provjeraLijecnik';
     }
-    else if($keksic === 1){
+    else if($keksic === '1'){
       $action = 'provjeraPacijent';
     }
     else {

@@ -90,6 +90,13 @@ create table nbp_zahtjev(
     oib_novi char(11) check (not null), --željeni novi liječnik
     constraint pkZahtjevi primary key (oib_pacijenta,oib_stari,oib_novi)
 );
+
+create table nbp_zahtjev_pretraga(
+    oib_pacijenta char(11) check (not null),
+    oib_lijecnika char(11) check (not null),
+    vrsta char varying(30) check (not null),
+    constraint pkZahtjeviPretraga primary key (oib_pacijenta,oib_lijecnika,vrsta)
+);
 ---------------------------------------------------------------------
 
 -- indeksi za ubrzavanje upita
@@ -377,6 +384,7 @@ insert into nbp_pretraga values
     (4, 'magnetska rezonanca', 50),
     (5, 'serologija', 10),
     (6, 'dijabetologija', 30);
+
 
 insert into nbp_bolnica_pretraga values
     (95, 2),

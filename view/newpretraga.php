@@ -7,19 +7,16 @@ else echo "<p id=gore>Pošaljite svom liječniku opće prakse zahtjev za uputnic
 	<div id="unos">
 		<form method="post" action="index.php?rt=pretraga/new">
 			<div id="insideunos">
-			OIB:<br><input type="text" name="oib" />
-      <br><br>
-			Ime:<br> <input type="text" name="ime" />
-      <br><br>
-			Prezime:<br> <input type="text" name="prezime" />
-      <br><br>
-      Datum rođenja:<br> <input type="date" name="datum_rodjenja" />
-      <br><br>
-      Adresa ambulante:<br> <input type="text" name="adresa_ambulante" />
-      <br><br>
-      Mjesto ambulante:<br> <input type="text" name="mjesto_ambulante" />
-      <br><br>
-	    <button type="submit" name="gumb" value="doktor">Dodaj!</button>
+			  <select name="zahtjev">
+			    <option value="0">Odaberite pregled:</option>
+			    <option value="dermatološki pregled">Dermatološki pregled</option>
+			    <option value="oftalmološki pregled">Oftalmološki pregled</option>
+			    <option value="fizikalna medicina">Fizikalna medicina</option>
+			    <option value="magnetska rezonanca">Magnetska rezonanca</option>
+			    <option value="serologija">Serologija</option>
+			    <option value="dijabetologija">Dijabetologija</option>
+			  </select>
+	    <button type="submit" value="vrsta">Pošalji!</button>
 			</div>
 		</form>
 	</div>
