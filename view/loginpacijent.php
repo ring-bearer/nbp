@@ -7,12 +7,13 @@
 
 </head>
 <body>
+    <div class="background-cross"></div>
 
-    <div class="container-login" id="login">
+    <div class="container-login-special" id="login-special">
         <form action="index.php?rt=login/provjeraPacijent" method="post">
 					<div id="insideunos">
             <h1>Bolnice.hr</h1>
-            <nav>	
+            <nav>
                 <button class="loginpacijent" onclick="window.location.href='index.php?rt=login/index'">Pacijenti</button>
                 <button class="loginpacijent" onclick="window.location.href='index.php?rt=login/indexLijecnik'">Liječnici</button>
                 <button class="loginpacijent" onclick="window.location.href='index.php?rt=login/indexAdmin'">Administratori</button>
@@ -24,10 +25,10 @@
             <label for="psw"><b>Lozinka</b></label><br>
             <input type="password" placeholder="Unesite lozinku" name="psw" required>
             <br>
+						<p style="font-size: 15px"><?php if(isset($poruka)) echo $poruka;?></p>
             <button class="submitbtn" type="submit">Login</button>
             <br>
 					</div>
         </form>
     </div>
-
-<?php require_once __DIR__ . '/_footer.php'; ?>
+<body>

@@ -13,7 +13,6 @@ class PretragaController{
   public function povijest(){
       $ls=new PretragaService();
       $list = $ls->povijestpretraga($_COOKIE['oib']);
-
       require_once __DIR__ . '/../view/povijestpretraga.php';
 	}
 

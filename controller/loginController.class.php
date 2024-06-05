@@ -34,7 +34,7 @@ class LoginController{
 
     // Možda se ne šalje password; u njemu smije biti bilo što.
     if( !isset( $_POST["psw"] ) )
-        require_once __DIR__ . '/../view/login.php';
+        require_once __DIR__ . '/../view/loginpacijent.php';
 
     // Sve je OK, provjeri jel ga ima u bazi.
 
@@ -43,7 +43,7 @@ class LoginController{
 
     $ls = new LoginService;
 
-    $ls->provjeraUBaziPacijent($oib, $password);
+    $poruka=$ls->provjeraUBaziPacijent($oib, $password);
 
     }
 
@@ -61,7 +61,7 @@ class LoginController{
 
     // Možda se ne šalje password; u njemu smije biti bilo što.
     if( !isset( $_POST["psw"] ) )
-        require_once __DIR__ . '/../view/login.php';
+        require_once __DIR__ . '/../view/loginlijecnik.php';
 
     // Sve je OK, provjeri jel ga ima u bazi.
 
@@ -70,7 +70,7 @@ class LoginController{
 
     $ls = new LoginService;
 
-    $ls->provjeraUBaziLijecnik($oib, $password);
+    $poruka=$ls->provjeraUBaziLijecnik($oib, $password);
 
     }
 
@@ -88,7 +88,7 @@ class LoginController{
 
     // Možda se ne šalje password; u njemu smije biti bilo što.
     if( !isset( $_POST["psw"] ) )
-        require_once __DIR__ . '/../view/login.php';
+        require_once __DIR__ . '/../view/loginadmin.php';
 
     // Sve je OK, provjeri jel ga ima u bazi.
 
@@ -97,7 +97,7 @@ class LoginController{
 
     $ls = new LoginService;
 
-    $ls->provjeraUBaziAdmin($oib, $password);
+    $poruka=$ls->provjeraUBaziAdmin($oib, $password);
 
     }
 

@@ -11,7 +11,7 @@ class LoginService{
 
     public function userprovjeraPacijent($oib)
     {
-  
+
         $db = DB::getConnection();
 
         try
@@ -19,7 +19,7 @@ class LoginService{
             $st2 = $db->prepare( 'SELECT password_hash FROM nbp_pacijent WHERE oib=:oib' );
             $st2->execute( array( 'oib' => $oib ) );
         }
-        catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 2.';return; }
+        catch( PDOException $e ) { require_once __DIR__ . '/../view/loginpacijent.php'; echo 'Greska u bazi 2.';return; }
 
         $row = $st2->fetch();
 
@@ -27,9 +27,8 @@ class LoginService{
 
         if( $row === false ){
             // Taj user ne postoji, upit u bazu nije vratio ništa.
+            $poruka= 'Ne postoji korisnik s tim OIB-om.';
             require_once __DIR__ . '/../view/loginpacijent.php';
-            echo 'Ne postoji korisnik s tim imenom.';
-            return;
         }
         else{
             require_once __DIR__ . '../../controller/profilController.class.php';
@@ -37,31 +36,30 @@ class LoginService{
             $od->index();
             return 1;
         }
-  
+
     }
 
     public function userprovjeraLijecnik($oib)
     {
-  
+
         $db = DB::getConnection();
-  
+
         // Ovaj dio se moze optimizirati sa query
         try
         {
             $st1 = $db->prepare( 'SELECT password_hash FROM nbp_lijecnik WHERE oib=:oib' );
             $st1->execute( array( 'oib' => $oib ) );
         }
-        catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 1.';return; }
-    
+        catch( PDOException $e ) { require_once __DIR__ . '/../view/loginlijecnik.php'; echo 'Greska u bazi 1.';return; }
+
         $row = $st1->fetch();
 
         $ovlasti = 0;
 
         if( $row === false ){
             // Taj user ne postoji, upit u bazu nije vratio ništa.
+            $poruka= 'Ne postoji korisnik s tim OIB-om.';
             require_once __DIR__ . '/../view/loginlijecnik.php';
-            echo 'Ne postoji korisnik s tim imenom.';
-            return;
         }
         else{
             require_once __DIR__ . '../../controller/profilController.class.php';
@@ -69,33 +67,32 @@ class LoginService{
             $od->index();
             return 1;
         }
-  
+
     }
 
 
     public function userprovjeraAdmin($oib)
     {
-  
+
         $db = DB::getConnection();
-  
+
         try
         {
             $st3 = $db->prepare( 'SELECT password_hash FROM nbp_admin WHERE oib=:oib' );
             $st3->execute( array( 'oib' => $oib ) );
         }
-        catch( PDOException $e ) { require_once __DIR__ . '/../view/login.php'; echo 'Greska u bazi 31.';return; }
+        catch( PDOException $e ) { require_once __DIR__ . '/../view/loginadmin.php'; echo 'Greska u bazi 3.';return; }
 
 
         $row = $st3->fetch();
 
         $ovlasti = 2;
-        
+
 
         if( $row === false ){
             // Taj user ne postoji, upit u bazu nije vratio ništa.
+            $poruka= 'Ne postoji korisnik s tim OIB-om.';
             require_once __DIR__ . '/../view/loginadmin.php';
-            echo 'Ne postoji korisnik s tim imenom.';
-            return;
         }
         else{
             require_once __DIR__ . '../../controller/profilController.class.php';
@@ -103,9 +100,9 @@ class LoginService{
             $od->index();
             return 1;
         }
-  
+
     }
-  
+
     public function provjeraUBaziPacijent($oib, $password)
     {
 
@@ -125,9 +122,8 @@ class LoginService{
         if( $row === false )
         {
             // Taj user ne postoji, upit u bazu nije vratio ništa.
+            $poruka= 'Ne postoji korisnik s tim OIB-om.';
             require_once __DIR__ . '/../view/loginpacijent.php';
-            echo 'Ne postoji korisnik s tim imenom.';
-            return 0;
         }
         else
         {
@@ -138,12 +134,6 @@ class LoginService{
             // Da li je password dobar?
             if( password_verify( $password, $hash ))
             {
-                //ako je korisnik ulogiran od prije
-                //znaci da je ovo provjera pri mijenjanju sifre
-                if(isset($_COOKIE['oib'])){
-                    return 1;
-                }
-
                 // Dobar password. Ulogiraj ga i posalji na pocetni ekran.
                 // Moramo dohvatiti i njegove ovlasti
                 setcookie('oib',$oib,time()+(10*365*24*60*60));
@@ -160,9 +150,8 @@ class LoginService{
             else{
 
                 // Nije dobar password. Crtaj opet login formu s pripadnom porukom.
+                $poruka= 'Postoji user,<br> ali password nije dobar.';
                 require_once __DIR__ . '/../view/loginpacijent.php';
-                echo 'Postoji user, ali password nije dobar.';
-                return 0;
             }
         }
 
@@ -188,9 +177,8 @@ class LoginService{
         if( $row === false )
         {
             // Taj user ne postoji, upit u bazu nije vratio ništa.
+            $poruka= 'Ne postoji korisnik s tim OIB-om.';
             require_once __DIR__ . '/../view/loginlijecnik.php';
-            echo 'Ne postoji korisnik s tim imenom.';
-            return 0;
         }
         else
         {
@@ -201,12 +189,6 @@ class LoginService{
             // Da li je password dobar?
             if( password_verify( $password, $hash ))
             {
-                //ako je korisnik ulogiran od prije
-                //znaci da je ovo provjera pri mijenjanju sifre
-                if(isset($_COOKIE['oib'])){
-                    return 1;
-                }
-
                 // Dobar password. Ulogiraj ga i posalji na pocetni ekran.
                 // Moramo dohvatiti i njegove ovlasti
                 setcookie('oib',$oib,time()+(10*365*24*60*60));
@@ -223,9 +205,8 @@ class LoginService{
             else{
 
                 // Nije dobar password. Crtaj opet login formu s pripadnom porukom.
+                $poruka= 'Postoji user,<br> ali password nije dobar.';
                 require_once __DIR__ . '/../view/loginlijecnik.php';
-                echo 'Postoji user, ali password nije dobar.';
-                return 0;
             }
         }
 
@@ -246,13 +227,12 @@ class LoginService{
         $row = $st3->fetch();
 
         $ovlasti = 2;
-        
+
         if( $row === false )
         {
             // Taj user ne postoji, upit u bazu nije vratio ništa.
+            $poruka= 'Ne postoji korisnik s tim OIB-om.';
             require_once __DIR__ . '/../view/loginadmin.php';
-            echo 'Ne postoji korisnik s tim imenom.';
-            return 0;
         }
         else
         {
@@ -266,7 +246,7 @@ class LoginService{
                 //ako je korisnik ulogiran od prije
                 //znaci da je ovo provjera pri mijenjanju sifre
                 if(isset($_COOKIE['oib'])){
-                    return 1;
+                    return $poruka;
                 }
 
                 // Dobar password. Ulogiraj ga i posalji na pocetni ekran.
@@ -285,14 +265,13 @@ class LoginService{
             else{
 
                 // Nije dobar password. Crtaj opet login formu s pripadnom porukom.
+                $poruka= 'Postoji user,<br> ali password nije dobar.';
                 require_once __DIR__ . '/../view/loginadmin.php';
-                echo 'Postoji user, ali password nije dobar.';
-                return 0;
             }
         }
 
     }
-	
+
 };
 
 ?>
