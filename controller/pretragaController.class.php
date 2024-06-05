@@ -13,8 +13,16 @@ class PretragaController{
   public function povijest(){
       $ls=new PretragaService();
       $list = $ls->povijestpretraga($_COOKIE['oib']);
+      $poruka="Povijest mojih pretraga";
       require_once __DIR__ . '/../view/povijestpretraga.php';
 	}
+
+  public function buduce(){
+      $ls=new PretragaService();
+      $list = $ls->buducepretrage($_COOKIE['oib']);
+      $poruka="Naručene pretrage";
+      require_once __DIR__ . '/../view/povijestpretraga.php';
+  }
 
   public function unos(){
 		  require_once __DIR__ . '/../view/newpretraga.php';

@@ -46,7 +46,33 @@ class PretragaService{
 
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare("select * from povijest_pretraga(CAST ($oib AS text) )");
+			$st = $db->prepare("select * from povijest_pretraga(CAST ($oib AS text)) where datum < CURRENT_DATE;");
+			$st->execute();
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr=array();
+    while(1){
+      $row = $st->fetch();
+  		if( $row === false )
+  			return $arr;
+  		else{
+        $i=array();
+				$i[]=$row['datum'];
+				$i[]=$row['vrsta'];
+				$i[]=$row['ime_bolnice'];
+        $arr[]=$i;
+		  }
+    }
+		return $arr;
+
+	}
+
+	function buducepretrage($oib){
+
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare("select * from povijest_pretraga(CAST ($oib AS text)) where datum >= CURRENT_DATE;");
 			$st->execute();
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
