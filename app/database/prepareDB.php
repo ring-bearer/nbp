@@ -179,6 +179,25 @@ catch( PDOException $e ) { exit( "PDO error za nbp_termin: " . $e->getMessage() 
 
 echo "Napravio tablicu nbp_termin.<br>";
 
+
+// zahtjevi za prebacivanjem pacijenta kod drugog liječnika
+try
+{
+    $st = $db->prepare(
+        'CREATE TABLE IF NOT EXISTS nbp_zahtjev(
+          oib_pacijenta char(11) check (not null),
+          oib_stari char(11) check (not null), --trenutni liječnik
+          oib_novi char(11) check (not null), --željeni novi liječnik
+          constraint pkZahtjevi primary key (oib_pacijenta,oib_stari,oib_novi)
+        );'
+    );
+
+    $st->execute();
+}
+catch( PDOException $e ) { exit( "PDO error za nbp_zahtjev: " . $e->getMessage() ); }
+
+echo "Napravio tablicu zahtjev.<br>";
+
 //---------------------------------------------------------------------
 
 //-- indeksi za ubrzavanje upita
@@ -229,25 +248,6 @@ try
 catch( PDOException $e ) { exit( "PDO error za povijest_pretraga: " . $e->getMessage() ); }
 
 echo "Napravio funkciju povijest_pretraga.<br>";
-
-
-// zahtjevi za prebacivanjem pacijenta kod drugog liječnika
-try
-{
-    $st = $db->prepare(
-        'CREATE TABLE IF NOT EXISTS nbp_zahtjev(
-          oib_pacijenta char(11) check (not null),
-          oib_stari char(11) check (not null), --trenutni liječnik
-          oib_novi char(11) check (not null), --željeni novi liječnik
-          constraint pkZahtjevi primary key (oib_pacijenta,oib_stari,oib_novi)
-        );'
-    );
-
-    $st->execute();
-}
-catch( PDOException $e ) { exit( "PDO error za nbp_zahtjev: " . $e->getMessage() ); }
-
-echo "Napravio tablicu zahtjev.<br>";
 
 
 
@@ -316,13 +316,13 @@ catch( PDOException $e ) { exit( "PDO error za lista_cekanja: " . $e->getMessage
 
 echo "Napravio funkciju lista_cekanja.<br>";
 
-try
+/*try
 {
     $st = $db->prepare(
       'CREATE FUNCTION prvi_termin(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
             RETURNS table (
                 datum DATE,
-                vrijeme TIME
+                vrijeme TIME,
                 )
         AS $$
         DECLARE
@@ -347,13 +347,13 @@ try
                 ORDER BY datum, vrijeme DESC
                 LIMIT 1;
 
-            IF (v_vrijeme + v_trajanje * interval \'1 minute\') <= \'18:00\'::TIME
+            IF v_vrijeme + v_trajanje * INTERVAL '1 minute' <= '18:00'::TIME
                 THEN
                     RETURN QUERY
-                        SELECT v_datum AS datum, v_vrijeme + v_trajanje * INTERVAL \'1 minute\' AS vrijeme;
+                        SELECT v_datum AS datum, v_vrijeme + v_trajanje * INTERVAL '1 minute' AS vrijeme;
             ELSE
                 RETURN QUERY
-                    SELECT v_datum + interval \'1 day\' AS datum, \'07:00\'::time AS vrijeme;
+                    SELECT v_datum + INTERVAL '1 day' AS datum, '7:00'::TIME AS vrijeme;
             END IF;
         END;
         $$ LANGUAGE plpgsql;');
@@ -361,7 +361,7 @@ try
 }
 catch( PDOException $e ) { exit( "PDO error za prvi_termin: " . $e->getMessage() ); }
 
-echo "Napravio funkciju prvi_termin.<br>";
+echo "Napravio funkciju prvi_termin.<br>";*/
 
 try
 {
@@ -468,5 +468,31 @@ catch( PDOException $e ) { exit( "PDO error kod bolnica_pretraga: " . $e->getMes
 
 echo "Ubacio u tablicu nbp_bolnica_pretraga.<br />";
 
+
+try
+{
+    $st = $db->prepare( 'INSERT INTO nbp_termin(oib_pacijenta, id_pretrage, datum, vrijeme, id_bolnice) VALUES (:oib_pacijenta, :id_pretrage, :datum, :vrijeme, :id_bolnice)' );
+
+    $st->execute( array( 'oib_pacijenta' => '10000338099', 'id_pretrage' => '2', 'datum' => '2010-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '100') );
+    $st->execute( array( 'oib_pacijenta' => '10000338099', 'id_pretrage' => '1', 'datum' => '2011-07-02', 'vrijeme' => '11:00', 'id_bolnice' => '12') );
+    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '5', 'datum' => '2012-07-02', 'vrijeme' => '09:00', 'id_bolnice' => '88') );
+    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '5', 'datum' => '2009-07-02', 'vrijeme' => '15:00', 'id_bolnice' => '88') );
+    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '3', 'datum' => '2004-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '81') );
+    $st->execute( array( 'oib_pacijenta' => '10000395731', 'id_pretrage' => '2', 'datum' => '2005-07-02', 'vrijeme' => '16:00', 'id_bolnice' => '100') );
+    $st->execute( array( 'oib_pacijenta' => '10000395731', 'id_pretrage' => '6', 'datum' => '2006-07-02', 'vrijeme' => '11:00', 'id_bolnice' => '50') );
+    $st->execute( array( 'oib_pacijenta' => '10000998713', 'id_pretrage' => '2', 'datum' => '2003-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '100') );
+    $st->execute( array( 'oib_pacijenta' => '10000520909', 'id_pretrage' => '4', 'datum' => '2007-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '92') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '1', 'datum' => '2004-07-02', 'vrijeme' => '13:00', 'id_bolnice' => '12') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '1', 'datum' => '2005-07-02', 'vrijeme' => '16:00', 'id_bolnice' => '12') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '1', 'datum' => '2015-07-02', 'vrijeme' => '17:40', 'id_bolnice' => '12') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '1', 'datum' => '2017-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '87') );
+    $st->execute( array( 'oib_pacijenta' => '10000878383', 'id_pretrage' => '6', 'datum' => '2009-07-02', 'vrijeme' => '11:00', 'id_bolnice' => '21') );
+    $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '5', 'datum' => '2018-07-02', 'vrijeme' => '10:00', 'id_bolnice' => '1') );
+    $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '5', 'datum' => '2019-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '1') );
+
+}
+catch( PDOException $e ) { exit( "PDO error kod termina: " . $e->getMessage() ); }
+
+echo "Ubacio u tablicu nbp_termin.<br />";
 
 ?>
