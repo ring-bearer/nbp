@@ -1,6 +1,5 @@
 html, body {
-  height: 100%;
-  margin: 0;
+  margin: 5px;
   font-family: Arial, sans-serif;
 }
 
@@ -22,12 +21,12 @@ body {
 .background-cross::after {
   content: '';
   position: absolute;
-  background-color: green;
+  background-color: #9c1414;
   z-index: -1;
 }
 
 .background-cross::before {
-  width: 50%;
+  width: 550px;
   height: 150px;
 }
 
@@ -131,7 +130,7 @@ input[type=password]{
   font-size: 18px;
   border-style: solid;
   border-color: #9c1414;
-  margin: auto;
+  margin: 5px;
 }
 
 #unos{
@@ -203,7 +202,7 @@ button{
 }
 
 .footer {
-  margin-top: auto;
+  margin-top: 10px;
   padding: 16px;
   text-align: center;
   background-color: #e3e3e3;

@@ -62,7 +62,6 @@ class PretragaService{
 				$i[]=$row['vrsta'];
 				$i[]=$row['ime_bolnice'];
         $arr[]=$i;
-
 		  }
     }
 		return $arr;

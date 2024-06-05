@@ -11,9 +11,9 @@ require_once __DIR__ . '/../controller/pretragaController.class.php';
 	<?php
     foreach($list as $a){
 			echo '<tr>';
-			echo '<td>' . $a['datum'] . '</td>';
-			echo '<td>' . $a['vrsta'] . '</td>';
-			echo '<td>' . $a['ime_bolnice']. '</td>';
+			echo '<td>' . $a[0] . '</td>';
+			echo '<td>' . $a[1] . '</td>';
+			echo '<td>' . $a[2]. '</td>';
 			echo '</tr>';
    }?>
 </table>

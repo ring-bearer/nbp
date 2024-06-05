@@ -3,8 +3,8 @@
 <h1> Moj profil </h1>
 
 <?php
-    echo 'Pozdrav, ' . $ime . '!';
-    echo "<h2> Ovjde možete promijeniti svoje podatke </h2>";
+    echo '<p id="gore"> Pozdrav, ' . $ime . '!<br>';
+    echo "<br>Ovdje možete promijeniti svoje podatke.<br></p>";
 ?>
 
 <button class="dropbtn" onclick="window.location.href='index.php?rt=profil/podaci'">Moji podaci</button>
