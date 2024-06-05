@@ -84,6 +84,7 @@ class LoginService{
         catch( PDOException $e ) { require_once __DIR__ . '/../view/loginadmin.php'; echo 'Greska u bazi 3.';return; }
 
 
+
         $row = $st3->fetch();
 
         $ovlasti = 2;
