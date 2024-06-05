@@ -46,7 +46,7 @@ class PretragaService{
 
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare("select * from povijestt(CAST ($oib AS text) )");
+			$st = $db->prepare("select * from povijest_pretraga(CAST ($oib AS text) )");
 			$st->execute();
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
