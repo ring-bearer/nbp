@@ -8,7 +8,9 @@
 </head>
 <body>
 
-    <div class="container-login" id="login">
+    <div class="background-cross"></div>
+
+    <div class="container-login-special" id="login-special">
         <form action="index.php?rt=login/provjeraLijecnik" method="post">
 					<div id="insideunos">
             <h1>Bolnice.hr</h1>
