@@ -1,8 +1,8 @@
 <?php require_once __DIR__ . '/_header.php';
 require_once __DIR__ . '/../controller/pretragaController.class.php';
 
+echo "<h1>$poruka</h1>";
 ?>
-<h1> Povijest mojih pretraga </h1>
 <table>
 	<tr>
 		<th>Vrsta</th>

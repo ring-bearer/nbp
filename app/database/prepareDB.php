@@ -3,7 +3,7 @@
 require_once 'db.class.php';
 
 $db = DB::getConnection();
-
+/*
 try
 {
     $st = $db->prepare(
@@ -468,12 +468,12 @@ catch( PDOException $e ) { exit( "PDO error kod bolnica_pretraga: " . $e->getMes
 
 echo "Ubacio u tablicu nbp_bolnica_pretraga.<br />";
 
-
+*/
 try
 {
     $st = $db->prepare( 'INSERT INTO nbp_termin(oib_pacijenta, id_pretrage, datum, vrijeme, id_bolnice) VALUES (:oib_pacijenta, :id_pretrage, :datum, :vrijeme, :id_bolnice)' );
 
-    $st->execute( array( 'oib_pacijenta' => '10000338099', 'id_pretrage' => '2', 'datum' => '2010-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '100') );
+    /*$st->execute( array( 'oib_pacijenta' => '10000338099', 'id_pretrage' => '2', 'datum' => '2010-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '100') );
     $st->execute( array( 'oib_pacijenta' => '10000338099', 'id_pretrage' => '1', 'datum' => '2011-07-02', 'vrijeme' => '11:00', 'id_bolnice' => '12') );
     $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '5', 'datum' => '2012-07-02', 'vrijeme' => '09:00', 'id_bolnice' => '88') );
     $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '5', 'datum' => '2009-07-02', 'vrijeme' => '15:00', 'id_bolnice' => '88') );
@@ -489,6 +489,19 @@ try
     $st->execute( array( 'oib_pacijenta' => '10000878383', 'id_pretrage' => '6', 'datum' => '2009-07-02', 'vrijeme' => '11:00', 'id_bolnice' => '21') );
     $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '5', 'datum' => '2018-07-02', 'vrijeme' => '10:00', 'id_bolnice' => '1') );
     $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '5', 'datum' => '2019-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '1') );
+*/
+    $st->execute( array( 'oib_pacijenta' => '10000338099', 'id_pretrage' => '5', 'datum' => '2024-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '1') );
+    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '3', 'datum' => '2024-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '81') );
+    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '5', 'datum' => '2024-07-05', 'vrijeme' => '12:00', 'id_bolnice' => '12') );
+    $st->execute( array( 'oib_pacijenta' => '10000395731', 'id_pretrage' => '1', 'datum' => '2024-07-07', 'vrijeme' => '12:00', 'id_bolnice' => '59') );
+    $st->execute( array( 'oib_pacijenta' => '10000998713', 'id_pretrage' => '1', 'datum' => '2024-07-11', 'vrijeme' => '12:00', 'id_bolnice' => '59') );
+    $st->execute( array( 'oib_pacijenta' => '10000998713', 'id_pretrage' => '2', 'datum' => '2024-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '100') );
+    $st->execute( array( 'oib_pacijenta' => '10000520909', 'id_pretrage' => '6', 'datum' => '2024-07-03', 'vrijeme' => '12:00', 'id_bolnice' => '65') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '2', 'datum' => '2024-07-07', 'vrijeme' => '12:00', 'id_bolnice' => '18') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '4', 'datum' => '2024-07-04', 'vrijeme' => '12:00', 'id_bolnice' => '48') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '4', 'datum' => '2024-07-05', 'vrijeme' => '12:00', 'id_bolnice' => '48') );
+    $st->execute( array( 'oib_pacijenta' => '10000878383', 'id_pretrage' => '4', 'datum' => '2024-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '53') );
+    $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '6', 'datum' => '2024-07-03', 'vrijeme' => '12:00', 'id_bolnice' => '8') );
 
 }
 catch( PDOException $e ) { exit( "PDO error kod termina: " . $e->getMessage() ); }

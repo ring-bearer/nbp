@@ -11,7 +11,8 @@
   		<button class="dropbtn" onclick="window.location.href='index.php?rt=pretraga/povijest'">Pretrage</button>
   		<div class="dropdown-content">
         <a href="index.php?rt=pretraga/povijest">Povijest pretraga</a>
-				<a href="index.php?rt=pretraga/unos">Nova pretraga</a>
+        <a href="index.php?rt=pretraga/unos">Nova pretraga</a>
+				<a href="index.php?rt=pretraga/buduce">Naručene pretrage</a>
 
 			</div>
 		</div>
