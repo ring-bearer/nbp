@@ -36,6 +36,8 @@ class ProfilController{
       require_once __DIR__ . '/../view/profillijecnik.php';
     }else if($ovlasti === '1'){
       $user = $ps->getProfilPacijent($oib);
+      $oib_lijecnik = $user->__get('oib_lijecnika');
+      $doktor = $ps->getProfilLijecnik($oib_lijecnik);
       require_once __DIR__ . '/../view/profilpacijent.php';
     }
     else{
@@ -115,6 +117,9 @@ public function updatePacijent(){
     return;
   }
   $user->__set('mjesto',$_POST["mjesto"]);
+
+  $oib_lijecnik = $user->__get('oib_lijecnika');
+  $doktor = $ls->getProfilLijecnik($oib_lijecnik);
 
   $ls2 = new PacijentService;
   $ls2->updatepacijent($user);
