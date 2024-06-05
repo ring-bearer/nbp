@@ -223,7 +223,7 @@ echo "Napravio indexe.<br>";
 try
 {
     $st = $db->prepare(
-      'CREATE FUNCTION povijestt(oib CHAR(11))
+      'CREATE FUNCTION povijest_pretraga(oib CHAR(11))
             RETURNS table (
                 datum DATE,
                 -- vrijeme vjerojatno nebitno, al ako zatreba, mozemo staviti
