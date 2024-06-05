@@ -316,13 +316,13 @@ catch( PDOException $e ) { exit( "PDO error za lista_cekanja: " . $e->getMessage
 
 echo "Napravio funkciju lista_cekanja.<br>";
 
-/*try
+try
 {
     $st = $db->prepare(
       'CREATE FUNCTION prvi_termin(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
             RETURNS table (
                 datum DATE,
-                vrijeme TIME,
+                vrijeme TIME
                 )
         AS $$
         DECLARE
@@ -347,13 +347,13 @@ echo "Napravio funkciju lista_cekanja.<br>";
                 ORDER BY datum, vrijeme DESC
                 LIMIT 1;
 
-            IF v_vrijeme + v_trajanje * INTERVAL '1 minute' <= '18:00'::TIME
+            IF (v_vrijeme + v_trajanje * INTERVAL \'1 minute\') <= \'18:00\'::TIME
                 THEN
                     RETURN QUERY
-                        SELECT v_datum AS datum, v_vrijeme + v_trajanje * INTERVAL '1 minute' AS vrijeme;
+                        SELECT v_datum AS datum, v_vrijeme + v_trajanje * INTERVAL \'1 minute\' AS vrijeme;
             ELSE
                 RETURN QUERY
-                    SELECT v_datum + INTERVAL '1 day' AS datum, '7:00'::TIME AS vrijeme;
+                    SELECT v_datum + INTERVAL \'1 day\' AS datum, \'7:00\'::TIME AS vrijeme;
             END IF;
         END;
         $$ LANGUAGE plpgsql;');
@@ -361,7 +361,7 @@ echo "Napravio funkciju lista_cekanja.<br>";
 }
 catch( PDOException $e ) { exit( "PDO error za prvi_termin: " . $e->getMessage() ); }
 
-echo "Napravio funkciju prvi_termin.<br>";*/
+echo "Napravio funkciju prvi_termin.<br>";
 
 try
 {
