@@ -71,8 +71,8 @@ class PretragaController{
       }
       foreach($list as $a){
           $oib_pacijenta=$a[0];
-          $pac=$ds->getpacijent($oib_pacijenta);
-          $listapac[]=$pac;
+          $pacijent=$ds->getpacijent($oib_pacijenta);
+          $listapac[]=$pacijent;
         }
       require_once __DIR__ . '/../view/pretragazahtjevi.php';
   }

@@ -8,7 +8,7 @@ else echo "<p id=gore>Pošaljite svom liječniku opće prakse zahtjev za uputnic
 		<form method="post" action="index.php?rt=pretraga/new">
 			<div id="insideunos">
 			  <select name="zahtjev">
-			    <option value="0">Odaberite pregled:</option>
+			    <!--<option value="0">Odaberite pregled:</option> -->
 			    <option value="dermatološki pregled">Dermatološki pregled</option>
 			    <option value="oftalmološki pregled">Oftalmološki pregled</option>
 			    <option value="fizikalna medicina">Fizikalna medicina</option>

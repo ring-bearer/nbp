@@ -165,19 +165,24 @@ class PacijentController{
 	}
 
 	public function pretraga(){
-		if (isset($_POST['prihvati'])) {
-			echo "prihvati";
-		} elseif (isset($_POST['odbij'])) {
-			//echo "Odbij";
-			$oib_pacijenta = $_POST['oib_pacijenta'];
-			$oib_lijecnika = $_POST['oib_lijecnika'];
-			$vrsta = $_POST['vrsta_pretrage'];
+		foreach ($_POST as $key => $value) {
+			if (strpos($key, 'prihvati_') === 0) {
+				echo "prihvati";
+			} elseif (strpos($key, 'odbij_') === 0) {
+				//echo "Odbij";
+				// Izvadimo indeks
+				$index = str_replace('odbij_', '', $key);
 
-			$ps = new PacijentService;
-			$ps->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
+				$oib_pacijenta = $_POST['oib_pacijenta_' . $index];
+				$oib_lijecnika = $_POST['oib_lijecnika_' . $index];
+				$vrsta = $_POST['vrsta_pretrage_' . $index];
 
-			header("Location: index.php?rt=pretraga/mojizahtjevi");
-        	exit();
+				$ps = new PacijentService;
+				$ps->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
+
+				header("Location: index.php?rt=pretraga/mojizahtjevi");
+				exit();
+			}
 		}
 	}
 };

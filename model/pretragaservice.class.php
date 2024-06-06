@@ -89,7 +89,6 @@ class PretragaService{
 				$i[]=$row['oib_lijecnika'];
 				$i[]=$row['vrsta'];
 				$arr[]=$i;
-
 			}
 		}
 		return $arr;

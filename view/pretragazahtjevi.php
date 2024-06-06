@@ -27,12 +27,14 @@ if(!isset($prazno)){
       echo '<td>' . $a[2] . '</td>';
       if ($_COOKIE['ovlasti']==='0'){?>
         <!-- Za slanje oiba pacijenta i oiba lijecnika-->
-        <input type="hidden" name="oib_pacijenta" value="<?php echo $a[0]; ?>">
-        <input type="hidden" name="oib_lijecnika" value="<?php echo $a[1]; ?>">
-        <input type="hidden" name="vrsta_pretrage" value="<?php echo $a[2]; ?>">
-        <td><button type="submit" name="prihvati" value="<?php $listapac[$i]->__get('oib');?>">Prihvati</button></td>
-        <td><button type="submit" name="odbij" value="<?php $listapac[$i]->__get('oib');?>">Odbij</button></td>
+        <input type="hidden" name="oib_pacijenta_<?php echo $i; ?>" value="<?php echo $a[0]; ?>">
+            <input type="hidden" name="oib_lijecnika_<?php echo $i; ?>" value="<?php echo $a[1]; ?>">
+            <input type="hidden" name="vrsta_pretrage_<?php echo $i; ?>" value="<?php echo $a[2]; ?>">
+            <td><button type="submit" name="prihvati_<?php echo $i; ?>" value="<?php echo $listapac[$i]->__get('oib'); ?>">Prihvati</button></td>
+            <td><button type="submit" name="odbij_<?php echo $i; ?>" value="<?php echo $listapac[$i]->__get('oib'); ?>">Odbij</button></td>
       <?php }
+      // Potrebno za pravilno slanje imena
+      $i++;
       echo '<tr>';
    }?>
 </table>
