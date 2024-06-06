@@ -39,7 +39,8 @@
     <div class="dropdown">
   		<button class="dropbtn" onclick="window.location.href='index.php?rt=zahtjev/index'">Zahtjevi</button>
   		<div class="dropdown-content">
-				<a href="index.php?rt=zahtjev/index">Popis zahtjeva</a>
+        <a href="index.php?rt=zahtjev/index">Zahtjevi za prebacivanjem pacijenta</a>
+				<a href="index.php?rt=pretraga/zahtjevi">Zahtjevi za novom pretragom</a>
 			</div>
 		</div>
 

@@ -19,7 +19,8 @@
 		<div class="dropdown">
   		<button class="dropbtn" onclick="window.location.href='index.php?rt=pretraga/index'">Pretrage</button>
   		<div class="dropdown-content">
-				<a href="index.php?rt=pretraga/index">Popis pretraga</a>
+        <a href="index.php?rt=pretraga/index">Popis pretraga</a>
+				<a href="index.php?rt=pretraga/mojizahtjevi">Zahtjevi za pretragama</a>
 			</div>
 		</div>
 		<button class="logout" onclick="window.location.href='index.php?rt=login/logout'">Odjavi se</button>

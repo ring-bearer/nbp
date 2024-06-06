@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../model/pretragaservice.class.php';
 require_once __DIR__ . '/../model/pacijentservice.class.php';
+require_once __DIR__ . '/../model/lijecnikservice.class.php';
 
 class PretragaController{
   public function index(){
@@ -9,6 +10,46 @@ class PretragaController{
       $list = $ls->getpretrage();
 			require_once __DIR__ . '/../view/pretrage.php';
 	}
+
+  public function zahtjevi(){
+      $ps=new PretragaService();
+      $ds=new PacijentService();
+      $ls=new LijecnikService();
+      $list = $ps->getpretragazahtjevi();
+      if(empty($list)){
+        $poruka="Nema zahtjeva na čekanju!";
+        $prazno=1;
+        require_once __DIR__ . '/../view/pretragazahtjevi.php';
+        return;
+      }
+      foreach($list as $a){
+          $oib_pacijenta=$a[0];
+          $pac=$ds->getpacijent($oib_pacijenta);
+          $listapac[]=$pac;
+          $oib_lijecnika=$a[1];
+          $lijec=$ls->getlijecnik($oib_lijecnika);
+          $listalijec[]=$lijec;
+        }
+      require_once __DIR__ . '/../view/pretragazahtjevi.php';
+  }
+
+  public function mojizahtjevi(){
+      $ps=new PretragaService();
+      $ds=new PacijentService();
+      $list = $ps->mojipretragazahtjevi($_COOKIE['oib']);
+      if(empty($list)){
+        $poruka="Nemate zahtjeva na čekanju!";
+        $prazno=1;
+        require_once __DIR__ . '/../view/pretragazahtjevi.php';
+        return;
+      }
+      foreach($list as $a){
+          $oib_pacijenta=$a[0];
+          $pac=$ds->getpacijent($oib_pacijenta);
+          $listapac[]=$pac;
+        }
+      require_once __DIR__ . '/../view/pretragazahtjevi.php';
+  }
 
   public function povijest(){
       $ls=new PretragaService();

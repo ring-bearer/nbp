@@ -8,7 +8,7 @@ class PretragaService{
 		try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('SELECT id, vrsta, trajanje_min');
+			$st = $db->prepare('SELECT id, vrsta, trajanje_min from nbp_pretraga');
       $st->execute();
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -40,6 +40,59 @@ class PretragaService{
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 
 		return;
+	}
+
+
+	function getpretragazahtjevi(){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib_pacijenta, oib_lijecnika, vrsta from nbp_zahtjev_pretraga');
+      $st->execute();
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr=array();
+    while(1){
+      $row = $st->fetch();
+  		if( $row === false )
+  			return $arr;
+  		else{
+        $i=array();
+				$i[]=$row['oib_pacijenta'];
+				$i[]=$row['oib_lijecnika'];
+				$i[]=$row['vrsta'];
+        $arr[]=$i;
+
+		  }
+    }
+    return $arr;
+	}
+
+	function mojipretragazahtjevi($oib){
+	try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT oib_pacijenta, oib_lijecnika, vrsta from nbp_zahtjev_pretraga where oib_lijecnika=:oib');
+			$st->execute( array('oib' => $oib) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$arr=array();
+		while(1){
+			$row = $st->fetch();
+			if( $row === false )
+				return $arr;
+			else{
+				$i=array();
+				$i[]=$row['oib_pacijenta'];
+				$i[]=$row['oib_lijecnika'];
+				$i[]=$row['vrsta'];
+				$arr[]=$i;
+
+			}
+		}
+		return $arr;
 	}
 
 	function povijestpretraga($oib){

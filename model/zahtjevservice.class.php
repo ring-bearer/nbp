@@ -83,5 +83,4 @@ class ZahtjevService{
   		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
   	}
 
-
 }

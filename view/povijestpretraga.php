@@ -5,8 +5,8 @@ echo "<h1>$poruka</h1>";
 ?>
 <table>
 	<tr>
-		<th>Vrsta</th>
-		<th>Datum</th><th>Ime bolnice</th>
+		<th>Datum</th>
+		<th>Vrsta</th><th>Ime bolnice</th>
 	</tr>
 	<?php
     foreach($list as $a){

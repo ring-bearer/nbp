@@ -9,7 +9,7 @@ class BolnicaService{
 		try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('SELECT id,ime,adresa,mjesto FROM nbp_bolnica order by ime');
+			$st = $db->prepare('SELECT id,ime,adresa,mjesto FROM nbp_bolnica order by id');
       $st->execute();
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
