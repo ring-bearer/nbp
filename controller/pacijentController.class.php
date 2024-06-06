@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../model/pacijentservice.class.php';
 require_once __DIR__ . '/../model/zahtjevservice.class.php';
+require_once __DIR__ . '/../model/bolnicaservice.class.php';
 require_once __DIR__ . '/../model/pacijent.class.php';
 require_once __DIR__ . '/../model/zahtjev.class.php';
 
@@ -162,6 +163,56 @@ class PacijentController{
 
 			$poruka="Promjene uspješno spremljene! Ako ste obrisali apcijenta, molimo vas da prije toga otiđete na popis pacijenata.";
 			require_once __DIR__ . '/../view/updatepacijent.php';
+	}
+
+	public function pretraga(){
+		foreach ($_POST as $key => $value) {
+			if (strpos($key, 'prihvati_') === 0) {
+				//echo "prihvati";
+				$index = str_replace('prihvati_', '', $key);
+
+				$oib_pacijenta = $_POST['oib_pacijenta_' . $index];
+				$oib_lijecnika = $_POST['oib_lijecnika_' . $index];
+				$vrsta = $_POST['vrsta_pretrage_' . $index];
+				$mjesto = $_POST['mjesto_' . $index];
+
+				// Smislit kako dohvatit najblize bolnice po mjestu pacijenta
+				$bs = new BolnicaService;
+				$bolnice = $bs->getBolniceByMjesto($mjesto);
+
+				// Moramo pronaci sve termine u njima za odredenu pretragu
+				$termini = array();
+				foreach($bolnice as $b){
+					$ime_bolnice = $b->__get('ime');
+					$dostupantermin = $bs->getTermin($ime_bolnice, $vrsta);
+					$termini[]=$dostupantermin;
+				}
+
+				// Sada te termine treba poslati pacijentu negdje
+
+
+				// Na kraju obrisemo taj termin
+				$ps = new PacijentService;
+				$ps->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
+
+				header("Location: index.php?rt=pretraga/mojizahtjevi");
+				exit();
+			} elseif (strpos($key, 'odbij_') === 0) {
+				//echo "Odbij";
+				// Izvadimo indeks
+				$index = str_replace('odbij_', '', $key);
+
+				$oib_pacijenta = $_POST['oib_pacijenta_' . $index];
+				$oib_lijecnika = $_POST['oib_lijecnika_' . $index];
+				$vrsta = $_POST['vrsta_pretrage_' . $index];
+
+				$ps = new PacijentService;
+				$ps->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
+
+				header("Location: index.php?rt=pretraga/mojizahtjevi");
+				exit();
+			}
+		}
 	}
 };
 
