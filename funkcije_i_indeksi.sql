@@ -2,6 +2,7 @@
 
 CREATE INDEX pacijent_ime_idx ON nbp_pacijent(prezime, ime);
 CREATE INDEX termin_pacijent_idx ON nbp_termin(oib_pacijenta);
+CREATE INDEX susjedi_bolnica_idx ON nbp_susjedi(id_bolnice1);
 
 ---------------------------------------------------------------------
 
@@ -31,31 +32,22 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- punjenje tablice susjedi
+-- punjenje tablice susjedi - namjerno dvaput svaki par
 CREATE FUNCTION punjenje_susjedi()
     RETURNS text
 AS $$
 DECLARE
     v_bolnica1 RECORD;
     v_bolnica2 RECORD;
-    i INT;
-    n INT;
 BEGIN
-    SELECT count(*) INTO n
-        FROM nbp_bolnica;
-
-    i = 0;
     FOR v_bolnica1 IN
         SELECT *
             FROM nbp_bolnica
-        LIMIT(n-1)
     LOOP
-        i = i + 1;
         FOR v_bolnica2 IN
             SELECT *
                 FROM nbp_bolnica
-            ORDER BY id DESC
-            LIMIT(n-i)
+                    WHERE nbp_bolnica.id <> v_bolnica1.id
         LOOP
             IF (udaljenost(v_bolnica1.mjesto, v_bolnica2.mjesto) <= 75.00)
                 THEN
