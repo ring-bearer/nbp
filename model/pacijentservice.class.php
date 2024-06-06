@@ -123,6 +123,16 @@ class PacijentService{
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 	}
+
+	function deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('DELETE from nbp_zahtjev_pretraga where oib_pacijenta=:oib_pacijenta and oib_lijecnika=:oib_lijecnika and vrsta=:vrsta');
+			$st->execute( array('oib_pacijenta' => $oib_pacijenta, 'oib_lijecnika' => $oib_lijecnika, 'vrsta' => $vrsta) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+	}
 };
 
 ?>

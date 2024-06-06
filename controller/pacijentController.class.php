@@ -163,6 +163,23 @@ class PacijentController{
 			$poruka="Promjene uspješno spremljene! Ako ste obrisali apcijenta, molimo vas da prije toga otiđete na popis pacijenata.";
 			require_once __DIR__ . '/../view/updatepacijent.php';
 	}
+
+	public function pretraga(){
+		if (isset($_POST['prihvati'])) {
+			echo "prihvati";
+		} elseif (isset($_POST['odbij'])) {
+			//echo "Odbij";
+			$oib_pacijenta = $_POST['oib_pacijenta'];
+			$oib_lijecnika = $_POST['oib_lijecnika'];
+			$vrsta = $_POST['vrsta_pretrage'];
+
+			$ps = new PacijentService;
+			$ps->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
+
+			header("Location: index.php?rt=pretraga/mojizahtjevi");
+        	exit();
+		}
+	}
 };
 
 ?>
