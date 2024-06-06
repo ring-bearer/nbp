@@ -61,7 +61,8 @@ class BolnicaController{
 
 				$list = $ls->getbolnice();
 	      foreach ($list as $k=>$l) {
-	          if(!preg_match('/^[\s\.„“"\'a-zA-ZčćšđžČĆŠĐŽ-]{0,200}$/', $_POST["ime"][$k])){
+				
+	          if(!preg_match('/^[\s"a-zA-ZčćšđžČĆŠĐŽ\-.,()\'’]{1,100}$/', $_POST["ime"][$k])){
 	    				require_once __DIR__ . '/../view/_header.php';
 	    				$poruka="Unesite ispravno ime (0-100 slova).\n" . $k;
 	    				require_once __DIR__ . '/../view/updatebolnica.php';
