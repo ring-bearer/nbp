@@ -100,10 +100,10 @@ class BolnicaController{
 	        $l->__set('mjesto',$_POST["mjesto"][$k]);
 	        $ls->updatebolnica($l);
 	      }
-
-				foreach ($_POST['brisanje'] as $i) {
+		  		// Na kraju smo ipak odlucili da ne postoji brisanje bolnica zbog povezanosti sa susjednim bolnicama
+				/*foreach ($_POST['brisanje'] as $i) {
 					$ls->deletebolnica($i);
-				}
+				}*/
 
 				$list = $ls->getbolnice();
 				$poruka="Promjene uspješno spremljene!";

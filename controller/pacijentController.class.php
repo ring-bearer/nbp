@@ -160,7 +160,7 @@ class PacijentController{
 				$ls->deletepacijent($i);
 			}
 
-			$poruka="Promjene uspješno spremljene!";
+			$poruka="Promjene uspješno spremljene! Ako ste obrisali apcijenta, molimo vas da prije toga otiđete na popis pacijenata.";
 			require_once __DIR__ . '/../view/updatepacijent.php';
 	}
 };

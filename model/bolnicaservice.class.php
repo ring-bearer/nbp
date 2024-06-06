@@ -86,6 +86,7 @@ class BolnicaService{
 	    return $row;
 		}
 
+		// Na kraju smo ipak odlucili da ne postoji brisanje bolnica zbog povezanosti sa susjednim bolnicama
 		function deletebolnica($id){
 			try
 			{
