@@ -69,7 +69,7 @@ class BolnicaService{
     }
     return $arr;
 	}
-
+		// Maknuli smo ovu opciju
 		function newbolnica($novi){
 			try
 			{

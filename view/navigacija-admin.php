@@ -10,7 +10,6 @@
     		<button class="dropbtn" onclick="window.location.href='index.php?rt=bolnica/index'">Bolnice</button>
     		<div class="dropdown-content">
           <a href="index.php?rt=bolnica/index">Popis bolnica</a>
-          <a href="index.php?rt=bolnica/unos">Unos nove bolnice</a>
           <a href="index.php?rt=bolnica/promjena">Promjena podataka</a>
 
   			</div>
