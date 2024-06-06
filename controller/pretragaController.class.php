@@ -11,6 +11,32 @@ class PretragaController{
 			require_once __DIR__ . '/../view/pretrage.php';
 	}
 
+  public function allpovijest(){
+    $ls=new PretragaService();
+    $ps=new PacijentService();
+    $pac=$ps->getpacijenti();
+    $list=array();
+    foreach ($pac as $a){
+      $oib=$a->__get('oib');
+      $list[]=$ls->povijestpretraga($oib);
+    }
+    $poruka="Povijest svih pretraga";
+    require_once __DIR__ . '/../view/povijestpretraga.php';
+  }
+
+  public function allbuduce(){
+    $ls=new PretragaService();
+    $ps=new PacijentService();
+    $pac=$ps->getpacijenti();
+    $list=array();
+    foreach ($pac as $a){
+      $oib=$a->__get('oib');
+      $list[]=$ls->buducepretrage($oib);
+    }
+    $poruka="Naručene pretrage";
+    require_once __DIR__ . '/../view/povijestpretraga.php';
+  }
+
   public function zahtjevi(){
       $ps=new PretragaService();
       $ds=new PacijentService();

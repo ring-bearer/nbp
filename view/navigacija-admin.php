@@ -11,7 +11,8 @@
     		<div class="dropdown-content">
           <a href="index.php?rt=bolnica/index">Popis bolnica</a>
           <a href="index.php?rt=bolnica/unos">Unos nove bolnice</a>
-  				<a href="index.php?rt=bolnica/promjena">Promjena podataka</a>
+          <a href="index.php?rt=bolnica/promjena">Promjena podataka</a>
+
   			</div>
   		</div>
 		<div class="dropdown">
@@ -33,7 +34,9 @@
 		<div class="dropdown">
   		<button class="dropbtn" onclick="window.location.href='index.php?rt=pretraga/index'">Pretrage</button>
   		<div class="dropdown-content">
-				<a href="index.php?rt=pretraga/index">Popis pretraga</a>
+        <a href="index.php?rt=pretraga/index">Pretrage u ponudi</a>
+        <a href="index.php?rt=pretraga/allpovijest">Popis obavljenih pretraga</a>
+				<a href="index.php?rt=pretraga/allbuduce">Popis naručenih pretraga</a>
 			</div>
 		</div>
     <div class="dropdown">

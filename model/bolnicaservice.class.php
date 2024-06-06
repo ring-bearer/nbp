@@ -30,6 +30,46 @@ class BolnicaService{
     return $arr;
 	}
 
+	function getbolnica($id){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT id,ime,adresa,mjesto FROM nbp_bolnica where id=:id');
+			$st->execute(array('id'=>$id));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+			$row = $st->fetch();
+			if( $row === false )
+				return $row;
+			$i=new Bolnica($row['id'],
+						$row['ime'],$row['adresa'],
+						$row['mjesto']);
+
+		return $i;
+	}
+
+	function getsusjedi($id){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT id_bolnice1,id_bolnice2 FROM nbp_susjedi where id_bolnice1=:id');
+      $st->execute(array('id'=>$id));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+    $arr=array();
+    while(1){
+      $row = $st->fetch();
+  		if( $row === false )
+  			return $arr;
+  		else{
+        $arr[]=$row['id_bolnice2'];
+		  }
+    }
+    return $arr;
+	}
+
 		function newbolnica($novi){
 			try
 			{

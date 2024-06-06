@@ -7,7 +7,7 @@
     echo "<br>Ovdje možete promijeniti svoje podatke.<br></p>";
 ?>
 
-<button class="dropbtn" onclick="window.location.href='index.php?rt=profil/podaci'">Moji podaci</button>
+<button class="dropbtn" onclick="window.location.href='index.php?rt=profil/podaci'">Moji podatci</button>
 
 
 <?php require_once __DIR__ . '/_footer.php'; ?>
