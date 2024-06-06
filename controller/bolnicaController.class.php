@@ -20,16 +20,16 @@ class BolnicaController{
 		public function new(){
 				$us=new BolnicaService();
 
-				if(!preg_match('/^[a-zA-ZčćšđžČĆŠĐŽ-]{0,30}$/', $_POST["ime"])){
+				if(!preg_match('/^[\s"a-zA-ZčćšđžČĆŠĐŽ-]{0,100}$/', $_POST["ime"])){
 					require_once __DIR__ . '/../view/_header.php';
-					$poruka="Unesite ispravno ime (0-30 slova).\n";
+					$poruka="Unesite ispravno ime (0-100 slova).\n";
 					require_once __DIR__ . '/../view/newbolnica.php';
 					return;
 				}
 
-	      if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ0-9]{0,30}$/', $_POST["adresa"])){
+	      if(!preg_match('/^[\.\/\sa-zA-ZčćšđžČĆŠĐŽ0-9]{0,30}$/', $_POST["adresa"])){
 					require_once __DIR__ . '/../view/_header.php';
-					$poruka="Unesite ispravnu adresu (0-30 znakova).\n";
+					$poruka="Unesite ispravnu adresu (0-50 znakova).\n";
 					require_once __DIR__ . '/../view/newbolnica.php';
 					return;
 				}
@@ -61,17 +61,17 @@ class BolnicaController{
 
 				$list = $ls->getbolnice();
 	      foreach ($list as $k=>$l) {
-	          if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ-]{0,30}$/', $_POST["ime"][$k])){
+	          if(!preg_match('/^[\s\.„“"\'a-zA-ZčćšđžČĆŠĐŽ-]{0,200}$/', $_POST["ime"][$k])){
 	    				require_once __DIR__ . '/../view/_header.php';
-	    				$poruka="Unesite ispravno ime (0-30 slova).\n";
+	    				$poruka="Unesite ispravno ime (0-100 slova).\n" . $k;
 	    				require_once __DIR__ . '/../view/updatebolnica.php';
 	    				return;
 	    			}
 	          $l->__set('ime',$_POST["ime"][$k]);
 
-	        if(!preg_match('/^[\sa-zA-ZčćšđžČĆŠĐŽ0-9]{0,30}$/', $_POST["adresa"][$k])){
+	        if(!preg_match('/^[\s\.\/a-zA-ZčćšđžČĆŠĐŽ0-9]{0,50}$/', $_POST["adresa"][$k])){
 	  				require_once __DIR__ . '/../view/_header.php';
-	  				$poruka="Unesite ispravnu adresu (0-30 znakova).\n";
+	  				$poruka="Unesite ispravnu adresu (0-50 znakova).\n";
 	  				require_once __DIR__ . '/../view/updatebolnica.php';
 	  				return;
 	  			}

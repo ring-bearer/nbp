@@ -19,8 +19,8 @@ else{
       <tr>
       <td><input type="checkbox" name="brisanje[]" value="<?php echo $a->__get('id')?>"></td>
 			<td><?php echo $a->__get('id') ?></td>
-			<td><input type="text" name="ime[]" value="<?php echo $a->__get('ime') ?>"></td>
-			<td><input type="text" name="adresa[]" value="<?php echo $a->__get('adresa') ?>"></td>
+			<td><input style="width: 600px" type="text" name="ime[]" value="<?php echo $a->__get('ime') ?>"></td>
+			<td><input style="width: 260px" type="text" name="adresa[]" value="<?php echo $a->__get('adresa') ?>"></td>
       <td><input type="text" name="mjesto[]" value="<?php echo $a->__get('mjesto') ?>"></td>
 		</tr><?php
    }

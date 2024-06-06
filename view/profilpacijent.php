@@ -14,9 +14,9 @@ else{
 		<th>OIB</th><th>MBO</th><th>Ime</th>
 		<th>Prezime</th><th>Datum rođenja</th>
 		<th>Adresa</th><th>Mjesto</th>
-		<th>OIB liječnika</th><th>Ime liječnika</th><th>Prezime liječnika</th>
+		<th>Liječnik</th>
 	</tr>
-	
+
 	<tr>
 	<td><?php echo $user->__get('oib') ?></td>
     <td><?php echo $user->__get('mbo') ?></td>
@@ -25,9 +25,7 @@ else{
 	<td><input type="date" name="datum_rodjenja" value="<?php echo $user->__get('datum_rodjenja') ?>"></td>
 	<td><input type="text" name="adresa" value="<?php echo $user->__get('adresa') ?>"></td>
 	<td><input type="text" name="mjesto" value="<?php echo $user->__get('mjesto') ?>"></td>
-    <td><?php echo $user->__get('oib_lijecnika') ?></td>
-	<td><?php echo $doktor->__get('ime') ?></td>
-	<td><?php echo $doktor->__get('prezime') ?></td>
+	<td><?php echo $doktor->__get('prezime') . ', ' . $doktor->__get('ime') ?></td>
 	</tr>
 	<?php
    echo '</table><br>';

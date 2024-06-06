@@ -202,7 +202,9 @@ button{
 }
 
 .footer {
-  margin-top: 10px;
+  width: inherit;
+  font-size: 14px;
+  margin-top: 20px;
   padding: 16px;
   text-align: center;
   background-color: #e3e3e3;

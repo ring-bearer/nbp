@@ -2,21 +2,18 @@
 require_once __DIR__ . '/../controller/pretragaController.class.php';
 
 ?>
-<h1> Pretrage </h1>
+<h1> Vrste pretraga </h1>
 <table>
 	<tr>
-		<th>OIB pacijenta</th><th>Vrsta</th>
-		<th>Datum</th><th>Vrijeme</th><th>ID bolnice</th>
+		<th>ID</th><th>Vrsta</th>
+		<th>Trajanje</th>
 	</tr>
 	<?php
     foreach($list as $a){
 			echo '<tr>';
-			if($_COOKIE['ovlasti']!==1)
-				echo '<td>' . $a->__get('oib_pacijenta') . '</td>';
+			echo '<td>' . $a->__get('id') . '</td>';
 			echo '<td>' . $a->__get('vrsta') . '</td>';
-			echo '<td>' . $a->__get('datum') . '</td>';
-			echo '<td>' . $a->__get('vrijeme') . '</td>';
-			echo '<td>' . $a->__get('id_bolnice') . '</td>';
+			echo '<td>' . $a->__get('trajanje_min') . ' minuta</td>';
 			echo '</tr>';
    }?>
 </table>

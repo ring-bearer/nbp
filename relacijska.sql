@@ -1,6 +1,4 @@
 -- trigger da se u nbp_termin ubaci samo pretraga koju odredena bolnica nudi
--- popuniti susjede
--- popuniti termine
 
 -- tablice
 
@@ -8,9 +6,15 @@ create table nbp_bolnica(
     id serial check (not null),
     ime character varying(100) check (not null),
     adresa character varying(50) check (not null),
-
     mjesto character varying(20) check (not null),
     constraint pkBolnica primary key (id)
+);
+
+create table nbp_mjesto(
+    naziv character varying(25) check (not null),
+    gs numeric check (not null), -- znamo da je N
+    gd numeric check (not null), -- znamo da je E
+    constraint pkMjesto primary key (naziv)
 );
 
 create table nbp_pretraga(
@@ -28,7 +32,8 @@ create table nbp_bolnica_pretraga(
     constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id)
 );
 
-create table nbp_susjedi( -- bolnice unutar 100 km jedna od druge
+-- !!! paziti da ispise i bolnicu kojoj pacijent pripada - nje nema u tablici
+create table nbp_susjedi( -- bolnice unutar 75 km zracne udaljenosti jedna od druge
     id_bolnice1 int check (not null),
     id_bolnice2 int check (not null),
     constraint pkSusjedi primary key (id_bolnice1, id_bolnice2),
@@ -52,8 +57,10 @@ create table nbp_lijecnik(
     datum_rodjenja date check (not null),
     adresa_ambulante character varying(50) check (not null),
     mjesto_ambulante character varying(20) check (not null),
+    id_bolnice int check (not null), -- id najblize zdravstvene ustanove
     password_hash character varying(20) check (not null), -- lozinka za prijavu u sustav
-    constraint pkLijecnik primary key (oib)
+    constraint pkLijecnik primary key (oib),
+    constraint fkLijecnik foreign key (id_bolnice) references nbp_bolnica(id)
 );
 
 create table nbp_pacijent(
@@ -63,8 +70,7 @@ create table nbp_pacijent(
     prezime character varying(20) check (not null),
     datum_rodjenja date check (not null),
     adresa character varying(50) check (not null), -- trenutna adresa boravista
-
-    mjesto character varying(20) check (not null), -- trenutno mjesto boravista -> na temelju toga racunamo udaljenost od bolnica
+    mjesto character varying(20) check (not null), -- trenutno mjesto boravista
     oib_lijecnika char(11) not null check (oib_lijecnika ~ '^[0-9]{11}$'), -- oib lijecnika opce prakse
     password_hash character varying(20) check (not null), -- lozinka za prijavu u sustav
     constraint pkPacijent primary key (oib),
@@ -106,6 +112,90 @@ CREATE INDEX termin_pacijent_idx ON nbp_termin(oib_pacijenta);
 
 ---------------------------------------------------------------------
 --funkcije
+
+-- zracna udaljenost gradova
+CREATE FUNCTION udaljenost(mjesto1 character varying(25), mjesto2 character varying(25))
+    RETURNS numeric
+AS $$
+DECLARE
+    v_gs1 numeric;
+    v_gs2 numeric;
+    v_gd1 numeric;
+    v_gd2 numeric;
+    v_pom numeric;
+BEGIN
+    SELECT gs, gd INTO v_gs1, v_gd1
+        FROM nbp_mjesto
+            WHERE naziv = mjesto1;
+
+    SELECT gs, gd INTO v_gs2, v_gd2
+        FROM nbp_mjesto
+            WHERE naziv = mjesto2;
+    v_pom = SIN(RADIANS(v_gs1)) * SIN(RADIANS(v_gs2)) + COS(RADIANS(v_gs1)) * COS(RADIANS(v_gs2)) * COS(RADIANS(v_gd2) - RADIANS(v_gd1));
+
+    RETURN acos(v_pom) * 6371;
+END;
+$$ LANGUAGE plpgsql;
+
+-- punjenje tablice susjedi
+CREATE FUNCTION punjenje_susjedi()
+    RETURNS text
+AS $$
+DECLARE
+    v_bolnica1 RECORD;
+    v_bolnica2 RECORD;
+    i INT;
+    n INT;
+BEGIN
+    SELECT count(*) INTO n
+        FROM nbp_bolnica;
+
+    i = 0;
+    FOR v_bolnica1 IN
+        SELECT *
+            FROM nbp_bolnica
+        LIMIT(n-1)
+    LOOP
+        i = i + 1;
+        FOR v_bolnica2 IN
+            SELECT *
+                FROM nbp_bolnica
+            ORDER BY id DESC
+            LIMIT(n-i)
+        LOOP
+            IF (udaljenost(v_bolnica1.mjesto, v_bolnica2.mjesto) <= 75.00)
+                THEN
+                    INSERT INTO nbp_susjedi VALUES
+                        (v_bolnica1.id, v_bolnica2.id);
+            END IF;
+        END LOOP;
+    END LOOP;
+
+    RETURN 'Ispunjena tablica SUSJEDI.';
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT * FROM punjenje_susjedi();
+select * from nbp_susjedi;
+
+-- popis pacijenata
+CREATE FUNCTION popis_pacijenata(oib_L CHAR(11))
+    RETURNS table (
+        prezime_pacijenta CHAR VARYING(20),
+        ime_pacijenta CHAR VARYING(20),
+        oib_pacijenta CHAR(11),
+        mbo_pacijenta CHAR(9)
+        -- ostale podatke moze dobiti kad klikne na pojedinog pacijenta u aplikaciji
+    )
+AS $$
+BEGIN
+    RETURN QUERY
+        SELECT prezime, ime, oib, mbo
+            FROM nbp_pacijent
+        WHERE oib_lijecnika = oib_L
+    ORDER BY prezime, ime;
+END;
+$$ LANGUAGE plpgsql;
 
 -- povijest pretraga
 CREATE FUNCTION povijest_pretraga(oib CHAR(11))
@@ -157,8 +247,8 @@ CREATE FUNCTION lista_cekanja(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING
         )
 AS $$
 DECLARE
-v_id_bolnice    INT;
-v_id_pretrage   INT;
+    v_id_bolnice    INT;
+    v_id_pretrage   INT;
 BEGIN
     SELECT id INTO v_id_bolnice
         FROM nbp_bolnica
@@ -222,36 +312,6 @@ $$ LANGUAGE plpgsql;
 ---------------------------------------------------------------------
 
 -- ubacivanje testnih podataka
-
-insert into nbp_lijecnik values
-    (10000444444, 'Gandalf', 'Mithrandir', '1940-07-02', 'Glavna 8', 'Bree', 1234567890),
-    (10000291105, 'Aragorn', 'Elessar', '1980-07-02', 'Glavna 1', 'Minas Tirith', 1234567890),
-    (10000062905, 'Legolas', 'Thranduilion', '1970-07-02', 'Glavna 7', 'Mirkwood', 1234567890),
-    (10000999919, 'Theoden', 'Ednew', '1960-07-02', 'Glavna 5', 'Edoras', 1234567890),
-    (10000857999, 'Arwen', 'Undomiel', '1970-07-02', 'Glavna 4', 'Rivendell', 1234567890),
-    (10000893743, 'Denethor', 'Ecthelion', '1950-07-02', 'Glavna 9', 'Minas Tirith', 1234567890),
-    (10000891233, 'Tom', 'Bombadil', '1940-07-02', 'Glavna 2', 'Bree', 1234567890),
-    (10000213905, 'Elendil', 'Voronda', '1960-07-02', 'Glavna 11', 'Numenor', 1234567890),
-    (10000294736, 'Feanor', 'Curufinwe', '1960-07-02', 'Glavna 12', 'Tirion', 1234567890),
-    (10000243905, 'Maedhros', 'Nelyafinwe', '1980-07-02', 'Glavna 6', 'Tirion', 1234567890),
-    (10000432043, 'Finwe', 'Noldoran', '1940-07-02', 'Glavna 13', 'Tirion', 1234567890),
-    (10000794735, 'Elrond', 'Peredhel', '1940-07-02', 'Glavna 3', 'Rivendell', 1234567890);
-
-select * from nbp_lijecnik;
-
-insert into nbp_pacijent values
-    (10000338099, 100338099, 'Frodo', 'Baggins', '2000-07-02', 'Glavna 1', 'Hobbiton', 10000444444, 0123456789),
-    (10000917906, 100917906, 'Samwise', 'Gamgee', '1999-07-02', 'Glavna 3', 'Hobbiton', 10000891233, 0123456789),
-    (10000998713, 100998713, 'Meriadoc', 'Brandybuck', '1998-07-02', 'Glavna 2', 'Buckland', 10000891233, 0123456789),
-    (10000395731, 100395731, 'Peregrin', 'Took', '2002-07-02', 'Glavna 4', 'Buckland', 10000444444, 0123456789),
-    (10000520909, 100520909, 'Boromir', 'Echtelion', '1980-07-02', 'Glavna 5', 'Minas Tirith', 10000291105, 0123456789),
-    (10000013006, 100013006, 'Faramir', 'Echtelion', '1990-07-02', 'Glavna 5', 'Minas Tirith', 10000893743, 0123456789),
-    (10000878383, 100878383, 'Eowyn', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919, 0123456789),
-    (10000402929, 100402929, 'Eomer', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919, 0123456789);
-
-select * from nbp_pacijent;
-
-select * from popis_pacijenata('10000444444');
 
 insert into nbp_bolnica values
     (1, 'Opća bolnica "Dr. Ivo Pedišić" Sisak', 'J.J. Strossmayera 59', 'Sisak'),
@@ -376,6 +436,105 @@ insert into nbp_bolnica values
 select * from nbp_bolnica;
 
 select distinct mjesto from nbp_bolnica;
+
+insert into nbp_mjesto values
+    ('Senj', 44.98944, 14.90583),
+    ('Split', 43.50891, 16.439154),
+    ('Gospić', 44.54611, 15.37472),
+    ('Rab', 44.75694, 14.76083),
+    ('Cernik', 45.28861, 17.38194),
+    ('Novalja', 44.55778, 14.8866),
+    ('Popovača', 45.56972, 16.625),
+    ('Virovitica', 45.83194, 17.38389),
+    ('Varaždinske Toplice', 46.20917, 16.41917),
+    ('Vinkovci', 45.28833, 18.80472),
+    ('Daruvar', 45.59056, 17.225),
+    ('Kutina', 45.475, 16.78194),
+    ('Gornja Bistra', 45.91667, 15.9),
+    ('Dubrovnik', 42.64125, 18.10909),
+    ('Slunj', 45.11456, 15.5843),
+    ('Duga Resa', 45.44614, 15.49871),
+    ('Knin', 44.04063, 16.19662),
+    ('Vela Luka', 42.96333, 16.7225),
+    ('Našice', 45.48861, 18.08778),
+    ('Krapina', 46.16083, 15.87889),
+    ('Lovran', 45.29194, 14.27417),
+    ('Korenica', 44.74389, 15.70972),
+    ('Zadar', 44.11578, 15.22514),
+    ('Bjelovar', 45.89861, 16.84889),
+    ('Korčula', 42.96038, 17.13525),
+    ('Opatija', 45.33658, 14.30782),
+    ('Osijek', 45.55111, 18.69389),
+    ('Crikvenica', 45.17722, 14.69278),
+    ('Samobor', 45.80306, 15.71806),
+    ('Vojnić', 45.32361, 15.69861),
+    ('Šibenik', 43.73429, 15.8942),
+    ('Stubičke toplice', 45.97585, 15.93238),
+    ('Petrinja', 45.4375, 16.29),
+    ('Donji Miholjac', 45.76083, 18.16722),
+    ('Rijeka', 45.32673, 14.44241),
+    ('Beli Manastir', 45.77, 18.60361),
+    ('Dražice', 45.39083, 14.47028),
+    ('Valpovo', 45.66083, 18.41861),
+    ('Zagreb', 45.81444, 15.97798),
+    ('Vukovar', 45.35161, 19.00225),
+    ('Đakovo', 45.30833, 18.41056),
+    ('Rovinj', 45.08268, 13.63457),
+    ('Požega', 45.34028, 17.68528),
+    ('Metković', 43.05417, 17.64833),
+    ('Čakovec', 46.38444, 16.43389),
+    ('Ogulin', 45.26611, 15.22861),
+    ('Karlovac', 45.49167, 15.55),
+    ('Županja', 45.0775, 18.6975),
+    ('Ivanić Grad', 45.70833, 16.39694),
+    ('Nova Gradiška', 45.255, 17.38306),
+    ('Velika Gorica', 45.7125, 16.07556),
+    ('Slavonski Brod', 45.16028, 18.01556),
+    ('Otočac', 44.86944, 15.2375),
+    ('Drniš', 43.8625, 16.15556),
+    ('Makarska', 43.29694, 17.01778),
+    ('Sisak', 45.46611, 16.37833),
+    ('Ozalj', 45.61293, 15.47771),
+    ('Zabok', 46.02626, 15.90391),
+    ('Varaždin', 46.30444, 16.33778),
+    ('Lipik', 45.41139, 17.15222),
+    ('Ploče', 43.05611, 17.43278),
+    ('Ugljan', 44.13083, 15.10306),
+    ('Krapinske Toplice', 46.09333, 15.84333),
+    ('Pula', 44.86833, 13.84806),
+    ('Biograd na Moru', 43.94333, 15.45194),
+    ('Koprivnica', 46.16278, 16.8275)
+;
+
+insert into nbp_lijecnik values
+    (10000444444, 'Gandalf', 'Mithrandir', '1940-07-02', 'Glavna 8', 'Bree', 1, 1234567890),
+    (10000291105, 'Aragorn', 'Elessar', '1980-07-02', 'Glavna 1', 'Minas Tirith', 4, 1234567890),
+    (10000062905, 'Legolas', 'Thranduilion', '1970-07-02', 'Glavna 7', 'Mirkwood', 14, 1234567890),
+    (10000999919, 'Theoden', 'Ednew', '1960-07-02', 'Glavna 5', 'Edoras', 17, 1234567890),
+    (10000857999, 'Arwen', 'Undomiel', '1970-07-02', 'Glavna 4', 'Rivendell', 20, 1234567890),
+    (10000893743, 'Denethor', 'Ecthelion', '1950-07-02', 'Glavna 9', 'Minas Tirith', 28, 1234567890),
+    (10000891233, 'Tom', 'Bombadil', '1940-07-02', 'Glavna 2', 'Bree', 56, 1234567890),
+    (10000213905, 'Elendil', 'Voronda', '1960-07-02', 'Glavna 11', 'Numenor', 70, 1234567890),
+    (10000294736, 'Feanor', 'Curufinwe', '1960-07-02', 'Glavna 12', 'Tirion', 13, 1234567890),
+    (10000243905, 'Maedhros', 'Nelyafinwe', '1980-07-02', 'Glavna 6', 'Tirion', 27, 1234567890),
+    (10000432043, 'Finwe', 'Noldoran', '1940-07-02', 'Glavna 13', 'Tirion', 100, 1234567890),
+    (10000794735, 'Elrond', 'Peredhel', '1940-07-02', 'Glavna 3', 'Rivendell', 114, 1234567890);
+
+select * from nbp_lijecnik;
+
+insert into nbp_pacijent values
+    (10000338099, 100338099, 'Frodo', 'Baggins', '2000-07-02', 'Glavna 1', 'Hobbiton', 10000444444, 0123456789),
+    (10000917906, 100917906, 'Samwise', 'Gamgee', '1999-07-02', 'Glavna 3', 'Hobbiton', 10000891233, 0123456789),
+    (10000998713, 100998713, 'Meriadoc', 'Brandybuck', '1998-07-02', 'Glavna 2', 'Buckland', 10000891233, 0123456789),
+    (10000395731, 100395731, 'Peregrin', 'Took', '2002-07-02', 'Glavna 4', 'Buckland', 10000444444, 0123456789),
+    (10000520909, 100520909, 'Boromir', 'Echtelion', '1980-07-02', 'Glavna 5', 'Minas Tirith', 10000291105, 0123456789),
+    (10000013006, 100013006, 'Faramir', 'Echtelion', '1990-07-02', 'Glavna 5', 'Minas Tirith', 10000893743, 0123456789),
+    (10000878383, 100878383, 'Eowyn', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919, 0123456789),
+    (10000402929, 100402929, 'Eomer', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919, 0123456789);
+
+select * from nbp_pacijent;
+
+select * from popis_pacijenata('10000444444');
 
 insert into nbp_pretraga values
     (1, 'dermatološki pregled', 45),
