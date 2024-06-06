@@ -12,6 +12,19 @@ class BolnicaController{
 	 	require_once __DIR__ . '/../view/bolnice.php';
 	}
 
+	public function susjedi(){
+		$ls=new BolnicaService();
+		$arr=array();
+		$sus=array();
+		$l = $ls->getbolnica($_POST['susjedi']);
+		$arr = $ls->getsusjedi($_POST['susjedi']);
+		foreach($arr as $b){
+			$nov=$ls->getbolnica($b);
+			$sus[]=$nov;
+		}
+	 	require_once __DIR__ . '/../view/susjedi.php';
+	}
+
 
 	  public function unos(){
 			  require_once __DIR__ . '/../view/newbolnica.php';
