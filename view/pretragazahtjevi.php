@@ -30,6 +30,7 @@ if(!isset($prazno)){
         <input type="hidden" name="oib_pacijenta_<?php echo $i; ?>" value="<?php echo $a[0]; ?>">
             <input type="hidden" name="oib_lijecnika_<?php echo $i; ?>" value="<?php echo $a[1]; ?>">
             <input type="hidden" name="vrsta_pretrage_<?php echo $i; ?>" value="<?php echo $a[2]; ?>">
+            <input type="hidden" name="mjesto_<?php echo $i; ?>" value="<?php echo $listapac[$i]->__get('mjesto'); ?>">
             <td><button type="submit" name="prihvati_<?php echo $i; ?>" value="<?php echo $listapac[$i]->__get('oib'); ?>">Prihvati</button></td>
             <td><button type="submit" name="odbij_<?php echo $i; ?>" value="<?php echo $listapac[$i]->__get('oib'); ?>">Odbij</button></td>
       <?php }
