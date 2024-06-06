@@ -30,6 +30,7 @@ class BolnicaController{
 			  require_once __DIR__ . '/../view/newbolnica.php';
 		}
 
+		// maknuli smo opciju dodavanja novih bolnica
 		public function new(){
 				$us=new BolnicaService();
 
