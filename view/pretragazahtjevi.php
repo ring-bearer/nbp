@@ -25,9 +25,9 @@ if(!isset($prazno)){
         echo '<td>' . $a[1] . '</td>';
       }
       echo '<td>' . $a[2] . '</td>';
-      if ($_COOKIE['ovlasti']==='1'){?>
-        <td><button type="submit" name="prihvati" value="<?php echo $a->__get('oib');?>">Prihvati</button></td>
-        <td><button type="submit" name="odbij" value="<?php echo $a->__get('oib');?>">Odbij</button></td>
+      if ($_COOKIE['ovlasti']==='0'){?>
+        <td><button type="submit" name="prihvati" value="<?php $listapac[$i]->__get('oib');?>">Prihvati</button></td>
+        <td><button type="submit" name="odbij" value="<?php $listapac[$i]->__get('oib');?>">Odbij</button></td>
       <?php }
       echo '<tr>';
    }?>
