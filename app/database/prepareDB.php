@@ -166,7 +166,7 @@ try
             oib_lijecnika char(11) not null, -- oib lijecnika opce prakse
             password_hash varchar(255) check (not null), -- lozinka za prijavu u sustav
             constraint pkPacijent primary key (oib),
-            constraint fkPacijent foreign key (oib_lijecnika) references nbp_lijecnik(oib)
+            constraint fkPacijent foreign key (oib_lijecnika) references nbp_lijecnik(oib) ON DELETE CASCADE
         );'
       );
 
@@ -186,7 +186,7 @@ try
             vrijeme time check (not null),
             id_bolnice int check (not null),
             constraint pkTermin primary key (oib_pacijenta, datum, vrijeme),
-            constraint fkPacijent foreign key (oib_pacijenta) references nbp_pacijent(oib),
+            constraint fkPacijent foreign key (oib_pacijenta) references nbp_pacijent(oib) ON DELETE CASCADE,
             constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id),
             constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id)
         );'
