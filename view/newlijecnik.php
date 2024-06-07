@@ -17,6 +17,16 @@ if(isset($poruka)) echo "<p id=gore>" . $poruka . "</p>";
       Adresa ambulante:<br> <input type="text" name="adresa_ambulante" />
       <br><br>
       Mjesto ambulante:<br> <input type="text" name="mjesto_ambulante" />
+			<br><br>
+			Najbliža bolnica:<br>
+			<?php
+	        echo '<tr><td><select name="bolnica">';
+						echo '<option value="" selected disabled hidden>Odaberite bolnicu</option>';
+	          foreach($list as $b){
+	            ?><option value="<?php echo $b->__get('id')?>"><?php echo $b->__get('ime')?><?php
+	            }
+	        echo '</select></td>';
+					?>
       <br><br>
 	    <button type="submit" name="gumb" value="doktor">Dodaj!</button>
 			</div>

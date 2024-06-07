@@ -86,12 +86,13 @@ CREATE FUNCTION povijest_pretraga(oib CHAR(11))
     RETURNS table (
         datum_pretrage DATE,
         vrsta_pretrage CHAR VARYING (20),
-        ime_bolnice  CHAR VARYING (30)
+        ime_bolnice  CHAR VARYING (30),
+        mjesto_bolnice CHAR VARYING (20)
     )
 AS $$
 BEGIN
     RETURN QUERY
-        SELECT datum, vrsta, ime
+        SELECT datum, vrsta, ime, mjesto
             FROM nbp_termin
                 LEFT JOIN nbp_bolnica
                     ON id = id_bolnice

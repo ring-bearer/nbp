@@ -194,28 +194,28 @@ insert into nbp_mjesto values
 select punjenje_susjedi();
 
 insert into nbp_lijecnik values
-    (10000444444, 'Gandalf', 'Mithrandir', '1940-07-02', 'Glavna 8', 'Zagreb', 1, 1234567890),
-    (10000291105, 'Aragorn', 'Elessar', '1980-07-02', 'Glavna 1', 'Slavonski Brod', 4, 1234567890),
-    (10000062905, 'Legolas', 'Thranduilion', '1970-07-02', 'Glavna 7', 'Bjelovar', 14, 1234567890),
-    (10000999919, 'Theoden', 'Ednew', '1960-07-02', 'Glavna 5', 'Slavonski Brod', 17, 1234567890),
-    (10000857999, 'Arwen', 'Undomiel', '1970-07-02', 'Glavna 4', 'Bjelovar', 20, 1234567890),
-    (10000893743, 'Denethor', 'Ecthelion', '1950-07-02', 'Glavna 9', 'Split', 28, 1234567890),
-    (10000891233, 'Tom', 'Bombadil', '1940-07-02', 'Glavna 2', 'Split', 56, 1234567890),
-    (10000213905, 'Elendil', 'Voronda', '1960-07-02', 'Glavna 11', 'Zagreb', 70, 1234567890),
-    (10000294736, 'Feanor', 'Curufinwe', '1960-07-02', 'Glavna 12', 'Bjelovar', 13, 1234567890),
-    (10000243905, 'Maedhros', 'Nelyafinwe', '1980-07-02', 'Glavna 6', 'Split', 27, 1234567890),
-    (10000432043, 'Finwe', 'Noldoran', '1940-07-02', 'Glavna 13', 'Zagreb', 100, 1234567890),
-    (10000794735, 'Elrond', 'Peredhel', '1940-07-02', 'Glavna 3', 'Slavonski Brod', 114, 1234567890);
+    (10000444444, 'Gandalf', 'Mithrandir', '1940-07-02', 'Glavna 8', 'Zagreb', 1, 'gandalf123'),
+    (10000291105, 'Aragorn', 'Elessar', '1980-07-02', 'Glavna 1', 'Slavonski Brod', 4, 'aragorn123'),
+    (10000062905, 'Legolas', 'Thranduilion', '1970-07-02', 'Glavna 7', 'Bjelovar', 14, 'legolas123'),
+    (10000999919, 'Theoden', 'Ednew', '1960-07-02', 'Glavna 5', 'Slavonski Brod', 17, 'theoden123'),
+    (10000857999, 'Arwen', 'Undomiel', '1970-07-02', 'Glavna 4', 'Bjelovar', 20, 'arwen123'),
+    (10000893743, 'Denethor', 'Ecthelion', '1950-07-02', 'Glavna 9', 'Split', 28, 'denethor123'),
+    (10000891233, 'Tom', 'Bombadil', '1940-07-02', 'Glavna 2', 'Split', 56, 'tom123'),
+    (10000213905, 'Elendil', 'Voronda', '1960-07-02', 'Glavna 11', 'Zagreb', 70, 'elendil123'),
+    (10000294736, 'Feanor', 'Curufinwe', '1960-07-02', 'Glavna 12', 'Bjelovar', 13, 'feanor123'),
+    (10000243905, 'Maedhros', 'Nelyafinwe', '1980-07-02', 'Glavna 6', 'Split', 27, 'maedhros123'),
+    (10000432043, 'Finwe', 'Noldoran', '1940-07-02', 'Glavna 13', 'Zagreb', 100, 'finwe123'),
+    (10000794735, 'Elrond', 'Peredhel', '1940-07-02', 'Glavna 3', 'Slavonski Brod', 114, 'elrond123');
 
 insert into nbp_pacijent values
-    (10000338099, 100338099, 'Frodo', 'Baggins', '2000-07-02', 'Glavna 1', 'Beli Manastir', 10000444444, 0123456789),
-    (10000917906, 100917906, 'Samwise', 'Gamgee', '1999-07-02', 'Glavna 3', 'Senj', 10000891233, 0123456789),
-    (10000998713, 100998713, 'Meriadoc', 'Brandybuck', '1998-07-02', 'Glavna 2', 'Biograd na Moru', 10000891233, 0123456789),
-    (10000395731, 100395731, 'Peregrin', 'Took', '2002-07-02', 'Glavna 4', 'Ploče', 10000444444, 0123456789),
-    (10000520909, 100520909, 'Boromir', 'Echtelion', '1980-07-02', 'Glavna 5', 'Sisak', 10000291105, 0123456789),
-    (10000013006, 100013006, 'Faramir', 'Echtelion', '1990-07-02', 'Glavna 5', 'Samobor', 10000893743, 0123456789),
-    (10000878383, 100878383, 'Eowyn', 'Eadig', '1990-07-02', 'Glavna 7', 'Đakovo', 10000999919, 0123456789),
-    (10000402929, 100402929, 'Eomer', 'Eadig', '1990-07-02', 'Glavna 7', 'Split', 10000999919, 0123456789);
+    (10000338099, 100338099, 'Frodo', 'Baggins', '2000-07-02', 'Glavna 1', 'Beli Manastir', 10000444444, 'frodo123'),
+    (10000917906, 100917906, 'Samwise', 'Gamgee', '1999-07-02', 'Glavna 3', 'Senj', 10000891233, 'samwise123'),
+    (10000998713, 100998713, 'Meriadoc', 'Brandybuck', '1998-07-02', 'Glavna 2', 'Biograd na Moru', 10000891233, 'meriadoc123'),
+    (10000395731, 100395731, 'Peregrin', 'Took', '2002-07-02', 'Glavna 4', 'Ploče', 10000444444, 'peregrin123'),
+    (10000520909, 100520909, 'Boromir', 'Echtelion', '1980-07-02', 'Glavna 5', 'Sisak', 10000291105, 'boromir123'),
+    (10000013006, 100013006, 'Faramir', 'Echtelion', '1990-07-02', 'Glavna 5', 'Samobor', 10000893743, 'faramir123'),
+    (10000878383, 100878383, 'Eowyn', 'Eadig', '1990-07-02', 'Glavna 7', 'Đakovo', 10000999919, 'eowyn123'),
+    (10000402929, 100402929, 'Eomer', 'Eadig', '1990-07-02', 'Glavna 7', 'Split', 10000999919, 'eomer123');
 
 insert into nbp_pretraga values
     (1, 'dermatološki pregled', 45),

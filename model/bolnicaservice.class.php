@@ -112,7 +112,7 @@ class BolnicaService{
 			try
 			{
 				$db = DB::getConnection();
-				$st = $db->prepare("select * from nbp_bolnica where udaljenost(CAST ($mjesto AS text), mjesto) < 75;");
+				$st = $db->prepare("select * from nbp_bolnica where udaljenost($mjesto, nbp_bolnica.mjesto) < 75;");
 				$st->execute();
 			}
 			catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }

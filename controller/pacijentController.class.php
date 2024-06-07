@@ -161,12 +161,12 @@ class PacijentController{
 				$ls->deletepacijent($i);
 			}
 
-			$poruka="Promjene uspješno spremljene! Ako ste obrisali apcijenta, molimo vas da prije toga otiđete na popis pacijenata.";
+			$poruka="Promjene uspješno spremljene!";
 			require_once __DIR__ . '/../view/updatepacijent.php';
 	}
 
 	public function pretraga(){
-		foreach ($_POST as $key => $value) {
+	/*	foreach ($_POST as $key => $value) {
 			if (strpos($key, 'prihvati_') === 0) {
 				//echo "prihvati";
 				$index = str_replace('prihvati_', '', $key);
@@ -175,6 +175,10 @@ class PacijentController{
 				$oib_lijecnika = $_POST['oib_lijecnika_' . $index];
 				$vrsta = $_POST['vrsta_pretrage_' . $index];
 				$mjesto = $_POST['mjesto_' . $index];
+
+				$ls=new LijecnikService();
+				$doc=$ls->getlijecnik($oib_lijecnika);
+				$id_bolnice=$doc
 
 				// Smislit kako dohvatit najblize bolnice po mjestu pacijenta
 				$bs = new BolnicaService;
@@ -188,16 +192,18 @@ class PacijentController{
 					$termini[]=$dostupantermin;
 				}
 
+				var_dump($termini);
 				// Sada te termine treba poslati pacijentu negdje
 
 
-				// Na kraju obrisemo taj termin
+				// Na kraju obrisemo taj zahtjev
 				$ps = new PacijentService;
 				$ps->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
 
 				header("Location: index.php?rt=pretraga/mojizahtjevi");
 				exit();
-			} elseif (strpos($key, 'odbij_') === 0) {
+			}
+			elseif (strpos($key, 'odbij_') === 0) {
 				//echo "Odbij";
 				// Izvadimo indeks
 				$index = str_replace('odbij_', '', $key);
@@ -212,7 +218,7 @@ class PacijentController{
 				header("Location: index.php?rt=pretraga/mojizahtjevi");
 				exit();
 			}
-		}
+		}*/
 	}
 };
 

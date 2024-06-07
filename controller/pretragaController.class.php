@@ -97,12 +97,21 @@ class PretragaController{
 
   public function new(){
     $ls=new PacijentService();
-    $pac = $ls->getpacijent($_COOKIE['oib']);
+    $oib=$_COOKIE['oib'];
+    $pac = $ls->getpacijent($oib);
+
     $oib_lijecnika=$pac->__get('oib_lijecnika');
     $ps=new PretragaService();
-    $ps->newzahtjev($_COOKIE['oib'],$oib_lijecnika,$_POST['zahtjev']);
-    $poruka="Zahtjev uspješno poslan!";
-		require_once __DIR__ . '/../view/newpretraga.php';
+    if($ps->getpretragazahtjev($oib,$oib_lijecnika,$_POST['zahtjev'])!==0){
+      $poruka= "Ovaj zahtjev je već poslan!";
+  		require_once __DIR__ . '/../view/newpretraga.php';
+      return;
+    }
+    else{
+      $ps->newzahtjev($oib,$oib_lijecnika,$_POST['zahtjev']);
+      $poruka="Zahtjev uspješno poslan!";
+  		require_once __DIR__ . '/../view/newpretraga.php';
+    }
 	}
 
 
