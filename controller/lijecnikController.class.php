@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../model/lijecnikservice.class.php';
 require_once __DIR__ . '/../model/pacijentservice.class.php';
 require_once __DIR__ . '/../model/zahtjevservice.class.php';
+require_once __DIR__ . '/../model/pretragaservice.class.php';
 require_once __DIR__ . '/../model/lijecnik.class.php';
 require_once __DIR__ . '/../model/pacijent.class.php';
 require_once __DIR__ . '/../model/zahtjev.class.php';
@@ -127,6 +128,27 @@ class LijecnikController{
 
 			$poruka="Promjene uspješno spremljene! Ako ste obrisali apcijenta, molimo vas da prije toga otiđete na popis pacijenata.";
 			require_once __DIR__ . '/../view/updatelijecnik.php';
+	}
+
+	public function povijestPretraga(){
+		foreach ($_POST as $key => $value) {
+			if (strpos($key, 'povijest_') === 0) {
+				$index = str_replace('povijest_', '', $key);
+				
+				if (isset($_POST['oib_pacijenta_' . $index]) && isset($_POST['ime_pacijenta_' . $index])) {
+					$oib_pacijenta = $_POST['oib_pacijenta_' . $index];
+					$ime_pacijenta_ = $_POST['ime_pacijenta_' . $index];
+					
+					$ls = new PretragaService();
+					$list = $ls->povijestpretraga($oib_pacijenta);
+					$poruka = "Povijest pretraga pacijenta " . $ime_pacijenta_;
+					require_once __DIR__ . '/../view/povijestpretraga.php';
+				} else {
+					echo "Error: Pacijent details not found.";
+				}
+			}
+		}
+		
 	}
 };
 
