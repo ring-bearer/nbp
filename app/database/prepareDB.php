@@ -83,7 +83,7 @@ try
             id_bolnice int check (not null),
             id_pretrage int check (not null),
             constraint pkBP primary key (id_bolnice, id_pretrage),
-            constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id),
+            constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id) ON DELETE CASCADE,
             constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id)
         );'
     );
@@ -101,8 +101,8 @@ try
             id_bolnice1 int check (not null),
             id_bolnice2 int check (not null),
             constraint pkSusjedi primary key (id_bolnice1, id_bolnice2),
-            constraint fkBolnica1 foreign key (id_bolnice1) references nbp_bolnica(id),
-            constraint fkBolnica2 foreign key (id_bolnice2) references nbp_bolnica(id)
+            constraint fkBolnica1 foreign key (id_bolnice1) references nbp_bolnica(id) ON DELETE CASCADE,
+            constraint fkBolnica2 foreign key (id_bolnice2) references nbp_bolnica(id) ON DELETE CASCADE
         );'
     );
 
@@ -188,7 +188,7 @@ try
             constraint pkTermin primary key (oib_pacijenta, datum, vrijeme),
             constraint fkPacijent foreign key (oib_pacijenta) references nbp_pacijent(oib) ON DELETE CASCADE,
             constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id),
-            constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id)
+            constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id) ON DELETE CASCADE
         );'
     );
 
