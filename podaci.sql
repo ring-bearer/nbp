@@ -1,316 +1,3 @@
--- trigger da se u nbp_termin ubaci samo pretraga koju odredena bolnica nudi
-
--- tablice
-
-create table nbp_bolnica(
-    id serial check (not null),
-    ime character varying(100) check (not null),
-    adresa character varying(50) check (not null),
-    mjesto character varying(20) check (not null),
-    constraint pkBolnica primary key (id)
-);
-
-create table nbp_mjesto(
-    naziv character varying(25) check (not null),
-    gs numeric check (not null), -- znamo da je N
-    gd numeric check (not null), -- znamo da je E
-    constraint pkMjesto primary key (naziv)
-);
-
-create table nbp_pretraga(
-    id serial check (not null),
-    vrsta character varying(30) check (not null),
-    trajanje_min int check (not null), -- ukljucuje ciscenje nakon pretrage i kratku pauzu ako je potrebno
-    constraint pkPretraga primary key (id)
-);
-
-create table nbp_bolnica_pretraga(
-    id_bolnice int check (not null),
-    id_pretrage int check (not null),
-    constraint pkBP primary key (id_bolnice, id_pretrage),
-    constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id),
-    constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id)
-);
-
--- !!! paziti da ispise i bolnicu kojoj pacijent pripada - nje nema u tablici
-create table nbp_susjedi( -- bolnice unutar 75 km zracne udaljenosti jedna od druge
-    id_bolnice1 int check (not null),
-    id_bolnice2 int check (not null),
-    constraint pkSusjedi primary key (id_bolnice1, id_bolnice2),
-    constraint fkBolnica1 foreign key (id_bolnice1) references nbp_bolnica(id),
-    constraint fkBolnica2 foreign key (id_bolnice2) references nbp_bolnica(id)
-);
-
-create table nbp_admin(
-    oib char(11) not null check (oib ~ '^[0-9]{11}$'),
-    ime character varying(20) check (not null),
-    prezime character varying(20) check (not null),
-    password_hash character varying(20) check (not null), -- lozinka za prijavu u sustav
-    constraint pk_Admin primary key (oib)
-);
-
--- lijecnik opce prakse, ne specijalist
-create table nbp_lijecnik(
-    oib char(11) not null check (oib ~ '^[0-9]{11}$'),
-    ime character varying(20) check (not null),
-    prezime character varying(20) check (not null),
-    datum_rodjenja date check (not null),
-    adresa_ambulante character varying(50) check (not null),
-    mjesto_ambulante character varying(20) check (not null),
-    id_bolnice int check (not null), -- id najblize zdravstvene ustanove
-    password_hash character varying(20) check (not null), -- lozinka za prijavu u sustav
-    constraint pkLijecnik primary key (oib),
-    constraint fkLijecnik foreign key (id_bolnice) references nbp_bolnica(id)
-);
-
-create table nbp_pacijent(
-    oib char(11) not null check (oib ~ '^[0-9]{11}$'),
-    mbo char(9), --maticni broj osiguranika, ako pacijent ima zdravstveno
-    ime character varying(20) check (not null),
-    prezime character varying(20) check (not null),
-    datum_rodjenja date check (not null),
-    adresa character varying(50) check (not null), -- trenutna adresa boravista
-    mjesto character varying(20) check (not null), -- trenutno mjesto boravista
-    oib_lijecnika char(11) not null check (oib_lijecnika ~ '^[0-9]{11}$'), -- oib lijecnika opce prakse
-    password_hash character varying(20) check (not null), -- lozinka za prijavu u sustav
-    constraint pkPacijent primary key (oib),
-    constraint fkPacijent foreign key (oib_lijecnika) references nbp_lijecnik(oib)
-);
-
-
-create table nbp_termin(
-    oib_pacijenta char(11) not null,
-    id_pretrage int check (not null),
-    datum date check (not null),
-    vrijeme time check (not null),
-    id_bolnice int check (not null),
-    constraint pkTermin primary key (oib_pacijenta, datum, vrijeme),
-    constraint fkPacijent foreign key (oib_pacijenta) references nbp_pacijent(oib),
-    constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id),
-    constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id)
-);
-
-create table nbp_zahtjev(
-    oib_pacijenta char(11) check (not null),
-    oib_stari char(11) check (not null), --trenutni liječnik
-    oib_novi char(11) check (not null), --željeni novi liječnik
-    constraint pkZahtjevi primary key (oib_pacijenta,oib_stari,oib_novi)
-);
-
-create table nbp_zahtjev_pretraga(
-    oib_pacijenta char(11) check (not null),
-    oib_lijecnika char(11) check (not null),
-    vrsta char varying(30) check (not null),
-    constraint pkZahtjeviPretraga primary key (oib_pacijenta,oib_lijecnika,vrsta)
-);
----------------------------------------------------------------------
-
--- indeksi za ubrzavanje upita
-
-CREATE INDEX pacijent_ime_idx ON nbp_pacijent(prezime, ime);
-CREATE INDEX termin_pacijent_idx ON nbp_termin(oib_pacijenta);
-
----------------------------------------------------------------------
---funkcije
-
--- zracna udaljenost gradova
-CREATE FUNCTION udaljenost(mjesto1 character varying(25), mjesto2 character varying(25))
-    RETURNS numeric
-AS $$
-DECLARE
-    v_gs1 numeric;
-    v_gs2 numeric;
-    v_gd1 numeric;
-    v_gd2 numeric;
-    v_pom numeric;
-BEGIN
-    SELECT gs, gd INTO v_gs1, v_gd1
-        FROM nbp_mjesto
-            WHERE naziv = mjesto1;
-
-    SELECT gs, gd INTO v_gs2, v_gd2
-        FROM nbp_mjesto
-            WHERE naziv = mjesto2;
-    v_pom = SIN(RADIANS(v_gs1)) * SIN(RADIANS(v_gs2)) + COS(RADIANS(v_gs1)) * COS(RADIANS(v_gs2)) * COS(RADIANS(v_gd2) - RADIANS(v_gd1));
-
-    RETURN acos(v_pom) * 6371;
-END;
-$$ LANGUAGE plpgsql;
-
--- punjenje tablice susjedi
-CREATE FUNCTION punjenje_susjedi()
-    RETURNS text
-AS $$
-DECLARE
-    v_bolnica1 RECORD;
-    v_bolnica2 RECORD;
-    i INT;
-    n INT;
-BEGIN
-    SELECT count(*) INTO n
-        FROM nbp_bolnica;
-
-    i = 0;
-    FOR v_bolnica1 IN
-        SELECT *
-            FROM nbp_bolnica
-        LIMIT(n-1)
-    LOOP
-        i = i + 1;
-        FOR v_bolnica2 IN
-            SELECT *
-                FROM nbp_bolnica
-            ORDER BY id DESC
-            LIMIT(n-i)
-        LOOP
-            IF (udaljenost(v_bolnica1.mjesto, v_bolnica2.mjesto) <= 75.00)
-                THEN
-                    INSERT INTO nbp_susjedi VALUES
-                        (v_bolnica1.id, v_bolnica2.id);
-            END IF;
-        END LOOP;
-    END LOOP;
-
-    RETURN 'Ispunjena tablica SUSJEDI.';
-END;
-$$ LANGUAGE plpgsql;
-
-SELECT * FROM punjenje_susjedi();
-select * from nbp_susjedi;
-
--- popis pacijenata
-CREATE FUNCTION popis_pacijenata(oib_L CHAR(11))
-    RETURNS table (
-        prezime_pacijenta CHAR VARYING(20),
-        ime_pacijenta CHAR VARYING(20),
-        oib_pacijenta CHAR(11),
-        mbo_pacijenta CHAR(9)
-        -- ostale podatke moze dobiti kad klikne na pojedinog pacijenta u aplikaciji
-    )
-AS $$
-BEGIN
-    RETURN QUERY
-        SELECT prezime, ime, oib, mbo
-            FROM nbp_pacijent
-        WHERE oib_lijecnika = oib_L
-    ORDER BY prezime, ime;
-END;
-$$ LANGUAGE plpgsql;
-
--- povijest pretraga
-CREATE FUNCTION povijest_pretraga(oib CHAR(11))
-    RETURNS table (
-        datum_pretrage DATE,
-        vrsta_pretrage CHAR VARYING (20),
-        ime_bolnice  CHAR VARYING (30)
-    )
-AS $$
-BEGIN
-    RETURN QUERY
-        SELECT datum, vrsta, ime
-            FROM nbp_termin
-                LEFT JOIN nbp_bolnica
-                    ON id = id_bolnice
-                LEFT JOIN nbp_pretraga
-                    ON nbp_termin.id_pretrage = nbp_pretraga.id
-        WHERE oib_pacijenta = oib
-        ORDER BY datum DESC; -- najnovije pretrage prve
-END;
-$$ LANGUAGE plpgsql;
-
--- popis pacijenata
-CREATE FUNCTION popis_pacijenata(oib_L CHAR(11))
-    RETURNS table (
-        prezime_pacijenta CHAR VARYING(20),
-        ime_pacijenta CHAR VARYING(20),
-        oib_pacijenta CHAR(11),
-        mbo_pacijenta CHAR(9)
-        -- ostale podatke moze dobiti kad klikne na pojedinog pacijenta u aplikaciji
-    )
-AS $$
-BEGIN
-    RETURN QUERY
-        SELECT prezime, ime, oib, mbo
-            FROM nbp_pacijent
-        WHERE oib_lijecnika = oib_L
-    ORDER BY prezime, ime;
-END;
-$$ LANGUAGE plpgsql;
-
-
--- lista cekanja
-CREATE FUNCTION lista_cekanja(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
-    RETURNS table (
-        datum_termina DATE,
-        vrijeme_termina TIME,
-        oib CHAR(11)
-        )
-AS $$
-DECLARE
-    v_id_bolnice    INT;
-    v_id_pretrage   INT;
-BEGIN
-    SELECT id INTO v_id_bolnice
-        FROM nbp_bolnica
-        WHERE ime = ime_bolnice;
-
-    SELECT id INTO v_id_pretrage
-        FROM nbp_pretraga
-        WHERE vrsta = vrsta_P;
-
-    RETURN QUERY
-        SELECT datum, vrijeme, oib_pacijenta
-            FROM nbp_termin
-        WHERE datum >= current_date
-          AND vrijeme > localtime
-          AND id_bolnice = v_id_bolnice
-          AND id_pretrage = v_id_pretrage
-    ORDER BY datum, vrijeme;
-END;
-$$ LANGUAGE plpgsql;
-
--- prvi slobodan termin
-CREATE FUNCTION prvi_termin (ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
-    RETURNS table (
-        datum_termina DATE,
-        vrijeme_termina TIME
-        )
-AS $$
-DECLARE
-    v_id_bolnice    INT;
-    v_id_pretrage   INT;
-    v_trajanje      INT;
-    v_datum         DATE;
-    v_vrijeme       TIME;
-BEGIN
-    SELECT id INTO v_id_bolnice
-        FROM nbp_bolnica
-        WHERE ime = ime_bolnice;
-
-    SELECT id, trajanje_min INTO v_id_pretrage, v_trajanje
-        FROM nbp_pretraga
-        WHERE vrsta = vrsta_P;
-
-    SELECT datum, vrijeme INTO v_datum, v_vrijeme
-        FROM nbp_termin
-        WHERE id_pretrage = v_id_pretrage
-          AND id_bolnice = v_id_bolnice
-        ORDER BY datum, vrijeme DESC
-        LIMIT 1;
-
-    IF v_vrijeme + v_trajanje * INTERVAL '1 minute' <= '18:00'::TIME
-        THEN
-            RETURN QUERY
-                SELECT v_datum AS datum, v_vrijeme + v_trajanje * INTERVAL '1 minute' AS vrijeme;
-    ELSE
-        RETURN QUERY
-            SELECT v_datum + INTERVAL '1 day' AS datum, '7:00'::TIME AS vrijeme;
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
-
----------------------------------------------------------------------
-
 -- ubacivanje testnih podataka
 
 insert into nbp_bolnica values
@@ -433,9 +120,7 @@ insert into nbp_bolnica values
     (113, 'Dom zdravlja Županja', 'dr. Franje Račkog 32', 'Županja'),
     (114, 'Dom zdravlja Sisak', 'Kralja Tomislava 1', 'Sisak');
 
-select * from nbp_bolnica;
-
-select distinct mjesto from nbp_bolnica;
+-- select distinct mjesto from nbp_bolnica;
 
 insert into nbp_mjesto values
     ('Senj', 44.98944, 14.90583),
@@ -506,6 +191,8 @@ insert into nbp_mjesto values
     ('Koprivnica', 46.16278, 16.8275)
 ;
 
+select punjenje_susjedi();
+
 insert into nbp_lijecnik values
     (10000444444, 'Gandalf', 'Mithrandir', '1940-07-02', 'Glavna 8', 'Bree', 1, 1234567890),
     (10000291105, 'Aragorn', 'Elessar', '1980-07-02', 'Glavna 1', 'Minas Tirith', 4, 1234567890),
@@ -520,8 +207,6 @@ insert into nbp_lijecnik values
     (10000432043, 'Finwe', 'Noldoran', '1940-07-02', 'Glavna 13', 'Tirion', 100, 1234567890),
     (10000794735, 'Elrond', 'Peredhel', '1940-07-02', 'Glavna 3', 'Rivendell', 114, 1234567890);
 
-select * from nbp_lijecnik;
-
 insert into nbp_pacijent values
     (10000338099, 100338099, 'Frodo', 'Baggins', '2000-07-02', 'Glavna 1', 'Hobbiton', 10000444444, 0123456789),
     (10000917906, 100917906, 'Samwise', 'Gamgee', '1999-07-02', 'Glavna 3', 'Hobbiton', 10000891233, 0123456789),
@@ -531,10 +216,6 @@ insert into nbp_pacijent values
     (10000013006, 100013006, 'Faramir', 'Echtelion', '1990-07-02', 'Glavna 5', 'Minas Tirith', 10000893743, 0123456789),
     (10000878383, 100878383, 'Eowyn', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919, 0123456789),
     (10000402929, 100402929, 'Eomer', 'Eadig', '1990-07-02', 'Glavna 7', 'Edoras', 10000999919, 0123456789);
-
-select * from nbp_pacijent;
-
-select * from popis_pacijenata('10000444444');
 
 insert into nbp_pretraga values
     (1, 'dermatološki pregled', 45),
@@ -655,30 +336,38 @@ insert into nbp_bolnica_pretraga values
 
 insert into nbp_termin VALUES
   (10000338099, 2, '2010-07-02', '12:00', 100),
-  (10000338099, 1, '2011-07-02', '11:00', 12),
+  (10000338099, 1, '2011-07-04', '11:00', 12),
   (10000917906, 5, '2012-07-02', '09:00', 88),
   (10000917906, 5, '2009-07-02', '15:00', 88),
   (10000917906, 3, '2004-07-02', '12:00', 81),
-  (10000395731, 2, '2005-07-02', '16:00', 100),
-  (10000395731, 6, '2006-07-02', '11:00', 50),
+  (10000395731, 2, '2005-07-05', '16:00', 100),
+  (10000395731, 6, '2006-07-04', '11:00', 50),
   (10000998713, 2, '2003-07-02', '12:00', 100),
   (10000520909, 4, '2007-07-02', '12:00', 92),
   (10000013006, 1, '2004-07-02', '13:00', 12),
-  (10000013006, 1, '2005-07-02', '16:00', 12),
+  (10000013006, 1, '2005-07-07', '16:00', 12),
   (10000013006, 1, '2015-07-02', '17:40', 12),
-  (10000013006, 1, '2017-07-02', '12:00', 87),
+  (10000013006, 1, '2017-07-03', '12:00', 87),
   (10000878383, 6, '2009-07-02', '11:00', 21),
   (10000402929, 5, '2018-07-02', '10:00', 1),
   (10000402929, 5, '2019-07-02', '12:00', 1),
   (10000338099, 5,'2024-07-02','12:00', 1),
   (10000917906, 3,'2024-07-02','12:00', 81),
   (10000917906, 5,'2024-07-05','12:00', 12),
-  (10000395731, 1,'2024-07-07','12:00', 59),
+  (10000395731, 1,'2024-07-10','12:00', 59),
   (10000998713, 1,'2024-07-11','12:00', 59),
   (10000998713, 2,'2024-07-02','12:00', 100),
   (10000520909, 6,'2024-07-03','12:00', 65),
-  (10000013006, 2,'2024-07-07','12:00', 18),
+  (10000013006, 2,'2024-07-09','12:00', 18),
   (10000013006, 4,'2024-07-04','12:00', 48),
   (10000013006, 4,'2024-07-05','12:00', 48),
   (10000878383, 4,'2024-07-02','12:00', 53),
   (10000402929, 6,'2024-07-03','12:00', 8);
+
+
+select * from popis_pacijenata('10000444444');
+select * from lista_cekanja('Dom zdravlja „Dr. A. Franulović“ Vela Luka', 'Vela Luka', 'oftalmološki pregled');
+select * from lista_cekanja('Poliklinika za rehabilitaciju slušanja i govora Suvag', 'Karlovac', 'dermatološki pregled');
+select * from prvi_termin('Dom zdravlja „Dr. A. Franulović“ Vela Luka', 'Vela Luka', 'oftalmološki pregled');
+select * from prvi_termin('Poliklinika za rehabilitaciju slušanja i govora Suvag', 'Karlovac', 'dermatološki pregled');
+select * from povijest_pretraga('10000998713');
