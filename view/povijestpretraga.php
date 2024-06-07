@@ -14,20 +14,31 @@ echo "<h1>$poruka</h1>";
 		<th>Vrsta</th><th>Ime bolnice</th>
 	</tr>
 	<?php
-		$i=0;
-    foreach($list as $a){
-			foreach ($a as $k){
-			echo '<tr>';
+
 			if($_COOKIE['ovlasti']==='2'){
-				echo '<td>' . $pac[$i]->__get('prezime') . ', ' . $pac[$i]->__get('ime') . '</td>';
+				$i=0;
+				foreach($list as $a){
+					foreach ($a as $k){
+					echo '<tr>';
+					echo '<td>' . $pac[$i]->__get('prezime') . ', ' . $pac[$i]->__get('ime') . '</td>';
+					echo '<td>' . $k[0] . '</td>';
+					echo '<td>' . $k[1] . '</td>';
+					echo '<td>' . $k[2]. '</td>';
+					echo '</tr>';
 			}
-			echo '<td>' . $k[0] . '</td>';
-			echo '<td>' . $k[1] . '</td>';
-			echo '<td>' . $k[2]. '</td>';
-			echo '</tr>';
+
+			$i++;
 		}
-		$i++;
-   }?>
+   }
+	 else{
+		 foreach($list as $a){
+			 echo '<tr>';
+			 echo '<td>' . $a[0] . '</td>';
+			 echo '<td>' . $a[1] . '</td>';
+			 echo '<td>' . $a[2]. '</td>';
+			 echo '</tr>';
+	 	}
+	 }?>
 </table>
 
 <?php require_once __DIR__ . '/_footer.php'; ?>

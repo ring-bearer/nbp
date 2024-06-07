@@ -30,6 +30,7 @@ class BolnicaController{
 			  require_once __DIR__ . '/../view/newbolnica.php';
 		}
 
+		// maknuli smo opciju dodavanja novih bolnica
 		public function new(){
 				$us=new BolnicaService();
 
@@ -74,7 +75,8 @@ class BolnicaController{
 
 				$list = $ls->getbolnice();
 	      foreach ($list as $k=>$l) {
-	          if(!preg_match('/^[\s\.„“"\'a-zA-ZčćšđžČĆŠĐŽ-]{0,200}$/', $_POST["ime"][$k])){
+				
+	          if(!preg_match('/^[\s"a-zA-ZčćšđžČĆŠĐŽ\-.,()\'’]{1,100}$/', $_POST["ime"][$k])){
 	    				require_once __DIR__ . '/../view/_header.php';
 	    				$poruka="Unesite ispravno ime (0-100 slova).\n" . $k;
 	    				require_once __DIR__ . '/../view/updatebolnica.php';
@@ -99,10 +101,10 @@ class BolnicaController{
 	        $l->__set('mjesto',$_POST["mjesto"][$k]);
 	        $ls->updatebolnica($l);
 	      }
-
-				foreach ($_POST['brisanje'] as $i) {
+		  		// Na kraju smo ipak odlucili da ne postoji brisanje bolnica zbog povezanosti sa susjednim bolnicama
+				/*foreach ($_POST['brisanje'] as $i) {
 					$ls->deletebolnica($i);
-				}
+				}*/
 
 				$list = $ls->getbolnice();
 				$poruka="Promjene uspješno spremljene!";

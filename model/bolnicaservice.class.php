@@ -69,7 +69,7 @@ class BolnicaService{
     }
     return $arr;
 	}
-
+		// Maknuli smo ovu opciju
 		function newbolnica($novi){
 			try
 			{
@@ -86,6 +86,7 @@ class BolnicaService{
 	    return $row;
 		}
 
+		// Na kraju smo ipak odlucili da ne postoji brisanje bolnica zbog povezanosti sa susjednim bolnicama
 		function deletebolnica($id){
 			try
 			{
@@ -105,5 +106,52 @@ class BolnicaService{
 					'c' => $novi->__get('adresa'), 'd' => $novi->__get('mjesto')));
 			}
 			catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		}
+
+		function getBolniceByMjesto($mjesto){
+			try
+			{
+				$db = DB::getConnection();
+				$st = $db->prepare("select * from nbp_bolnica where udaljenost(CAST ($mjesto AS text), mjesto) < 75;");
+				$st->execute();
+			}
+			catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+			$arr=array();
+			while(1){
+			$row = $st->fetch();
+				if( $row === false )
+					return $arr;
+				else{
+				$i=new Bolnica($row['id'], $row['ime'], $row['adresa'], $row['mjesto']);
+				$arr[]=$i;
+
+				}
+			}
+			return $arr;
+		}
+
+		function getTermin($ime_bolnice, $vrsta){
+			try
+			{
+				$db = DB::getConnection();
+				$st = $db->prepare("select * FROM prvi_termin(CAST ($ime_bolnice AS text), CAST ($vrsta AS text))");
+				$st->execute();
+			}
+			catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+			$arr=array();
+			while(1){
+			$row = $st->fetch();
+				if( $row === false )
+					return $arr;
+				else{
+					$i=array();
+					$i[]=$row['datum'];
+					$i[]=$row['vrijeme'];
+					$arr[]=$i;
+				}
+			}
+			return $arr;
 		}
 	}
