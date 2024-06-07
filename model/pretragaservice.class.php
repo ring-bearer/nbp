@@ -27,6 +27,28 @@ class PretragaService{
     }
     return $arr;
 	}
+	
+		function getpretragazahtjev($pac,$lijec,$vrsta){
+			try
+			{
+				$db = DB::getConnection();
+				$st = $db->prepare('SELECT oib_pacijenta, oib_lijecnika, vrsta from nbp_zahtjev_pretraga where oib_pacijenta=:pac and oib_lijecnika=:lijec and vrsta=:vrsta');
+	      $st->execute(array( 'pac' => $pac, 'lijec' => $lijec,
+					'vrsta' => $vrsta));
+			}
+			catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+	      $row = $st->fetch();
+	  		if( $row === false )
+	  			return 0;
+	  		else{
+	        $i=array();
+					$i[]=$row['oib_pacijenta'];
+					$i[]=$row['oib_lijecnika'];
+					$i[]=$row['vrsta'];
+			    return $i;
+			  }
+	    }
 
 	function newzahtjev($oib,$oib_lijecnika,$vrsta){
 	try

@@ -1,5 +1,4 @@
 <?php require_once __DIR__ . '/_header.php';
-require_once __DIR__ . '/../controller/pacijentController.class.php';
 ?>
 
 <h1>Moji pacijenti</h1>

@@ -8,8 +8,10 @@ require_once __DIR__ . '/../controller/lijecnikController.class.php';
 		<th>OIB</th><th>Ime</th>
 		<th>Prezime</th><th>Datum rođenja</th>
 		<th>Adresa ambulante</th><th>Mjesto ambulante</th>
+		<th>Najbliža bolnica</th>
 	</tr>
 	<?php
+	$i=0;
     foreach($list as $a){
 			echo '<tr>';
 			echo '<td>' . $a->__get('oib') . '</td>';
@@ -18,7 +20,9 @@ require_once __DIR__ . '/../controller/lijecnikController.class.php';
 			echo '<td>' . $a->__get('datum_rodjenja') . '</td>';
 			echo '<td>' . $a->__get('adresa_ambulante') . '</td>';
 			echo '<td>' . $a->__get('mjesto_ambulante') . '</td>';
+			echo '<td>' . $bolnice[$i]->__get('ime') . '</td>';
 			echo '</tr>';
+			$i++;
    }?>
 </table>
 
