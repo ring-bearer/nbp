@@ -18,7 +18,9 @@ if(!isset($prazno)){
     foreach($listapac as $a){
 			echo '<tr>';
 			echo '<td>' . $listastarih[$i]->__get('prezime') . ', ' . $listastarih[$i]->__get('ime') . '</td>';
-      echo '<td>' . $listanovih[$i]->__get('prezime') . ', ' . $listanovih[$i]->__get('ime') . '</td>';
+      echo '<td>' . $listanovih[$i]->__get('prezime') . ', ' . $listanovih[$i]->__get('ime') . '</td>';?>
+      <input type="hidden" name="oib_novog_lijecnika" value="<?php echo $listanovih[$i]->__get('oib'); ?>">
+      <?php
       echo '<td>' . $a->__get('oib') . '</td>';
       echo '<td>' . $a->__get('mbo') . '</td>';
       echo '<td>' . $a->__get('ime') . '</td>';

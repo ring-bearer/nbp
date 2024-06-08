@@ -25,7 +25,7 @@ class PacijentController{
 		$zs=new ZahtjevService();
 		$pac = $ls->getpacijent($_POST['transfer']);
 		$z=new Zahtjev($pac->__get('oib'),$pac->__get('oib_lijecnika'),$_COOKIE['oib']);
-		$pac->__set('oib_lijecnika', $_COOKIE['oib']);
+		$pac->__set('oib_lijecnika', $_POST['oib_novog_lijecnika']);
 		$ls->updatepacijent($pac);
 
 		$zs->deletezahtjev($z);
