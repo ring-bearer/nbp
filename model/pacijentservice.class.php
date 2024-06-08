@@ -55,9 +55,9 @@ class PacijentService{
 		try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('SELECT oib, mbo, ime, prezime, datum_rodjenja, adresa, mjesto, oib_lijecnika
-				FROM nbp_pacijent where oib_lijecnika=:oib_lijecnika order by prezime');
-      $st->execute(array('oib_lijecnika'=>$oib_lijecnika));
+			$st = $db->prepare("SELECT * FROM popis_pacijenata(:oib_lijecnika) ORDER BY prezime, ime");
+			$st->bindParam(':oib_lijecnika', $oib_lijecnika, PDO::PARAM_STR);
+			$st->execute();
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 
@@ -69,7 +69,7 @@ class PacijentService{
   		else{
         $i=new Pacijent($row['oib'],$row['mbo'],
   					$row['ime'],$row['prezime'],$row['datum_rodjenja'],
-						$row['adresa'],$row['mjesto'],$row['oib_lijecnika']);
+						$row['adresa'],$row['mjesto'],$oib_lijecnika);
         $arr[]=$i;
       }
     }

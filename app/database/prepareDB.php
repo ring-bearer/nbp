@@ -541,15 +541,18 @@ try
                 prezime CHAR VARYING(20),
                 ime CHAR VARYING(20),
                 oib CHAR(11),
-                mbo CHAR(9)
+                mbo CHAR(9),
+                datum_rodjenja DATE,
+                adresa CHAR VARYING(30),
+                mjesto CHAR VARYING(20)
             )
         AS $$
         BEGIN
             RETURN QUERY
-                SELECT prezime, ime, oib, mbo
-                    FROM nbp_pacijent
-                WHERE oib_lijecnika = oib_L
-            ORDER BY prezime, ime;
+                SELECT p.prezime, p.ime, p.oib, p.mbo, p.datum_rodjenja, p.adresa, p.mjesto
+                    FROM nbp_pacijent p
+                WHERE p.oib_lijecnika = oib_L
+            ORDER BY p.prezime, p.ime;
         END;
         $$ LANGUAGE plpgsql;');
     $st->execute();
