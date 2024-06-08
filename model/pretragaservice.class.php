@@ -200,6 +200,7 @@ class PretragaService{
 				$i[]=$row['datum'];
 				$i[]=$row['vrsta'];
 				$i[]=$row['ime_bolnice'];
+				$i[]=$row['vrijeme'];
         $arr[]=$i;
 		  }
     }
