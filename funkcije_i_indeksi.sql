@@ -68,16 +68,19 @@ CREATE FUNCTION popis_pacijenata(oib_L CHAR(11))
         prezime_pacijenta CHAR VARYING(20),
         ime_pacijenta CHAR VARYING(20),
         oib_pacijenta CHAR(11),
-        mbo_pacijenta CHAR(9)
-        -- ostale podatke moze dobiti kad klikne na pojedinog pacijenta u aplikaciji
+        mbo_pacijenta CHAR(9),
+        datum_rodjenja_pacijenta date,
+        adresa_pacijenta CHAR VARYING(30),
+        mjestp_pacijenta CHAR VARYING(20)
     )
 AS $$
 BEGIN
     RETURN QUERY
-        SELECT prezime, ime, oib, mbo
-            FROM nbp_pacijent
-        WHERE oib_lijecnika = oib_L
-    ORDER BY prezime, ime;
+        -- Potrebno specificirat da se tocno ispise
+        SELECT p.prezime, p.ime, p.oib, p.mbo, p.datum_rodjenja, p.adresa, p.mjesto
+            FROM nbp_pacijent p
+        WHERE p.oib_lijecnika = oib_L
+    ORDER BY p.prezime, p.ime;
 END;
 $$ LANGUAGE plpgsql;
 
