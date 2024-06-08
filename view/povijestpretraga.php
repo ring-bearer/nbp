@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../controller/pretragaController.class.php';
 
 echo "<h1>$poruka</h1>";
+if(isset($prazno)) echo "<p id='gore'> Nema zabilježenih pretraga!<p>";
+else{
 ?>
 <table>
 	<tr>
@@ -43,4 +45,6 @@ echo "<h1>$poruka</h1>";
 	 }?>
 </table>
 
-<?php require_once __DIR__ . '/_footer.php'; ?>
+<?php
+}
+require_once __DIR__ . '/_footer.php'; ?>
