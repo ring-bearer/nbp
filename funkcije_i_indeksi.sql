@@ -71,7 +71,7 @@ CREATE FUNCTION popis_pacijenata(oib_L CHAR(11))
         mbo_pacijenta CHAR(9),
         datum_rodjenja_pacijenta date,
         adresa_pacijenta CHAR VARYING(30),
-        mjestp_pacijenta CHAR VARYING(20)
+        mjesto_pacijenta CHAR VARYING(20)
     )
 AS $$
 BEGIN
