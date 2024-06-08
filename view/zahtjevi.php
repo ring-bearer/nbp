@@ -8,7 +8,7 @@ if(!isset($prazno)){
 <form action="index.php?rt=pacijent/transfer" method="post">
 <table>
 	<tr>
-		<th>Zahtjev postavlja:</th><th>Zatjev zaprima:</th><th>OIB pacijenta</th>
+		<th>Zahtjev postavlja:</th><th>Zahtjev zaprima:</th><th>OIB pacijenta</th>
     <th>MBO</th><th>Ime</th><th>Prezime</th>
 		<th>Datum rođenja</th><th>Adresa</th><th>Mjesto</th>
     <th></th>
