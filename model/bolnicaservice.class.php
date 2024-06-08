@@ -86,6 +86,39 @@ class BolnicaService{
 	    return $row;
 		}
 
+		function ispretraga($id, $id2){
+			try
+			{
+				$db = DB::getConnection();
+				$st = $db->prepare('SELECT id_bolnice,id_pretrage FROM nbp_bolnica_pretraga where id_bolnice=:id and id_pretrage=:id2');
+	      $st->execute(array( 'id' => $id, 'id2' => $id2));
+			}
+			catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+			$row=$st->fetch();
+	    return $row;
+		}
+
+		function prvitermin($id,$vrsta){
+			try
+			{
+				$db = DB::getConnection();
+				$st = $db->prepare('SELECT datum_termina,vrijeme_termina FROM prvi_termin(:id,:vrsta)');
+				$st->execute(array('id'=>$id, 'vrsta'=>$vrsta));
+			}
+			catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+			$arr=array();
+			$row = $st->fetch();
+				if( $row === false )
+					return $arr;
+				else{
+				$arr[0]=$row['datum_termina'];
+				$arr[1]=$row['vrijeme_termina'];
+				}
+			return $arr;
+		}
+
 		// Na kraju smo ipak odlucili da ne postoji brisanje bolnica zbog povezanosti sa susjednim bolnicama
 		function deletebolnica($id){
 			try
