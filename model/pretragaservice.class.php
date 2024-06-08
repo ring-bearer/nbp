@@ -27,7 +27,45 @@ class PretragaService{
     }
     return $arr;
 	}
-	
+
+	function getpretragabyid($id){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT id, vrsta, trajanje_min from nbp_pretraga where id=:id');
+      $st->execute(array('id'=>$id));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+      $row = $st->fetch();
+  		if( $row === false )
+  			return 0;
+  		else{
+        $i=new Pretraga($row['id'],
+  					$row['vrsta'],$row['trajanje_min']);
+    }
+    return $i;
+	}
+
+	function getpretraga($vrsta){
+		try
+		{
+			$db = DB::getConnection();
+			$st = $db->prepare('SELECT id, vrsta, trajanje_min from nbp_pretraga where vrsta=:vrsta');
+      $st->execute(array('vrsta'=>$vrsta));
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+      $row = $st->fetch();
+  		if( $row === false )
+  			return 0;
+  		else{
+        $i=new Pretraga($row['id'],
+  					$row['vrsta'],$row['trajanje_min']);
+    }
+    return $i;
+	}
+
 		function getpretragazahtjev($pac,$lijec,$vrsta){
 			try
 			{

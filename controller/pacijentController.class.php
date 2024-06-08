@@ -3,8 +3,11 @@
 require_once __DIR__ . '/../model/pacijentservice.class.php';
 require_once __DIR__ . '/../model/zahtjevservice.class.php';
 require_once __DIR__ . '/../model/bolnicaservice.class.php';
+require_once __DIR__ . '/../model/terminservice.class.php';
+require_once __DIR__ . '/../model/pretragaservice.class.php';
 require_once __DIR__ . '/../model/pacijent.class.php';
 require_once __DIR__ . '/../model/zahtjev.class.php';
+require_once __DIR__ . '/../model/termin.class.php';
 
 class PacijentController{
 	public function index(){
@@ -165,8 +168,59 @@ class PacijentController{
 			require_once __DIR__ . '/../view/updatepacijent.php';
 	}
 
+	public function prijedlozitermin(){
+		$ts=new TerminService();
+		$ps=new PretragaService();
+		$bs=new BolnicaService();
+		$pretrage=$ps->getpretrage();
+		$list=array();
+		$bolnice=array();
+		$j=0;
+		foreach($pretrage as $a){
+			$list[$j]=$ts->getprijedlozitermin($_COOKIE['oib'],$a->__get('id'));
+			foreach($list[$j] as $b){
+				$id_bolnice=$b->__get('id_bolnice');
+				$bolnice[]=$bs->getbolnica($id_bolnice);
+			}
+			$j++;
+		}
+
+		if(empty($bolnice)){
+			$poruka="Nemate prijedloga za termine!\n";
+			$prazno=1;
+		}
+
+		require_once __DIR__ . '/../view/prijedlozitermin.php';
+	}
+
+	public function termin(){
+		$ts=new TerminService();
+		$t=new Termin($_POST['oib'],$_POST['id_pretrage'],
+			$_POST['datum'],$_POST['vrijeme'],$_POST['id_bolnice']);
+		var_dump($t);
+		$ts->deleteprijedlozitermin($_POST['oib'],$_POST['id_pretrage']);
+		$ts->newtermin($t);
+
+		$ps=new PretragaService();
+		$bs=new BolnicaService();
+		$pretrage=$ps->getpretrage();
+		$list=array();
+		$bolnice=array();
+		$j=0;
+		foreach($pretrage as $a){
+			$list[$j]=$ts->getprijedlozitermin($_COOKIE['oib'],$a->__get('id'));
+			foreach($list[$j] as $b){
+				$id_bolnice=$b->__get('id_bolnice');
+				$bolnice[]=$bs->getbolnica($id_bolnice);
+			}
+			$j++;
+		}
+		$poruka="Termin uspješno zakazan! Možete ga vidjeti na popisu naručenih pretraga.\n";
+		require_once __DIR__ . '/../view/prijedlozitermin.php';
+	}
+
 	public function pretraga(){
-	/*	foreach ($_POST as $key => $value) {
+		foreach ($_POST as $key => $value) {
 			if (strpos($key, 'prihvati_') === 0) {
 				//echo "prihvati";
 				$index = str_replace('prihvati_', '', $key);
@@ -178,9 +232,50 @@ class PacijentController{
 
 				$ls=new LijecnikService();
 				$doc=$ls->getlijecnik($oib_lijecnika);
-				$id_bolnice=$doc
+				$id_bolnice=$doc->__get('id_bolnice');
 
-				// Smislit kako dohvatit najblize bolnice po mjestu pacijenta
+				$bs=new BolnicaService();
+				$susjedi=$bs->getsusjedi($id_bolnice);
+
+				$ps=new PretragaService();
+				$pretraga=$ps->getpretraga($vrsta);
+				$id_pretrage=$pretraga->__get('id');
+
+				$termini=array();
+				foreach ($susjedi as $a){
+					$t=array();
+					if($bs->ispretraga($a,$id_pretrage)==false){
+						continue;
+					}
+					$t=$bs->prvitermin($a,$vrsta);
+					$termini[]=new Termin($oib_pacijenta,$id_pretrage,$t[0],$t[1],$a);
+				}
+
+				$ts=new TerminService();
+				foreach ($termini as $a){
+					$ts->newterminprijedlog($a);
+				}
+
+				$poruka="Prijedlozi za termine poslani pacijentu!\n";
+				$pacs = new PacijentService;
+				$pacs->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
+
+				$list = $ps->mojipretragazahtjevi($_COOKIE['oib']);
+				if(empty($list)){
+					$poruka= "Prijedlozi za termine poslani pacijentu!\n Nemate zahtjeva na čekanju!";
+					$prazno=1;
+					require_once __DIR__ . '/../view/pretragazahtjevi.php';
+					return;
+				}
+				foreach($list as $a){
+						$oib_pacijenta=$a[0];
+						$pacijent=$pacs->getpacijent($oib_pacijenta);
+						$listapac[]=$pacijent;
+					}
+				require_once __DIR__ . '/../view/pretragazahtjevi.php';
+			}
+
+				/*// Smislit kako dohvatit najblize bolnice po mjestu pacijenta
 				$bs = new BolnicaService;
 				$bolnice = $bs->getBolniceByMjesto($mjesto);
 
@@ -197,12 +292,10 @@ class PacijentController{
 
 
 				// Na kraju obrisemo taj zahtjev
-				$ps = new PacijentService;
-				$ps->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
 
 				header("Location: index.php?rt=pretraga/mojizahtjevi");
 				exit();
-			}
+			}*/
 			elseif (strpos($key, 'odbij_') === 0) {
 				//echo "Odbij";
 				// Izvadimo indeks
@@ -215,10 +308,25 @@ class PacijentController{
 				$ps = new PacijentService;
 				$ps->deletePretraga($oib_pacijenta, $oib_lijecnika, $vrsta);
 
-				header("Location: index.php?rt=pretraga/mojizahtjevi");
-				exit();
+				$poruka="Zahtjev uspješno odbijen!\n";
+
+				$ps=new PretragaService();
+				$pacs=new PacijentService();
+				$list = $ps->mojipretragazahtjevi($_COOKIE['oib']);
+				if(empty($list)){
+					$poruka= "Zahtjev uspješno odbijen!\n Nemate zahtjeva na čekanju!";
+					$prazno=1;
+					require_once __DIR__ . '/../view/pretragazahtjevi.php';
+					return;
+				}
+				foreach($list as $a){
+						$oib_pacijenta=$a[0];
+						$pacijent=$pacs->getpacijent($oib_pacijenta);
+						$listapac[]=$pacijent;
+					}
+				require_once __DIR__ . '/../view/pretragazahtjevi.php';
 			}
-		}*/
+		}
 	}
 };
 

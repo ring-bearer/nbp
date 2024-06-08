@@ -100,3 +100,6 @@ create table nbp_zahtjev_pretraga(
     vrsta char varying(30) check (not null),
     constraint pkZahtjeviPretraga primary key (oib_pacijenta,oib_lijecnika,vrsta)
 );
+
+delete from nbp_zahtjev_pretraga;
+delete from nbp_zahtjev_pretraga;

@@ -76,6 +76,29 @@ catch( PDOException $e ) { exit( "PDO error za nbp_pretraga: " . $e->getMessage(
 
 echo "Napravio tablicu nbp_pretraga.<br>";
 
+//prijedlozi termina za pacijenta, prije nego on prihvati jedan
+try
+{
+    $st = $db->prepare(
+        'CREATE TABLE IF NOT EXISTS nbp_prijedlozi_termin(
+          oib_pacijenta char(11) not null,
+          id_pretrage int check (not null),
+          datum date check (not null),
+          vrijeme time check (not null),
+          id_bolnice int check (not null),
+          constraint pkPrijedloziTermin primary key (oib_pacijenta, id_pretrage, id_bolnice),
+          constraint fkPacijent foreign key (oib_pacijenta) references nbp_pacijent(oib) ON DELETE CASCADE,
+          constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id),
+          constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id) ON DELETE CASCADE
+        );'
+    );
+
+    $st->execute();
+}
+catch( PDOException $e ) { exit( "PDO error za nbp_termin_prijedlozi: " . $e->getMessage() ); }
+
+echo "Napravio tablicu nbp_termin_prijedlozi.<br>";
+
 try
 {
     $st = $db->prepare(
@@ -187,7 +210,7 @@ try
             datum date check (not null),
             vrijeme time check (not null),
             id_bolnice int check (not null),
-            constraint pkTermin primary key (oib_pacijenta, datum, vrijeme),
+            constraint pkTermin primary key (oib_pacijenta, id_pretrage, id_bolnice),
             constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id),
             constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id) ON DELETE CASCADE
         );'
@@ -580,41 +603,41 @@ echo "Napravio funkciju lista_cekanja.<br>";
 try
 {
     $st = $db->prepare(
-      'CREATE FUNCTION prvi_termin(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
+      'CREATE FUNCTION prvi_termin(v_id_bolnice INT, vrsta_P CHAR VARYING(20))
             RETURNS table (
                 datum DATE,
                 vrijeme TIME
                 )
         AS $$
         DECLARE
-            v_id_bolnice    INT;
             v_id_pretrage   INT;
             v_trajanje      INT;
             v_datum         DATE;
             v_vrijeme       TIME;
         BEGIN
-            SELECT id INTO v_id_bolnice
-                FROM nbp_bolnica
-                WHERE ime = ime_bolnice;
 
             SELECT id, trajanje_min INTO v_id_pretrage, v_trajanje
                 FROM nbp_pretraga
                 WHERE vrsta = vrsta_P;
 
-            SELECT datum, vrijeme INTO v_datum, v_vrijeme
+            SELECT nbp_termin.datum, nbp_termin.vrijeme INTO v_datum, v_vrijeme
                 FROM nbp_termin
                 WHERE id_pretrage = v_id_pretrage
                 AND id_bolnice = v_id_bolnice
                 ORDER BY datum, vrijeme DESC
                 LIMIT 1;
 
-            IF (v_vrijeme + v_trajanje * INTERVAL \'1 minute\') <= \'18:00\'::TIME
+            IF (v_datum is NULL)
+              THEN
+                RETURN QUERY
+                  SELECT (CURRENT_DATE + INTERVAL \'1 day\')::DATE as datum, \'7:00\'::TIME AS vrijeme;
+            ELSIF (v_vrijeme + v_trajanje * INTERVAL \'1 minute\') <= \'18:00\'::TIME
                 THEN
                     RETURN QUERY
-                        SELECT v_datum AS datum, v_vrijeme + v_trajanje * INTERVAL \'1 minute\' AS vrijeme;
+                        SELECT v_datum::DATE AS datum, (v_vrijeme + v_trajanje * INTERVAL \'1 minute\')::TIME AS vrijeme;
             ELSE
                 RETURN QUERY
-                    SELECT v_datum + INTERVAL \'1 day\' AS datum, \'7:00\'::TIME AS vrijeme;
+                    SELECT (v_datum + INTERVAL \'1 day\')::DATE AS datum, \'7:00\'::TIME AS vrijeme;
             END IF;
         END;
         $$ LANGUAGE plpgsql;');
