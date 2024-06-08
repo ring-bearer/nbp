@@ -30,7 +30,6 @@ create table nbp_bolnica_pretraga(
     constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id)
 );
 
--- !!! paziti da ispise i bolnicu kojoj pacijent pripada - nje nema u tablici
 create table nbp_susjedi( -- bolnice unutar 75 km zracne udaljenosti jedna od druge
     id_bolnice1 int check (not null),
     id_bolnice2 int check (not null),
@@ -99,7 +98,19 @@ create table nbp_zahtjev_pretraga(
     oib_lijecnika char(11) check (not null),
     vrsta char varying(30) check (not null),
     constraint pkZahtjeviPretraga primary key (oib_pacijenta,oib_lijecnika,vrsta)
+    constraint fkZahtjeviPretraga foreign key (oib_pacijenta) references nbp_pacijent(oib),
+    constraint fkZahtjeviPretraga foreign key (oib_lijecnika) references nbp_lijecnik(oib)
 );
 
-delete from nbp_zahtjev_pretraga;
-delete from nbp_zahtjev_pretraga;
+--prijedlozi termina za pacijenta, prije nego on prihvati jedan
+create table nbp_prijedlozi_termin(
+  oib_pacijenta char(11) not null,
+  id_pretrage int check (not null),
+  datum date check (not null),
+  vrijeme time check (not null),
+  id_bolnice int check (not null),
+  constraint pkPrijedloziTermin primary key (oib_pacijenta, id_pretrage, id_bolnice),
+  constraint fkPacijent foreign key (oib_pacijenta) references nbp_pacijent(oib) ON DELETE CASCADE,
+  constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id),
+  constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id) ON DELETE CASCADE
+);

@@ -103,7 +103,7 @@ class BolnicaService{
 			try
 			{
 				$db = DB::getConnection();
-				$st = $db->prepare('SELECT datum,vrijeme FROM prvi_termin(:id,:vrsta)');
+				$st = $db->prepare('SELECT datum_termina,vrijeme_termina FROM prvi_termin(:id,:vrsta)');
 				$st->execute(array('id'=>$id, 'vrsta'=>$vrsta));
 			}
 			catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -113,8 +113,8 @@ class BolnicaService{
 				if( $row === false )
 					return $arr;
 				else{
-				$arr[0]=$row['datum'];
-				$arr[1]=$row['vrijeme'];
+				$arr[0]=$row['datum_termina'];
+				$arr[1]=$row['vrijeme_termina'];
 				}
 			return $arr;
 		}

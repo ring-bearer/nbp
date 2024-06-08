@@ -12,7 +12,7 @@ try
             ime character varying(100) check (not null),
             adresa character varying(50) check (not null),
             mjesto character varying(20) check (not null),
-            constraint pkbBolnica primary key (id)
+            constraint pkBolnica primary key (id)
         );'
     );
 
@@ -39,6 +39,54 @@ catch( PDOException $e ) { exit( "PDO error za nbp_mjesto: " . $e->getMessage() 
 
 echo "Napravio tablicu nbp_mjesto.<br>";
 
+try
+{
+    $st = $db->prepare(
+        'CREATE TABLE IF NOT EXISTS nbp_lijecnik(
+            oib char(11) not null,
+            ime character varying(20) check (not null),
+            prezime character varying(20) check (not null),
+            datum_rodjenja date check (not null),
+            adresa_ambulante character varying(30) check (not null),
+            mjesto_ambulante character varying(20) check (not null),
+            id_bolnice int check (not null), -- id najblize zdravstvene ustanove
+            password_hash varchar(255) check (not null), -- lozinka za prijavu u sustav
+            constraint pkLijecnik primary key (oib),
+            constraint fkLijecnik foreign key (id_bolnice) references nbp_bolnica(id)
+        );'
+    );
+
+    $st->execute();
+}
+catch( PDOException $e ) { exit( "PDO error za nbp_lijecnik: " . $e->getMessage() ); }
+
+echo "Napravio tablicu nbp_lijecnik.<br>";
+
+
+try
+{
+    $st = $db->prepare(
+        'CREATE TABLE IF NOT EXISTS nbp_pacijent(
+            oib char(11) not null,
+            mbo char(9), --maticni broj osiguranika, ako pacijent ima zdravstveno
+            ime character varying(20) check (not null),
+            prezime character varying(20) check (not null),
+            datum_rodjenja date check (not null),
+            adresa character varying(30) check (not null), -- trenutna adresa boravista
+            mjesto character varying(20) check (not null), -- trenutno mjesto boravista -> na temelju toga racunamo udaljenost od bolnica
+            oib_lijecnika char(11) not null, -- oib lijecnika opce prakse
+            password_hash varchar(255) check (not null), -- lozinka za prijavu u sustav
+            constraint pkPacijent primary key (oib),
+            constraint fkPacijent foreign key (oib_lijecnika) references nbp_lijecnik(oib) ON DELETE CASCADE
+        );'
+      );
+
+    $st->execute();
+}
+catch( PDOException $e ) { exit( "PDO error kod nbp_pacijent: " . $e->getMessage() ); }
+
+echo "Napravio tablicu nbp_pacijent.<br>";
+
 
 //zahtjev za novom pretragom koji pacijent salje svom lijecniku
 try
@@ -48,7 +96,9 @@ try
             oib_pacijenta char(11) check (not null),
             oib_lijecnika char(11) check (not null),
             vrsta char varying(30) check (not null),
-            constraint pkZahtjeviPretraga primary key (oib_pacijenta,oib_lijecnika,vrsta)
+            constraint pkZahtjeviPretraga primary key (oib_pacijenta,oib_lijecnika,vrsta),
+            constraint fkZahtjeviPretraga foreign key (oib_pacijenta) references nbp_pacijent(oib),
+            constraint fkZahtjeviPretraga2 foreign key (oib_lijecnika) references nbp_lijecnik(oib)
         );'
     );
 
@@ -139,7 +189,7 @@ try
 {
     $st = $db->prepare(
         'CREATE TABLE IF NOT EXISTS nbp_admin(
-            oib char(11) not null, --neznam kako ubacit ovaj check da ne javlja error
+            oib char(11) not null,
             ime character varying(20) check (not null),
             prezime character varying(20) check (not null),
             password_hash varchar(255) check (not null), -- lozinka za prijavu u sustav
@@ -153,53 +203,8 @@ catch( PDOException $e ) { exit( "PDO error za nbp_admin: " . $e->getMessage() )
 
 echo "Napravio tablicu nbp_admin.<br>";
 
-try
-{
-    $st = $db->prepare(
-        'CREATE TABLE IF NOT EXISTS nbp_lijecnik(
-            oib char(11) not null,
-            ime character varying(20) check (not null),
-            prezime character varying(20) check (not null),
-            datum_rodjenja date check (not null),
-            adresa_ambulante character varying(30) check (not null),
-            mjesto_ambulante character varying(20) check (not null),
-            id_bolnice int check (not null), -- id najblize zdravstvene ustanove
-            password_hash varchar(255) check (not null), -- lozinka za prijavu u sustav
-            constraint pkLijecnik primary key (oib),
-            constraint fkLijecnik foreign key (id_bolnice) references nbp_bolnica(id)
-        );'
-    );
-
-    $st->execute();
-}
-catch( PDOException $e ) { exit( "PDO error za nbp_lijecnik: " . $e->getMessage() ); }
-
-echo "Napravio tablicu nbp_lijecnik.<br>";
 
 
-try
-{
-    $st = $db->prepare(
-        'CREATE TABLE IF NOT EXISTS nbp_pacijent(
-            oib char(11) not null,
-            mbo char(9), --maticni broj osiguranika, ako pacijent ima zdravstveno
-            ime character varying(20) check (not null),
-            prezime character varying(20) check (not null),
-            datum_rodjenja date check (not null),
-            adresa character varying(30) check (not null), -- trenutna adresa boravista
-            mjesto character varying(20) check (not null), -- trenutno mjesto boravista -> na temelju toga racunamo udaljenost od bolnica
-            oib_lijecnika char(11) not null, -- oib lijecnika opce prakse
-            password_hash varchar(255) check (not null), -- lozinka za prijavu u sustav
-            constraint pkPacijent primary key (oib),
-            constraint fkPacijent foreign key (oib_lijecnika) references nbp_lijecnik(oib) ON DELETE CASCADE
-        );'
-      );
-
-    $st->execute();
-}
-catch( PDOException $e ) { exit( "PDO error kod nbp_pacijent: " . $e->getMessage() ); }
-
-echo "Napravio tablicu nbp_pacijent.<br>";
 
 try
 {
@@ -210,7 +215,7 @@ try
             datum date check (not null),
             vrijeme time check (not null),
             id_bolnice int check (not null),
-            constraint pkTermin primary key (oib_pacijenta, id_pretrage, id_bolnice),
+            constraint pkTermin primary key (oib_pacijenta, datum, vrijeme),
             constraint fkPretraga foreign key (id_pretrage) references nbp_pretraga(id),
             constraint fkBolnica foreign key (id_bolnice) references nbp_bolnica(id) ON DELETE CASCADE
         );'
@@ -253,6 +258,8 @@ try
     $st = $db->prepare('CREATE INDEX IF NOT EXISTS termin_pacijent_idx ON nbp_termin(oib_pacijenta);');
     $st->execute();
 
+    $st = $db->prepare('CREATE INDEX IF NOT EXISTS susjedi_bolnica_idx ON nbp_susjedi(id_bolnice1);');
+    $st->execute();
 }
 catch( PDOException $e ) { exit( "PDO error za indexe: " . $e->getMessage() ); }
 
@@ -463,24 +470,15 @@ try
       DECLARE
           v_bolnica1 RECORD;
           v_bolnica2 RECORD;
-          i INT;
-          n INT;
       BEGIN
-          SELECT count(*) INTO n
-              FROM nbp_bolnica;
-
-          i = 0;
-          FOR v_bolnica1 IN
-              SELECT *
-                  FROM nbp_bolnica
-              LIMIT(n-1)
-          LOOP
-              i = i + 1;
+      FOR v_bolnica1 IN
+          SELECT *
+              FROM nbp_bolnica
+      LOOP
               FOR v_bolnica2 IN
                   SELECT *
                       FROM nbp_bolnica
-                  ORDER BY id DESC
-                  LIMIT(n-i)
+                        WHERE nbp_bolnica.id <> v_bolnica1.id
               LOOP
                   IF (udaljenost(v_bolnica1.mjesto, v_bolnica2.mjesto) <= 75.00)
                       THEN
@@ -510,9 +508,8 @@ try
       'CREATE FUNCTION povijest_pretraga(oib CHAR(11))
             RETURNS table (
                 datum DATE,
-                -- vrijeme vjerojatno nebitno, al ako zatreba, mozemo staviti
                 vrsta CHAR VARYING (20),
-                ime_bolnice  CHAR VARYING (30) -- kod ispisa u aplikaciji, umjesto ID_bolnice ispisati ime bolnice koje se dohvati iz grafovske baze
+                ime_bolnice  CHAR VARYING (30)
             )
         AS $$
         BEGIN
@@ -545,7 +542,6 @@ try
                 ime CHAR VARYING(20),
                 oib CHAR(11),
                 mbo CHAR(9)
-                -- ostale podatke moze dobiti kad klikne na pojedinog pacijenta u aplikaciji
             )
         AS $$
         BEGIN
@@ -565,7 +561,7 @@ echo "Napravio funkciju popis_pacijenata.<br>";
 try
 {
     $st = $db->prepare(
-      'CREATE FUNCTION lista_cekanja(ime_bolnice CHAR VARYING(30), vrsta_P CHAR VARYING(20))
+      'CREATE FUNCTION lista_cekanja(ime_bolnice CHAR VARYING(30), mjesto_bolnice CHAR VARYING(20), vrsta_P CHAR VARYING(20))
             RETURNS table (
                 datum DATE,
                 vrijeme TIME,
@@ -578,19 +574,19 @@ try
         BEGIN
         SELECT id INTO v_id_bolnice
             FROM nbp_bolnica
-            WHERE ime = ime_bolnice;
+            WHERE ime = ime_bolnice
+              AND mjesto = mjesto_bolnice;
 
         SELECT id INTO v_id_pretrage
             FROM nbp_pretraga
             WHERE vrsta = vrsta_P;
 
         RETURN QUERY
-            SELECT datum, vrijeme, oib_pacijenta
-                FROM nbp_termin
-            WHERE datum >= curdate()
-            AND vrijeme > curtime()
-            AND id_bolnice = v_id_bolnice
-            AND id_pretrage = v_id_pretrage
+        SELECT datum::DATE, vrijeme, oib_pacijenta
+            FROM nbp_termin
+        WHERE id_bolnice = v_id_bolnice
+          AND id_pretrage = v_id_pretrage
+          AND (datum > current_date OR (datum = current_date AND vrijeme > localtime))
         ORDER BY datum, vrijeme;
         END;
         $$ LANGUAGE plpgsql;');
@@ -605,8 +601,8 @@ try
     $st = $db->prepare(
       'CREATE FUNCTION prvi_termin(v_id_bolnice INT, vrsta_P CHAR VARYING(20))
             RETURNS table (
-                datum DATE,
-                vrijeme TIME
+                datum_termina DATE,
+                vrijeme_termina TIME
                 )
         AS $$
         DECLARE
@@ -620,25 +616,44 @@ try
                 FROM nbp_pretraga
                 WHERE vrsta = vrsta_P;
 
-            SELECT nbp_termin.datum, nbp_termin.vrijeme INTO v_datum, v_vrijeme
-                FROM nbp_termin
-                WHERE id_pretrage = v_id_pretrage
-                AND id_bolnice = v_id_bolnice
-                ORDER BY datum, vrijeme DESC
-                LIMIT 1;
+            SELECT datum, vrijeme INTO v_datum, v_vrijeme
+            FROM
+                (SELECT datum, vrijeme
+                    FROM nbp_termin
+                    WHERE id_pretrage = v_id_pretrage
+                      AND id_bolnice = v_id_bolnice
+                      AND datum > current_date
+                    ORDER BY datum DESC, vrijeme DESC
+                    LIMIT 1) AS tablica;
 
-            IF (v_datum is NULL)
-              THEN
-                RETURN QUERY
-                  SELECT (CURRENT_DATE + INTERVAL \'1 day\')::DATE as datum, \'7:00\'::TIME AS vrijeme;
-            ELSIF (v_vrijeme + v_trajanje * INTERVAL \'1 minute\') <= \'18:00\'::TIME
-                THEN
-                    RETURN QUERY
-                        SELECT v_datum::DATE AS datum, (v_vrijeme + v_trajanje * INTERVAL \'1 minute\')::TIME AS vrijeme;
-            ELSE
-                RETURN QUERY
-                    SELECT (v_datum + INTERVAL \'1 day\')::DATE AS datum, \'7:00\'::TIME AS vrijeme;
-            END IF;
+              IF v_datum IS NULL
+                    THEN
+                            IF to_char(current_date, \'Day\') = \'Friday\' -- u ponedjeljak, ne u subotu
+                                THEN
+                                    RETURN QUERY
+                                        SELECT (current_date + INTERVAL \'3 days\')::DATE AS datum, \'7:00\'::TIME AS vrijeme;
+                            ELSIF to_char(current_date, \'Day\') = \'Saturday\' -- u ponedjeljak, ne u nedjelju
+                                THEN
+                                    RETURN QUERY
+                                        SELECT (current_date + INTERVAL \'2 days\')::DATE AS datum, \'7:00\'::TIME AS vrijeme;
+                            ELSE -- iduci dan
+                                RETURN QUERY
+                                    SELECT (current_date + INTERVAL \'1 day\')::DATE AS datum, \'7:00\'::TIME AS vrijeme;
+                            END IF;
+              ELSIF (v_vrijeme + v_trajanje * INTERVAL \'1 minute\') <= \'18:00\'::TIME
+                  THEN
+                        RETURN QUERY
+                            SELECT v_datum::DATE AS datum, (v_vrijeme + v_trajanje * INTERVAL \'1 minute\')::TIME AS vrijeme;
+              ELSE
+                  IF to_char(current_date, \'Day\') <> \'Friday\'
+                        THEN
+                            RETURN QUERY
+                                SELECT (v_datum + INTERVAL \'1 day\')::DATE AS datum, \'7:00\'::TIME AS vrijeme;
+                  ELSE
+                        RETURN QUERY
+                            SELECT (v_datum + INTERVAL \'3 days\')::DATE AS datum, \'7:00\'::TIME AS vrijeme;
+                  END IF;
+              END IF;
         END;
         $$ LANGUAGE plpgsql;');
     $st->execute();

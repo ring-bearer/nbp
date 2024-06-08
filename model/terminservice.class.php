@@ -43,9 +43,14 @@ class TerminService{
   				'c' => $novi->__get('datum'), 'd' => $novi->__get('vrijeme'),
   				'e' => $novi->__get('id_bolnice')));
   		}
-  		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+  		catch( PDOException $e ) {
+        if($st->errorCode()==='23505'){
+          $poruka="Već imate zakazanu pretragu u ovom terminu!";
+          return $poruka;
+        }
+        exit( 'PDO error ' . $e->getMessage() ); }
 
-  		return;
+  		return "Termin uspješno zakazan! Možete ga vidjeti na popisu naručenih pretraga.\n";
   }
 
   function deleteprijedlozitermin($oib,$id_pretrage){

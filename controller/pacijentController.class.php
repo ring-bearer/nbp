@@ -197,10 +197,9 @@ class PacijentController{
 		$ts=new TerminService();
 		$t=new Termin($_POST['oib'],$_POST['id_pretrage'],
 			$_POST['datum'],$_POST['vrijeme'],$_POST['id_bolnice']);
-		var_dump($t);
-		$ts->deleteprijedlozitermin($_POST['oib'],$_POST['id_pretrage']);
-		$ts->newtermin($t);
-
+		$poruka=$ts->newtermin($t);
+		if($poruka!=="Već imate zakazanu pretragu u ovom terminu!")
+			$ts->deleteprijedlozitermin($_POST['oib'],$_POST['id_pretrage']);
 		$ps=new PretragaService();
 		$bs=new BolnicaService();
 		$pretrage=$ps->getpretrage();
@@ -215,14 +214,12 @@ class PacijentController{
 			}
 			$j++;
 		}
-		$poruka="Termin uspješno zakazan! Možete ga vidjeti na popisu naručenih pretraga.\n";
 		require_once __DIR__ . '/../view/prijedlozitermin.php';
 	}
 
 	public function pretraga(){
 		foreach ($_POST as $key => $value) {
 			if (strpos($key, 'prihvati_') === 0) {
-				//echo "prihvati";
 				$index = str_replace('prihvati_', '', $key);
 
 				$oib_pacijenta = $_POST['oib_pacijenta_' . $index];
@@ -274,28 +271,6 @@ class PacijentController{
 					}
 				require_once __DIR__ . '/../view/pretragazahtjevi.php';
 			}
-
-				/*// Smislit kako dohvatit najblize bolnice po mjestu pacijenta
-				$bs = new BolnicaService;
-				$bolnice = $bs->getBolniceByMjesto($mjesto);
-
-				// Moramo pronaci sve termine u njima za odredenu pretragu
-				$termini = array();
-				foreach($bolnice as $b){
-					$ime_bolnice = $b->__get('ime');
-					$dostupantermin = $bs->getTermin($ime_bolnice, $vrsta);
-					$termini[]=$dostupantermin;
-				}
-
-				var_dump($termini);
-				// Sada te termine treba poslati pacijentu negdje
-
-
-				// Na kraju obrisemo taj zahtjev
-
-				header("Location: index.php?rt=pretraga/mojizahtjevi");
-				exit();
-			}*/
 			elseif (strpos($key, 'odbij_') === 0) {
 				//echo "Odbij";
 				// Izvadimo indeks

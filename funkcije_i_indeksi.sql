@@ -69,7 +69,6 @@ CREATE FUNCTION popis_pacijenata(oib_L CHAR(11))
         ime_pacijenta CHAR VARYING(20),
         oib_pacijenta CHAR(11),
         mbo_pacijenta CHAR(9)
-        -- ostale podatke moze dobiti kad klikne na pojedinog pacijenta u aplikaciji
     )
 AS $$
 BEGIN
@@ -84,15 +83,14 @@ $$ LANGUAGE plpgsql;
 -- povijest pretraga
 CREATE FUNCTION povijest_pretraga(oib CHAR(11))
     RETURNS table (
-        datum_pretrage DATE,
-        vrsta_pretrage CHAR VARYING (20),
-        ime_bolnice  CHAR VARYING (30),
-        mjesto_bolnice CHAR VARYING (20)
+        datum DATE,
+        vrsta CHAR VARYING (20),
+        ime_bolnice  CHAR VARYING (30)
     )
 AS $$
 BEGIN
     RETURN QUERY
-        SELECT datum, vrsta, ime, mjesto
+        SELECT nbp_termin.datum, nbp_pretraga.vrsta, nbp_bolnica.ime
             FROM nbp_termin
                 LEFT JOIN nbp_bolnica
                     ON id = id_bolnice
@@ -135,24 +133,18 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- prvi slobodan termin
-CREATE FUNCTION prvi_termin (ime_bolnice CHAR VARYING(30), mjesto_bolnice CHAR VARYING(20), vrsta_P CHAR VARYING(20))
+CREATE FUNCTION prvi_termin (v_id_bolnice INT, vrsta_P CHAR VARYING(20))
     RETURNS table (
         datum_termina TEXT,
         vrijeme_termina TIME
         )
 AS $$
 DECLARE
-    v_id_bolnice    INT;
     v_id_pretrage   INT;
     v_trajanje      INT;
     v_datum         DATE;
     v_vrijeme       TIME;
 BEGIN
-    SELECT id INTO v_id_bolnice
-        FROM nbp_bolnica
-        WHERE ime = ime_bolnice
-          AND mjesto = mjesto_bolnice;
-
     SELECT id, trajanje_min INTO v_id_pretrage, v_trajanje
         FROM nbp_pretraga
         WHERE vrsta = vrsta_P;
@@ -172,27 +164,27 @@ BEGIN
             IF to_char(current_date, 'Day') = 'Friday' -- u ponedjeljak, ne u subotu
                 THEN
                     RETURN QUERY
-                        SELECT to_char(current_date + INTERVAL '3 days', 'dd.mm.yyyy.') AS datum, '7:00'::TIME AS vrijeme;
+                        SELECT (current_date + INTERVAL '3 days')::DATE AS datum, '7:00'::TIME AS vrijeme;
             ELSIF to_char(current_date, 'Day') = 'Saturday' -- u ponedjeljak, ne u nedjelju
                 THEN
                     RETURN QUERY
-                        SELECT to_char(current_date + INTERVAL '2 days', 'dd.mm.yyyy.') AS datum, '7:00'::TIME AS vrijeme;
+                        SELECT (current_date + INTERVAL '2 days')::DATE AS datum, '7:00'::TIME AS vrijeme;
             ELSE -- iduci dan
                 RETURN QUERY
-                    SELECT to_char(current_date + INTERVAL '1 day', 'dd.mm.yyyy.') AS datum, '7:00'::TIME AS vrijeme;
+                    SELECT (current_date + INTERVAL '1 day')::DATE AS datum, '7:00'::TIME AS vrijeme;
             END IF;
     ELSIF v_vrijeme + v_trajanje * INTERVAL '1 minute' <= '18:00'::TIME
         THEN
             RETURN QUERY
-                SELECT to_char(v_datum, 'dd.mm.yyyy.') AS datum, v_vrijeme + v_trajanje * INTERVAL '1 minute' AS vrijeme;
+                SELECT v_datum::DATE AS datum, (v_vrijeme + v_trajanje * INTERVAL '1 minute')::TIME AS vrijeme;
     ELSE
         IF to_char(current_date, 'Day') <> 'Friday'
             THEN
                 RETURN QUERY
-                    SELECT to_char(v_datum + INTERVAL '1 day', 'dd.mm.yyyy.') AS datum, '7:00'::TIME AS vrijeme;
+                    SELECT (v_datum + INTERVAL '1 day')::DATE AS datum, '7:00'::TIME AS vrijeme;
         ELSE
             RETURN QUERY
-                SELECT to_char(v_datum + INTERVAL '3 days', 'dd.mm.yyyy.') AS datum, '7:00'::TIME AS vrijeme;
+                SELECT (v_datum + INTERVAL '3 days')::DATE AS datum, '7:00'::TIME AS vrijeme;
         END IF;
     END IF;
 END;
