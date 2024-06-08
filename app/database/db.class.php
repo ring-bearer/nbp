@@ -14,7 +14,7 @@ class DB
 	    	try
 	    	{
 					//ovdje treba promjeniti IP hosta nakon povezivanja sa VCL
-					DB::$db = new PDO('pgsql:host=31.147.200.162; port=5432; dbname=odbojka; user=postgres; password=password' );
+					DB::$db = new PDO('pgsql:host=31.147.200.154; port=5432; dbname=odbojka; user=postgres; password=password' );
 					DB::$db-> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		    }
 		    catch( PDOException $e ) { exit( 'PDO Error: ' . $e->getMessage() ); }

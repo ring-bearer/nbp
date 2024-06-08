@@ -51,7 +51,7 @@ class ProfilService{
         try
 		{
 			$db = DB::getConnection();
-			$st = $db->prepare('SELECT oib,ime,prezime,datum_rodjenja,adresa_ambulante,mjesto_ambulante FROM nbp_lijecnik where oib=:oib');
+			$st = $db->prepare('SELECT oib,ime,prezime,datum_rodjenja,adresa_ambulante,mjesto_ambulante, id_bolnice FROM nbp_lijecnik where oib=:oib');
             $st->execute(array('oib' => $oib));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -61,7 +61,7 @@ class ProfilService{
         $new=new Lijecnik($row['oib'],
                     $row['ime'],$row['prezime'],
                         $row['datum_rodjenja'],$row['adresa_ambulante'],
-                        $row['mjesto_ambulante']);
+                        $row['mjesto_ambulante'], $row['id_bolnice']);
 
         return $new;
                 

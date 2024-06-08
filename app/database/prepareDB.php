@@ -396,18 +396,18 @@ try
     $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '5', 'datum' => '2018-07-02', 'vrijeme' => '10:00', 'id_bolnice' => '1') );
     $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '5', 'datum' => '2019-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '1') );
 
-    $st->execute( array( 'oib_pacijenta' => '10000338099', 'id_pretrage' => '5', 'datum' => '2024-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '1') );
-    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '3', 'datum' => '2024-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '81') );
-    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '5', 'datum' => '2024-07-05', 'vrijeme' => '12:00', 'id_bolnice' => '12') );
+    $st->execute( array( 'oib_pacijenta' => '10000338099', 'id_pretrage' => '5', 'datum' => '2024-07-02', 'vrijeme' => '16:00', 'id_bolnice' => '1') );
+    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '3', 'datum' => '2024-07-02', 'vrijeme' => '13:00', 'id_bolnice' => '81') );
+    $st->execute( array( 'oib_pacijenta' => '10000917906', 'id_pretrage' => '5', 'datum' => '2024-07-05', 'vrijeme' => '09:00', 'id_bolnice' => '12') );
     $st->execute( array( 'oib_pacijenta' => '10000395731', 'id_pretrage' => '1', 'datum' => '2024-07-07', 'vrijeme' => '12:00', 'id_bolnice' => '59') );
-    $st->execute( array( 'oib_pacijenta' => '10000998713', 'id_pretrage' => '1', 'datum' => '2024-07-11', 'vrijeme' => '12:00', 'id_bolnice' => '59') );
-    $st->execute( array( 'oib_pacijenta' => '10000998713', 'id_pretrage' => '2', 'datum' => '2024-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '100') );
+    $st->execute( array( 'oib_pacijenta' => '10000998713', 'id_pretrage' => '1', 'datum' => '2024-07-11', 'vrijeme' => '17:00', 'id_bolnice' => '59') );
+    $st->execute( array( 'oib_pacijenta' => '10000998713', 'id_pretrage' => '2', 'datum' => '2024-07-02', 'vrijeme' => '17:00', 'id_bolnice' => '100') );
     $st->execute( array( 'oib_pacijenta' => '10000520909', 'id_pretrage' => '6', 'datum' => '2024-07-03', 'vrijeme' => '12:00', 'id_bolnice' => '65') );
-    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '2', 'datum' => '2024-07-07', 'vrijeme' => '12:00', 'id_bolnice' => '18') );
-    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '4', 'datum' => '2024-07-04', 'vrijeme' => '12:00', 'id_bolnice' => '48') );
-    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '4', 'datum' => '2024-07-05', 'vrijeme' => '12:00', 'id_bolnice' => '48') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '2', 'datum' => '2024-07-07', 'vrijeme' => '10:00', 'id_bolnice' => '18') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '4', 'datum' => '2024-07-04', 'vrijeme' => '08:00', 'id_bolnice' => '48') );
+    $st->execute( array( 'oib_pacijenta' => '10000013006', 'id_pretrage' => '4', 'datum' => '2024-07-05', 'vrijeme' => '11:00', 'id_bolnice' => '48') );
     $st->execute( array( 'oib_pacijenta' => '10000878383', 'id_pretrage' => '4', 'datum' => '2024-07-02', 'vrijeme' => '12:00', 'id_bolnice' => '53') );
-    $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '6', 'datum' => '2024-07-03', 'vrijeme' => '12:00', 'id_bolnice' => '8') );
+    $st->execute( array( 'oib_pacijenta' => '10000402929', 'id_pretrage' => '6', 'datum' => '2024-07-03', 'vrijeme' => '13:00', 'id_bolnice' => '8') );
 
 }
 catch( PDOException $e ) { exit( "PDO error kod termina: " . $e->getMessage() ); }
@@ -508,13 +508,14 @@ try
       'CREATE FUNCTION povijest_pretraga(oib CHAR(11))
             RETURNS table (
                 datum DATE,
+                vrijeme time,
                 vrsta CHAR VARYING (20),
                 ime_bolnice  CHAR VARYING (30)
             )
         AS $$
         BEGIN
             RETURN QUERY
-                SELECT nbp_termin.datum, nbp_pretraga.vrsta, nbp_bolnica.ime
+                SELECT nbp_termin.datum, nbp_termin.vrijeme, nbp_pretraga.vrsta, nbp_bolnica.ime
                     FROM nbp_termin
                         LEFT JOIN nbp_bolnica
                             ON id = id_bolnice
