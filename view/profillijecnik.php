@@ -13,7 +13,7 @@ else{
 	<tr>
 		<th>OIB</th><th>Ime</th>
 		<th>Prezime</th><th>Datum rođenja</th>
-		<th>Adresa ambulante</th><th>Mjesto ambulante</th>
+		<th>Adresa ambulante</th><th>Mjesto ambulante</th><th>ID bolnice</th>
 	</tr>
 	
 	<tr>
@@ -23,6 +23,7 @@ else{
 	<td><input type="date" name="datum_rodjenja" value="<?php echo $user->__get('datum_rodjenja') ?>"></td>
 	<td><?php echo $user->__get('adresa_ambulante') ?></td>
 	<td><?php echo $user->__get('mjesto_ambulante') ?></td>
+	<td><?php echo $user->__get('id_bolnice') ?></td>
 	</tr>
 	<?php
    echo '</table><br>';

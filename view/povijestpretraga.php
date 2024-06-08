@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../controller/pretragaController.class.php';
 
 echo "<h1>$poruka</h1>";
+if(isset($prazno)) echo "<p id='gore'> Nema zabilježenih pretraga!<p>";
+else{
 ?>
 <table>
 	<tr>
@@ -10,7 +12,7 @@ echo "<h1>$poruka</h1>";
 				echo "<th>Pacijent</th>";
 			}
 		?>
-		<th>Datum</th>
+		<th>Datum</th><th>Vrijeme</th>
 		<th>Vrsta</th><th>Ime bolnice</th>
 	</tr>
 	<?php
@@ -22,6 +24,7 @@ echo "<h1>$poruka</h1>";
 					echo '<tr>';
 					echo '<td>' . $pac[$i]->__get('prezime') . ', ' . $pac[$i]->__get('ime') . '</td>';
 					echo '<td>' . $k[0] . '</td>';
+					echo '<td>' . $k[3] . '</td>';
 					echo '<td>' . $k[1] . '</td>';
 					echo '<td>' . $k[2]. '</td>';
 					echo '</tr>';
@@ -34,6 +37,7 @@ echo "<h1>$poruka</h1>";
 		 foreach($list as $a){
 			 echo '<tr>';
 			 echo '<td>' . $a[0] . '</td>';
+			 echo '<td>' . $a[3] . '</td>';
 			 echo '<td>' . $a[1] . '</td>';
 			 echo '<td>' . $a[2]. '</td>';
 			 echo '</tr>';
@@ -41,4 +45,6 @@ echo "<h1>$poruka</h1>";
 	 }?>
 </table>
 
-<?php require_once __DIR__ . '/_footer.php'; ?>
+<?php
+}
+require_once __DIR__ . '/_footer.php'; ?>

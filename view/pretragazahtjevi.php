@@ -13,6 +13,9 @@ if(!isset($prazno)){
     echo '<th>Zahtjev zaprima:</th><th>OIB liječnika</th>';
     }?>
 		<th>Vrsta pretrage</th>
+		<?php if ($_COOKIE['ovlasti']==='0'){
+    echo '<th></th><th></th>';
+    }?>
 	</tr>
 	<?php
     $i=0;

@@ -89,11 +89,11 @@ class PacijentService{
 				return $poruka;
 			}
 
-			$st = $db->prepare('INSERT INTO nbp_pacijent values (:a,:pass,:b,:c,:d,:e,:f,:g,:h)');
-      $st->execute(array( 'a' => $novi->__get('oib'), 'pass'=> $pass, 'b' => $novi->__get('mbo'),
+			$st = $db->prepare('INSERT INTO nbp_pacijent values (:a,:b,:c,:d,:e,:f,:g,:h,:pass)');
+      $st->execute(array( 'a' => $novi->__get('oib'), 'b' => $novi->__get('mbo'),
 				'c' => $novi->__get('ime'), 'd' => $novi->__get('prezime'),
 				'e' => $novi->__get('datum_rodjenja'), 'f' => $novi->__get('adresa'),
-				'g' => $novi->__get('mjesto'), 'h' => $novi->__get('oib_lijecnika'),));
+				'g' => $novi->__get('mjesto'), 'h' => $novi->__get('oib_lijecnika'),'pass'=>$pass));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 

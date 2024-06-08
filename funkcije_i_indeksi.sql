@@ -88,13 +88,14 @@ $$ LANGUAGE plpgsql;
 CREATE FUNCTION povijest_pretraga(oib CHAR(11))
     RETURNS table (
         datum DATE,
+        vrijeme TIME,
         vrsta CHAR VARYING (20),
         ime_bolnice  CHAR VARYING (30)
     )
 AS $$
 BEGIN
     RETURN QUERY
-        SELECT nbp_termin.datum, nbp_pretraga.vrsta, nbp_bolnica.ime
+        SELECT nbp_termin.datum, nbp_termin.vrijeme, nbp_pretraga.vrsta, nbp_bolnica.ime
             FROM nbp_termin
                 LEFT JOIN nbp_bolnica
                     ON id = id_bolnice

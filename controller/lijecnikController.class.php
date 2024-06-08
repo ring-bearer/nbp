@@ -149,21 +149,22 @@ class LijecnikController{
 		foreach ($_POST as $key => $value) {
 			if (strpos($key, 'povijest_') === 0) {
 				$index = str_replace('povijest_', '', $key);
-				
+
 				if (isset($_POST['oib_pacijenta_' . $index]) && isset($_POST['ime_pacijenta_' . $index])) {
 					$oib_pacijenta = $_POST['oib_pacijenta_' . $index];
 					$ime_pacijenta_ = $_POST['ime_pacijenta_' . $index];
-					
+
 					$ls = new PretragaService();
 					$list = $ls->povijestpretraga($oib_pacijenta);
 					$poruka = "Povijest pretraga pacijenta " . $ime_pacijenta_;
+          if(empty($list)) $prazno=1;
 					require_once __DIR__ . '/../view/povijestpretraga.php';
 				} else {
 					echo "Error: Pacijent details not found.";
 				}
 			}
 		}
-		
+
 	}
 };
 
