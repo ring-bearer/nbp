@@ -97,7 +97,7 @@ create table nbp_zahtjev_pretraga(
     oib_pacijenta char(11) check (not null),
     oib_lijecnika char(11) check (not null),
     vrsta char varying(30) check (not null),
-    constraint pkZahtjeviPretraga primary key (oib_pacijenta,oib_lijecnika,vrsta)
+    constraint pkZahtjeviPretraga primary key (oib_pacijenta,oib_lijecnika,vrsta),
     constraint fkZahtjeviPretraga foreign key (oib_pacijenta) references nbp_pacijent(oib),
     constraint fkZahtjeviPretraga foreign key (oib_lijecnika) references nbp_lijecnik(oib)
 );
