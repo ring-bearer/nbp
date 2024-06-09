@@ -4,6 +4,7 @@ require_once __DIR__ . '/../model/profilservice.class.php';
 require_once __DIR__ . '/../model/lijecnikservice.class.php';
 require_once __DIR__ . '/../model/pacijentservice.class.php';
 require_once __DIR__ . '/../model/adminservice.class.php';
+require_once __DIR__ . '/../model/bolnicaservice.class.php';
 require_once __DIR__ . '/../model/lijecnik.class.php';
 require_once __DIR__ . '/../model/pacijent.class.php';
 require_once __DIR__ . '/../model/admin.class.php';
@@ -32,7 +33,9 @@ class ProfilController{
     $ps=new ProfilService();
 
     if($ovlasti === '0'){
+      $bs = new BolnicaService;
       $user = $ps->getProfilLijecnik($oib);
+      $bolnica = $bs ->getbolnica($user->__get('id_bolnice'));
       require_once __DIR__ . '/../view/profillijecnik.php';
     }else if($ovlasti === '1'){
       $user = $ps->getProfilPacijent($oib);

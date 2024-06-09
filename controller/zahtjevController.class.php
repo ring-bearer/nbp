@@ -40,6 +40,12 @@ class ZahtjevController{
     $mjesto_ambulante=$tren->__get('mjesto_ambulante');
     $lijeclist=$ls->getizbolnice($mjesto_ambulante);
     $list=$ps->getmojipacijenti($_COOKIE['oib']);
+    if(empty($list)){
+      $prazno=1;
+      $poruka="Nemate pacijenata za prebaciti!\n";
+      require_once __DIR__ . '/../view/newzahtjev.php';
+      return;
+    }
     require_once __DIR__ . '/../view/newzahtjev.php';
   }
 
@@ -53,6 +59,11 @@ class ZahtjevController{
     $mjesto_ambulante=$tren->__get('mjesto_ambulante');
     $lijeclist=$ls->getizbolnice($mjesto_ambulante);
     $list=$ps->getmojipacijenti($_COOKIE['oib']);
+    if(empty($list)){
+      $prazno=1;
+      require_once __DIR__ . '/../view/newzahtjev.php';
+      return;
+    }
     require_once __DIR__ . '/../view/newzahtjev.php';
   }
 

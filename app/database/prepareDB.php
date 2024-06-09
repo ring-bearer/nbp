@@ -336,19 +336,6 @@ echo "Ubacio u tablicu nbp_admin.<br />";
 
 try
 {
-    $st = $db->prepare( 'INSERT INTO nbp_zahtjev(oib_pacijenta, oib_stari, oib_novi) VALUES (:oib, :stari, :novi)' );
-
-    $st->execute( array( 'oib' => '10000395731', 'stari' => '10000444444', 'novi' => '10000891233') );
-
-}
-catch( PDOException $e ) { exit( "PDO error kod zahtjeva: " . $e->getMessage() ); }
-
-echo "Ubacio u tablicu nbp_zahtjev.<br />";
-
-
-
-try
-{
     $st = $db->prepare( 'INSERT INTO nbp_pretraga(id, vrsta, trajanje_min) VALUES (:id, :vrsta, :trajanje_min)' );
 
     $st->execute( array( 'id' => '1', 'vrsta' => 'dermatološki pregled', 'trajanje_min' => '45') );

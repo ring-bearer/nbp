@@ -25,6 +25,11 @@ class LijecnikController{
   public function mojipacijenti(){
     $ls=new PacijentService();
     $list = $ls->getmojipacijenti($_COOKIE['oib']);
+    if(empty($list)){
+      $prazno=1;
+      require_once __DIR__ . '/../view/mojipacijenti.php';
+      return;
+    }
     	require_once __DIR__ . '/../view/mojipacijenti.php';
   }
 

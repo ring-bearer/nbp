@@ -1,5 +1,6 @@
 -- ubacivanje testnih podataka
 
+
 insert into nbp_bolnica values
     (1, 'Opća bolnica "Dr. Ivo Pedišić" Sisak', 'J.J. Strossmayera 59', 'Sisak'),
     (2, 'Opća bolnica "Dr. Josip Benčević" Slavonski Brod',	'Andrije Štampara 42', 'Slavonski Brod'),

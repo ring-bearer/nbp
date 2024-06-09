@@ -5,6 +5,7 @@ if(isset($poruka)) echo "<p id=gore>" . $poruka . "</p>";
 else{
 	echo "<p id=gore>Odaberite drugog liječnika iz Vaše ambulante za željenog pacijenta.</p>";
 }
+if(!isset($prazno)){
 ?>
 <table>
 	<tr>
@@ -37,4 +38,6 @@ else{
   </form>
   </table>
   <br>
-<?php require_once __DIR__ . '/_footer.php'; ?>
+<?php
+}
+ require_once __DIR__ . '/_footer.php'; ?>

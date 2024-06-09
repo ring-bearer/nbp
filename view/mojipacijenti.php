@@ -1,4 +1,5 @@
 <?php require_once __DIR__ . '/_header.php';
+if(!isset($prazno)){
 ?>
 
 <h1>Moji pacijenti</h1>
@@ -30,4 +31,6 @@
 	?>
   </table>
   </form>
-<?php require_once __DIR__ . '/_footer.php'; ?>
+<?php
+}
+require_once __DIR__ . '/_footer.php'; ?>
