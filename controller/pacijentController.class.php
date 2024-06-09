@@ -23,18 +23,56 @@ class PacijentController{
 	public function transfer(){
 		$ls=new PacijentService();
 		$zs=new ZahtjevService();
-		$pac = $ls->getpacijent($_POST['transfer']);
-		$z=new Zahtjev($pac->__get('oib'),$pac->__get('oib_lijecnika'),$_COOKIE['oib']);
-		if ($_COOKIE['ovlasti'] == 0){
-			$pac->__set('oib_lijecnika', $_COOKIE['oib']);
-		} else {
-			$pac->__set('oib_lijecnika', $_POST['oib_novog_lijecnika']);
-		}
+		$ds=new LijecnikService();
+		$pac = $ls->getpacijent($_POST['oib_pacijenta']);
+		$z=new Zahtjev($pac->__get('oib'),$pac->__get('oib_lijecnika'),$_POST['oib_novi']);
+
+		$pac->__set('oib_lijecnika', $_POST['oib_novi']);
 		$ls->updatepacijent($pac);
 
 		$zs->deletezahtjev($z);
 		$poruka="Zahtjev uspješno prihvaćen!<br>";
-		require_once __DIR__ . '/../view/mojizahtjevi.php';
+
+		if($_COOKIE['ovlasti']==0){
+			$list = $zs->getzahtjevi($_COOKIE['oib']);
+			if(empty($list)){
+				$poruka="Nemate zahtjeva na čekanju!";
+				$prazno=1;
+				require_once __DIR__ . '/../view/mojizahtjevi.php';
+				return;
+			}
+			$listapac=array();
+			foreach($list as $a){
+				$oib_pacijenta=$a->__get('oib_pacijenta');
+				$pac=$ls->getpacijent($oib_pacijenta);
+				$listapac[]=$pac;
+				$oib_stari=$a->__get('oib_stari');
+				$lijec=$ds->getlijecnik($oib_stari);
+				$listalijec[]=$lijec;
+			}
+			require_once __DIR__ . '/../view/mojizahtjevi.php';
+			return;
+		}
+
+		$list = $zs->getallzahtjevi();
+		if(empty($list)){
+			$poruka="Nema zahtjeva na čekanju!";
+			$prazno=1;
+			require_once __DIR__ . '/../view/zahtjevi.php';
+			return;
+		}
+		foreach($list as $a){
+				$oib_pacijenta=$a->__get('oib_pacijenta');
+				$pac=$ls->getpacijent($oib_pacijenta);
+				$listapac[]=$pac;
+				$oib_stari=$a->__get('oib_stari');
+				$lijec=$ds->getlijecnik($oib_stari);
+				$listastarih[]=$lijec;
+				$oib_novi=$a->__get('oib_novi');
+				$lijec=$ds->getlijecnik($oib_novi);
+				$listanovih[]=$lijec;
+			}
+		require_once __DIR__ . '/../view/zahtjevi.php';
 	}
 
 	public function new(){

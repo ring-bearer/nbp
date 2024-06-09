@@ -5,7 +5,6 @@ echo '<h1> Zahtjevi za prebacivanje pacijenta </h1>';
 if(isset($poruka)) echo "<p id=gore>" . $poruka . "</p>";
 if(!isset($prazno)){
 ?>
-<form action="index.php?rt=pacijent/transfer" method="post">
 <table>
 	<tr>
 		<th>Zahtjev postavlja:</th><th>OIB pacijenta</th>
@@ -25,12 +24,15 @@ if(!isset($prazno)){
       echo '<td>' . $a->__get('datum_rodjenja') . '</td>';
       echo '<td>' . $a->__get('adresa') . '</td>';
       echo '<td>' . $a->__get('mjesto') . '</td>';?>
-      <td><button type="submit" name="transfer" value="<?php echo $a->__get('oib');?>">Prihvati</button></td>
-    </tr><?php
+			<form action="index.php?rt=pacijent/transfer" method="post">
+			<td><input type="hidden" name="oib_novi" value="<?php echo $_COOKIE['oib'];?>">
+      <button type="submit" name="oib_pacijenta" value="<?php echo $a->__get('oib');?>">Prihvati</button></td>
+		</form>
+		</tr><?php
     $i++;
    }?>
 </table>
-</form>
+
 
 <?php }
 require_once __DIR__ . '/_footer.php'; ?>
